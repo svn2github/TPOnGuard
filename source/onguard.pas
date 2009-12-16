@@ -315,11 +315,11 @@ type
       {-returns a modifier based on the current date}
     function GenerateMachineModifier : LongInt;
       {-returns a modifier based on hardware information}
-    procedure GenerateMDKey(var Key; KeySize : Cardinal; const Str : string);
+    procedure GenerateMDKey(var Key; KeySize : Cardinal; const Str : AnsiString);
       {-generate a key based on the message digest of Str}
     procedure GenerateRandomKey(var Key; KeySize : Cardinal);
       {-generate a random key}
-    function GenerateStringModifier(const S : string) : LongInt;
+    function GenerateStringModifier(const S : AnsiString) : LongInt;
       {-returns a modifier based on S}
     function GenerateUniqueModifier : LongInt;
       {-returns a unique/random modifier}
@@ -534,7 +534,7 @@ procedure DecDaysCode(const Key : TKey; var Code : TCode);
 function GetDaysCodeValue(const Key : TKey; const Code : TCode) : LongInt;
 function IsDaysCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 
-procedure InitRegCode(const Key : TKey; const RegStr : string; Expires : TDateTime; var Code : TCode);
+procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
 function IsRegCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 function IsRegCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 
@@ -557,19 +557,19 @@ function IsUsageCodeExpired(const Key : TKey; const Code: TCode) : Boolean;
 
 {generate key routines}
 procedure GenerateRandomKeyPrim(var Key; KeySize : Cardinal);
-procedure GenerateTMDKeyPrim(var Key; KeySize : Cardinal; const Str : string);
-procedure GenerateMD5KeyPrim(var Key: TKey; const Str : string);
+procedure GenerateTMDKeyPrim(var Key; KeySize : Cardinal; const Str : AnsiString);
+procedure GenerateMD5KeyPrim(var Key: TKey; const Str : AnsiString);
 
 {modifier routines}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;   {!!.05}
-function GenerateStringModifierPrim(const S : string) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;   {!!.05}
+function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
 function GenerateUniqueModifierPrim : LongInt;
 function GenerateMachineModifierPrim : LongInt;
 function GenerateDateModifierPrim(D : TDateTime) : LongInt;
 procedure ApplyModifierToKeyPrim(Modifier : LongInt; var Key; KeySize : Cardinal);
 
 {hash routines}
-function StringHashElf(const Str : string) : LongInt;
+function StringHashElf(const Str : AnsiString) : LongInt;
 
 {mixing routines}
 procedure MixBlock(const Matrix : T128Bit; var Block; Encrypt : Boolean);
@@ -689,7 +689,7 @@ begin
   end;
 end;
 
-function StringHashElf(const Str : string) : LongInt;
+function StringHashElf(const Str : AnsiString) : LongInt;
 begin
   Result := HashElf(Str[1], Length(Str));
 end;
@@ -1080,7 +1080,7 @@ end;
 
 {$IFDEF Win32}
 {!!.05} {added}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
 { Obtains information from:
     - Volume sizes (NOT free space)
     - Volume serial numbers
@@ -1104,7 +1104,7 @@ var
   RegKey  : HKEY;
   GUID1   : TGUID;
   GUID2   : TGUID;
-  Drive   : AnsiChar;
+  Drive   : Char;
   SysInfo : TSystemInfo;
   Context : TTMDContext;
   UserInfoFound : Boolean;                                           {!!.11}
@@ -1113,37 +1113,75 @@ begin
   InitTMD(Context);
 
   {include user specific information}
-  if midUser in MachineInfo then begin
-{!!.11}
-    UserInfoFound := False;
-    { first look for registered info in \Windows\CurrentVersion }
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sCurVer, 0,
-        KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
-      I := SizeOf(Buf);
-      if RegQueryValueEx(RegKey, sRegOwner, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
-        UserInfoFound := True;
-        UpdateTMD(Context, Buf, I);
+  if Ansi then
+  begin
+    if midUser in MachineInfo then begin
+  {!!.11}
+      UserInfoFound := False;
+      { first look for registered info in \Windows\CurrentVersion }
+      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, sCurVer, 0,
+          KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
         I := SizeOf(Buf);
-        if RegQueryValueEx(RegKey, sRegOrg, nil, nil, @Buf, @I) = ERROR_SUCCESS then
+        if RegQueryValueExA(RegKey, sRegOwner, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+          UserInfoFound := True;
           UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueExA(RegKey, sRegOrg, nil, nil, @Buf, @I) = ERROR_SUCCESS then
+            UpdateTMD(Context, Buf, I);
+        end;
+        RegCloseKey(RegKey);                                           {!!.13}
       end;
-      RegCloseKey(RegKey);                                           {!!.13}
-    end;
 
-{!!.11}
-    { if not found, then look in \Windows NT\CurrentVersion }
-    if not UserInfoFound then
-      if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sCurVerNT, 0,
+  {!!.11}
+      { if not found, then look in \Windows NT\CurrentVersion }
+      if not UserInfoFound then
+        if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, sCurVerNT, 0,
+            KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
+          I := SizeOf(Buf);
+          if RegQueryValueExA(RegKey, sRegOwner, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+            UpdateTMD(Context, Buf, I);
+            I := SizeOf(Buf);
+            if RegQueryValueExA(RegKey, sRegOrg, nil, nil, @Buf, @I) = ERROR_SUCCESS then
+              UpdateTMD(Context, Buf, I);
+          end;
+          RegCloseKey(RegKey);                                         {!!.13}
+        end;
+    end;
+  end
+  else
+  begin
+      if midUser in MachineInfo then begin
+  {!!.11}
+      UserInfoFound := False;
+      { first look for registered info in \Windows\CurrentVersion }
+      if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sCurVer, 0,
           KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
         I := SizeOf(Buf);
         if RegQueryValueEx(RegKey, sRegOwner, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+          UserInfoFound := True;
           UpdateTMD(Context, Buf, I);
           I := SizeOf(Buf);
           if RegQueryValueEx(RegKey, sRegOrg, nil, nil, @Buf, @I) = ERROR_SUCCESS then
             UpdateTMD(Context, Buf, I);
         end;
-        RegCloseKey(RegKey);                                         {!!.13}
+        RegCloseKey(RegKey);                                           {!!.13}
       end;
+
+  {!!.11}
+      { if not found, then look in \Windows NT\CurrentVersion }
+      if not UserInfoFound then
+        if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sCurVerNT, 0,
+            KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
+          I := SizeOf(Buf);
+          if RegQueryValueEx(RegKey, sRegOwner, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+            UpdateTMD(Context, Buf, I);
+            I := SizeOf(Buf);
+            if RegQueryValueEx(RegKey, sRegOrg, nil, nil, @Buf, @I) = ERROR_SUCCESS then
+              UpdateTMD(Context, Buf, I);
+          end;
+          RegCloseKey(RegKey);                                         {!!.13}
+        end;
+    end;
   end;
 
   if midSystem in MachineInfo then begin
@@ -1186,11 +1224,11 @@ begin
     {include drive specific information}
     for Drive := 'C' to 'Z' do begin
 
-      if (GetDriveType(PAnsiChar(Drive + ':\')) = DRIVE_FIXED) then begin
+      if (GetDriveType(PChar(Drive + ':\')) = DRIVE_FIXED) then begin
         FillChar(Buf, Sizeof(Buf), 0);
         Buf[0] := Byte(Drive);
         {!!.16} {removed cluster information}
-        GetVolumeInformation(PAnsiChar(Drive + ':\'), nil, 0,
+        GetVolumeInformation(PChar(Drive + ':\'), nil, 0,
           PDWord(@Buf[1]){serial number}, I{not used}, I{not used}, nil, 0);
         UpdateTMD(Context, Buf, 5);
       end;
@@ -1208,7 +1246,7 @@ var
   GUID2   : TGUID;
   Drive   : Integer;
   Context : TTMDContext;
-  Buf     : array [0..1023] of Byte;
+  Buf     : array [0..1023] of Char;
 begin
   InitTMD(Context);
 
@@ -1216,9 +1254,9 @@ begin
 
   if midSystem in MachineInfo then begin
     {include system specific information}
-    I := GetWindowsDirectory(@Buf, SizeOf(Buf));
+    I := GetWindowsDirectory(@Buf, Length(Buf));
     UpdateTMD(Context, Buf, I);
-    I := GetSystemDirectory(@Buf, SizeOf(Buf));
+    I := GetSystemDirectory(@Buf, Length(Buf));
     UpdateTMD(Context, Buf, I);
 
     PLongInt(@Buf[0])^ := GetWinFlags;
@@ -1268,10 +1306,10 @@ begin
     Bytes[I] := Random(256);
 end;
 
-procedure GenerateTMDKeyPrim(var Key; KeySize: Cardinal; const Str: string);
+procedure GenerateTMDKeyPrim(var Key; KeySize: Cardinal; const Str: AnsiString);
 var
   I  : Integer;
-  S2 : string;
+  S2 : AnsiString;
 begin
   {strip accented characters from the string}                          {!!.06}
   S2 := Str;                                                           {!!.06}
@@ -1282,11 +1320,11 @@ begin
   HashTMD(Key, KeySize, S2[1], Length(S2));                            {!!.06}
 end;
 
-procedure GenerateMD5KeyPrim(var Key: TKey; const Str: string);
+procedure GenerateMD5KeyPrim(var Key: TKey; const Str: AnsiString);
 var
   D : TMD5Digest;
   I  : Integer;
-  S2 : string;
+  S2 : AnsiString;
 begin
   {strip accented characters from the string}                          {!!.06}
   S2 := Str;                                                           {!!.06}
@@ -1300,11 +1338,11 @@ end;
 
 
 {modifier routines}
-function GenerateStringModifierPrim(const S : string) : LongInt;
+function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
 var
   I   : Integer;                                                       {!!.06}
   Sig : array [0..4] of AnsiChar;
-  S2  : string;                                                        {!!.06}
+  S2  : AnsiString;                                                        {!!.06}
 begin
   FillChar(Sig, SizeOf(Sig), 0);
 
@@ -1314,7 +1352,7 @@ begin
     if Ord(S2[I]) > 127 then                                           {!!.06}
       Delete(S2, I, 1);                                                {!!.06}
 
-  StrPLCopy(Sig, AnsiUpperCase(S2), Min(4, Length(S2)));               {!!.06}
+  StrPLCopy(Sig, AnsiString(AnsiUpperCase(string(S2))), Min(4, Length(S2)));               {!!.06}
   Result := PLongInt(@Sig[0])^;
 end;
 
@@ -1696,7 +1734,7 @@ begin
     Result := F.ShowModal = mrOK;
     if Result then begin
       F.GetKey(FKey);                                                {!!.08}
-      FKeyType := F.KeyType;                                       
+      FKeyType := F.KeyType;
       FKeyFileName := F.KeyFileName;
     end;
   finally
@@ -1722,7 +1760,7 @@ begin
   Result := GenerateMachineModifierPrim;
 end;
 
-procedure TOgMakeKeys.GenerateMDKey(var Key; KeySize : Cardinal; const Str : string);
+procedure TOgMakeKeys.GenerateMDKey(var Key; KeySize : Cardinal; const Str : AnsiString);
 begin
   GenerateTMDKeyPrim(Key, KeySize, Str);
 end;
@@ -1737,7 +1775,7 @@ begin
   Result := GenerateUniqueModifierPrim;
 end;
 
-function TOgMakeKeys.GenerateStringModifier(const S : string) : LongInt;
+function TOgMakeKeys.GenerateStringModifier(const S : AnsiString) : LongInt;
 begin
   Result := GenerateStringModifierPrim(S);
 end;
@@ -2126,9 +2164,9 @@ end;
 
 {*** registration code ***}
 
-procedure InitRegCode(const Key : TKey; const RegStr : string; Expires : TDateTime; var Code : TCode);
+procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
 var
-  S : string;                                                          {!!.06}
+  S : AnsiString;                                                          {!!.06}
   I : Integer;                                                         {!!.06}
 begin
   Code.CheckValue := RegCheckCode;
@@ -2138,7 +2176,7 @@ begin
   for I := Length(S) downto 1 do                                       {!!.06}
     if Ord(S[I]) > 127 then                                            {!!.06}
       Delete(S, I, 1);                                                 {!!.06}
-  Code.RegString := StringHashElf(AnsiUpperCase(S));                   {!!.06}
+  Code.RegString := StringHashElf(AnsiString(AnsiUpperCase(string(S))));                   {!!.06}
   MixBlock(T128bit(Key), Code, True);
 end;
 

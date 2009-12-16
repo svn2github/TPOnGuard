@@ -187,7 +187,7 @@ procedure TModifierFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/'];
 begin
-  if (not (Key in CIntChars)) and (not (Key < #32)) then begin
+  if (not OGCharInSet(Key, CIntChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;
@@ -197,7 +197,7 @@ procedure TModifierFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not (Key in CHexChars)) and (not (Key < #32)) then begin
+  if (not OGCharInSet(Key, CHexChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;

@@ -257,7 +257,7 @@ begin
       for i := Length(S) downto 1 do                                 {!!.12}
         if Ord(S[i]) > 127 then                                      {!!.12}
           Delete(S, i, 1);                                           {!!.12}
-      L := StringHashELF(S);                                         {!!.11}
+      L := StringHashELF(AnsiString(S));                                         {!!.11}
     end;                                                             {!!.11}
 
     {set status of date field}
@@ -380,7 +380,7 @@ begin
               end else
                 raise;
             end;
-            InitRegCode(K, RegStrEd.Text, D1, FCode);
+            InitRegCode(K, AnsiString(RegStrEd.Text), D1, FCode);
           end;
       3 : begin
             try
@@ -471,7 +471,7 @@ end;
 {!!.04}
 procedure TCodeGenerateFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (not (Key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateSeparator])) and (not (Key < #32)) then begin
+  if (not OGCharInSet(Key, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateSeparator])) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;
@@ -481,7 +481,7 @@ procedure TCodeGenerateFrm.NumberEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not (Key in CIntChars)) and (not (Key < #32)) then begin
+  if (not OGCharInSet(Key, CIntChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;
@@ -491,7 +491,7 @@ procedure TCodeGenerateFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not (Key in CHexChars)) and (not (Key < #32)) then begin
+  if (not OGCharInSet(Key, CHexChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;

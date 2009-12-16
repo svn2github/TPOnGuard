@@ -118,7 +118,7 @@ const
   DefReportError = False;
 
   {id at start of binary resource; must match SRMC}
-  ResID : array[0..3] of char = 'STR0';
+  ResID : array[0..3] of AnsiChar = 'STR0';
 
 type
   ETpsStringResourceError = class(Exception);
@@ -139,7 +139,7 @@ type
 
   PResourceRec = ^TResourceRec;
   TResourceRec = record
-    id : array[0..3] of char;
+    id : array[0..3] of AnsiChar;
     count : LongInt;
     index : TIndexArray;
   end;
@@ -166,7 +166,7 @@ type
     destructor Destroy; override;
     procedure ChangeResource(Instance : THandle; const ResourceName : string);
 
-    function GetAsciiZ(Ident : TInt32; Buffer : PChar; BufChars : Integer) : PChar;
+    function GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 
     function GetString(Ident : TInt32) : string;
     property Strings[Ident : TInt32] : string
@@ -237,7 +237,7 @@ begin
       OLen := P^.len;
       if OLen >= BufChars then
         OLen := BufChars-1;
-      WideCopy(Buffer, PWideChar(PChar(srP)+P^.ofs), OLen);
+      WideCopy(Buffer, PWideChar(PByte(srP)+P^.ofs), OLen);
     end;
   finally
     srUnLock;
@@ -247,7 +247,7 @@ begin
 end;
 
 function TOgStringResource.GetAsciiZ(Ident : TInt32;
-  Buffer : PChar; BufChars : Integer) : PChar;
+  Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 var
   P : PIndexRec;
   Src : PWideChar;
@@ -260,7 +260,7 @@ begin
       OLen := 0
 
     else begin
-      Src := PWideChar(PChar(srP)+P^.ofs);
+      Src := PWideChar(PByte(srP)+P^.ofs);
       Len := P^.len;
 
       {see if entire string fits in Buffer}
@@ -287,8 +287,10 @@ end;
 function TOgStringResource.GetString(Ident : TInt32) : string;
 var
   P : PIndexRec;
+{$IFNDEF UNICODE}
   Src : PWideChar;
   Len, OLen : Integer;
+{$ENDIF}
 begin
   srLock;
   try
@@ -297,11 +299,15 @@ begin
       Result := ''
 
     else begin
-      Src := PWideChar(PChar(srP)+P^.ofs);
+      {$IFDEF UNICODE}
+      Result := PWideChar(PByte(srP)+P^.ofs);
+      {$ELSE}
+      Src := PWideChar(PByte(srP)+P^.ofs);
       Len := P^.len;
       OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
       SetLength(Result, OLen);
       WideCharToMultiByte(CP_ACP, 0, Src, Len, PChar(Result), OLen, nil, nil);
+      {$ENDIF UNICODE}
     end;
   finally
     srUnLock;
@@ -311,7 +317,7 @@ end;
 {$ELSE}
 
 function TOgStringResource.GetAsciiZ(Ident : TInt32;
-  Buffer : PChar; BufChars : Integer) : PChar;
+  Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 var
   OLen : Integer;
   P : PIndexRec;
@@ -325,7 +331,7 @@ begin
       OLen := P^.len;
       if OLen >= BufChars then
         OLen := BufChars-1;
-      StrLCopy(Buffer, PChar(srP)+P^.ofs, OLen);
+      StrLCopy(Buffer, PAnsiChar(srP)+P^.ofs, OLen);
       Buffer[OLen] := #0;
     end;
   finally
@@ -408,7 +414,7 @@ var
   H : THandle;
   Buf : array[0..255] of Char;
 begin
-  StrPLCopy(Buf, ResourceName, SizeOf(Buf)-1);
+  StrPLCopy(Buf, ResourceName, Length(Buf)-1);
   {$IFDEF VERSION3}  { resource DLL mechanism started in D3 }
   {if not ModuleIsPackage then }                                                        {!!.04}
   Instance := FindResourceHInstance(Instance);  { get loaded Resource DLL if any }

@@ -50,8 +50,7 @@ unit OnGuard1;
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Classes, Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
+  Windows, SysUtils, Classes, Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
   OgUtil, OnGuard;
 
 type
@@ -202,13 +201,13 @@ begin
       end;
     1:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiUpperCase(KeyStringMe.Text));
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(AnsiUpperCase(KeyStringMe.Text)));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;
     2:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), KeyStringMe.Text);
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(KeyStringMe.Text));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;

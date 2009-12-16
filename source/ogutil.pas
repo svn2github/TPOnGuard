@@ -64,7 +64,7 @@ const
   DefStoreRegString = False;
 
 const
-  OgVersionStr      = '1.13';
+  OgVersionStr      = '1.14';
 
 
 
@@ -77,6 +77,12 @@ const
   {$ENDIF}
 
 type
+{$IFDEF UNICODE}
+  TOGCharSet = SysUtils.TSysCharSet;
+{$ELSE}
+  TOGCharSet = set of AnsiChar;
+{$ENDIF}
+
   {$IFNDEF Win32}
   DWord      = LongInt;
   PDWord     = ^DWord;
@@ -124,6 +130,8 @@ function UnlockFile(Handle : THandle; FileOffsetLow, FileOffsetHigh,
                     UnLockCountLow, UnLockCountHigh : Word) : Boolean;
 function FlushFileBuffers(Handle : THandle) : Boolean;
 {$ENDIF}
+
+function OGCharInSet(C: Char; const CharSet: TOGCharSet): Boolean;
 
 var
   StrRes : TOgStringResource;                                           {!!.08}
@@ -251,7 +259,7 @@ begin
   end;
 end;
 
-function GetDiskSerialNumber(Drive : AnsiChar) : LongInt;
+function GetDiskSerialNumber(Drive : Char) : LongInt;
 var
   MR : TMediaIDRec;
 begin
@@ -271,7 +279,7 @@ begin
 
   Str := '';
   for I := 1 to Length(Hex) do
-    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then
+    if OGCharInSet(Upcase(Hex[I]), ['0'..'9', 'A'..'F']) then
       Str := Str + Hex[I];
 
   for I := 1 to Length(Str) do
@@ -291,7 +299,7 @@ begin
 
   Str := '';
   for I := 1 to Length(Hex) do
-    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then
+    if OGCharInSet(Upcase(Hex[I]), ['0'..'9', 'A'..'F']) then
       Str := Str + Hex[I];
 
   if (Cardinal(Length(Str) div 2) <> BufSize) then                     {!!.07}
@@ -518,6 +526,15 @@ procedure FreeStrRes; far;
 begin
   StrRes.Free;
   StrRes := nil;
+end;
+
+function OGCharInSet(C: Char; const CharSet: TOGCharSet): Boolean;
+begin
+{$IFDEF UNICODE}
+  Result := SysUtils.CharInSet(C, CharSet);
+{$ELSE}
+  Result := C in CharSet;
+{$ENDIF}
 end;
 
 initialization
