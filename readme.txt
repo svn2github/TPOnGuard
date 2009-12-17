@@ -74,3 +74,9 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     Enhancements
     -------------------------------------------------------------
     Added support for Delphi 7
+
+4.1 Release 1.14
+
+    Enhancements
+    -------------------------------------------------------------
+    Added support for Unicode (Delphi 2009 and Delphi 2010)
