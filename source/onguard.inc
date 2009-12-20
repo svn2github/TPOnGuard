@@ -91,6 +91,15 @@
  {$ENDIF}
 {$ENDIF}
 
+{$IF compilerversion >= 20}
+  {$DEFINE VERSION6}          { Version 6 or greater }
+  {$DEFINE VERSION7}
+ {$IFDEF BCB}
+  {$DEFINE CBuilder}
+  {$ObjExportAll On}
+ {$ENDIF}
+{$IFEND}
+
 {$IFDEF CBuilder)
   {$A+} {Word Align Data}
 {$ELSE}

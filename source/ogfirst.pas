@@ -83,7 +83,7 @@ end;
 procedure ActivateFirstInstance;
 var
   ClassBuf,
-  WindowBuf : array [0..255] of AnsiChar;
+  WindowBuf : array [0..255] of Char;
   Wnd,
   TopWnd    : hWnd;
   ThreadID  : DWord;                                                 {!!.07}
@@ -94,8 +94,8 @@ begin
     else
       Application.BringToFront;
   end else begin
-    GetClassName(Application.Handle, ClassBuf, SizeOf(ClassBuf));
-    GetWindowText(Application.Handle, WindowBuf, SizeOf(WindowBuf));
+    GetClassName(Application.Handle, ClassBuf, Length(ClassBuf));
+    GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
     Wnd := FindWindow(ClassBuf, WindowBuf);
     if (Wnd <> 0) then begin
       GetWindowThreadProcessId(Wnd, @ThreadID);
@@ -128,7 +128,7 @@ var
 begin
   Result := True;
   if GetWindowWord(Wnd, GWW_HINSTANCE) = HPrevInst then begin
-    GetClassName(Wnd, Buf, SizeOf(Buf)-1);
+    GetClassName(Wnd, Buf, Length(Buf)-1);
     {find our application window}
     if StrIComp(Buf, 'TApplication') = 0 then begin
       Target^ := Wnd;
@@ -173,14 +173,14 @@ end;
 {$IFDEF Win32}
 function GetMutexName : string;
 var
-  WindowBuf : array [0..512] of AnsiChar;
+  WindowBuf : array [0..512] of Char;
 begin
-  GetWindowText(Application.Handle, WindowBuf, SizeOf(WindowBuf));
+  GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
   Result := 'PREVINST:' + WindowBuf;
 end;
 
 initialization
-  InstanceMutex := CreateMutex(nil, True, PAnsiChar(GetMutexName));
+  InstanceMutex := CreateMutex(nil, True, PChar(GetMutexName));
   if (InstanceMutex <> 0) and (GetLastError = 0) then
     FirstInstance := True
   else

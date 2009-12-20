@@ -429,7 +429,7 @@ end;
 {$IFDEF Win32}
 function IsAppOnNetwork(const ExePath : string) : Boolean;
 begin
-  Result := (GetDriveType(PAnsiChar(ExtractFileDrive(ExePath) + '\')) = DRIVE_REMOTE);
+  Result := (GetDriveType(PChar(ExtractFileDrive(ExePath) + '\')) = DRIVE_REMOTE);
 end;
 {$ELSE}
 function IsAppOnNetwork(const ExePath : string) : Boolean;
