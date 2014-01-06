@@ -152,7 +152,7 @@ const
 type
   TEsMachineInfoSet =                                                  {!!.05}
     set of (midUser, midSystem, midNetwork, midDrives,                 {!!.05}
-            midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC);  {!!.15}
+            midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC, midDomain);  {!!.15}
 
 type
   {result of code verification}
@@ -198,18 +198,22 @@ procedure InitSerialNumberCode(const Key : TKey;  Serial : LongInt; Expires : TD
 function IsSerialNumberCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 function GetSerialNumberCodeValue(const Key : TKey; const Code : TCode) : LongInt;
 function IsSerialNumberCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
+function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: LongInt) : Boolean;
 
 procedure InitSpecialCode(const Key : TKey; Value : LongInt; Expires : TDateTime; var Code : TCode);
 function IsSpecialCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 function GetSpecialCodeValue(const Key : TKey; const Code : TCode) : LongInt;
 function IsSpecialCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
+function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: LongInt) : Boolean;
 
 procedure InitUsageCode(const Key : TKey; Count : Word; Expires : TDateTime; var Code : TCode);
 function IsUsageCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 procedure DecUsageCode(const Key : TKey; var Code : TCode);
 function GetUsageCodeValue(const Key : TKey; const Code : TCode) : LongInt;
 function IsUsageCodeExpired(const Key : TKey; const Code: TCode) : Boolean;
-
+{$IFDEF OgUsageUnlimited}
+procedure InitUsageCodeUnlimited(const Key : TKey; var Code : TCode);
+{$ENDIF}
 
 {generate key routines}
 procedure GenerateRandomKeyPrim(var Key; KeySize : Cardinal);
@@ -830,6 +834,11 @@ const
   sCPUKey1   = 'Identifier';                                          {!!.15}
   sCPUKey2   = 'ProcessorNameString';                                 {!!.15}
   sCPUKey3   = 'VendorIdentifier';                                    {!!.15}
+  sDomain    = 'System\CurrentControlSet\Services\Tcpip\Parameters';  {!!.15}
+  sDomainKey1= 'Domain';                                              {!!.15}
+  sDomainKey2= 'ICSDomain';                                           {!!.15}
+  sDomainKey3= 'DhcpDomain';                                          {!!.15}
+  sDomainKey4= 'NV Domain';                                           {!!.15}
 
 type                                                                     {!!.11}
   TUuidCreateSequential = function (lpGUID : Pointer): HResult; stdcall; {!!.11}
@@ -1195,6 +1204,43 @@ begin
     end;
   end;
   {$ENDIF}
+
+  {!!.15}
+  if midDomain in MachineInfo then
+  begin
+    if Ansi then
+    begin
+      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, sDomain, 0, KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
+        I := SizeOf(Buf);
+        if RegQueryValueExA(RegKey, sDomainKey1, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+          UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueExA(RegKey, sDomainKey2, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueExA(RegKey, sDomainKey3, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueExA(RegKey, sDomainKey4, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+        end;
+        RegCloseKey(RegKey);
+      end;
+    end
+    else
+    begin
+      if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sDomain, 0, KEY_QUERY_VALUE, RegKey) = ERROR_SUCCESS) then begin
+        I := SizeOf(Buf);
+        if RegQueryValueEx(RegKey, sDomainKey1, nil, nil, @Buf, @I) = ERROR_SUCCESS then begin
+          UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueEx(RegKey, sDomainKey2, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueEx(RegKey, sDomainKey3, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+          I := SizeOf(Buf);
+          if RegQueryValueEx(RegKey, sDomainKey4, nil, nil, @Buf, @I) = ERROR_SUCCESS then UpdateTMD(Context, Buf, I);
+        end;
+        RegCloseKey(RegKey);
+      end;
+    end;
+  end;
 
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
@@ -1919,6 +1965,16 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := ExpandDate(Work.Expiration) < Date;
 end;
+
+function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: LongInt) : Boolean;
+var
+  Work : TCode;
+begin
+  Work := Code;
+  MixBlock(T128bit(Key), Work, False);
+  Result := (Work.CheckValue = SerialCheckCode) and (Serial = Work.SerialNumber);
+end;
+
 {$ENDREGION}
 
 {$REGION '*** special code ***'}
@@ -1961,6 +2017,16 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := ExpandDate(Work.Expiration) < Date;
 end;
+
+function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: LongInt) : Boolean;
+var
+  Work : TCode;
+begin
+  Work := Code;
+  MixBlock(T128bit(Key), Work, False);
+  Result := (Work.CheckValue = SpecialCheckCode) and (Work.Value = Value);
+end;
+
 {$ENDREGION}
 
 {$REGION '*** usage code ***'}
@@ -1995,10 +2061,13 @@ var                                                                    {!!.02}
 begin
   MixBlock(T128bit(Key), Code, False);
   D := ShrinkDate(Date);                                               {!!.02}
-  if Code.UsageCount > 0 then                                          {!!.02}
+  {$IFDEF OgUsageUnlimited}
+  if not ((Code.UsageCount = 65535) and (Code.Expiration=65535) and (Code.LastChange=1)) then begin {$ENDIF}
+  if (Code.UsageCount > 0) then                                          {!!.02}
     Code.UsageCount := Max(0, Code.UsageCount - 1);                    {!!.02}
   if (Code.LastChange < D) then                                        {!!.02}
     Code.LastChange := D;                                              {!!.02}
+  {$IFDEF OgUsageUnlimited} end; {$ENDIF}
 
   MixBlock(T128bit(Key), Code, True);
 end;
@@ -2032,6 +2101,18 @@ begin
       if ExpandDate(Work.LastChange) > Date then EonGuardClockIssueException.Create('The code''s LastChange is in the future.')
   {$ENDIF}
 end;
+
+{$IFDEF OgUsageUnlimited}
+procedure InitUsageCodeUnlimited(const Key : TKey; var Code : TCode);
+begin
+  Code.CheckValue := UsageCheckCode;
+  Code.Expiration := 65535;
+  Code.UsageCount := 65535;
+  Code.LastChange := 1;                                 {!!.02}
+  MixBlock(T128bit(Key), Code, True);
+end;
+{$ENDIF}
+
 {$ENDREGION}
 
 {$ENDREGION}

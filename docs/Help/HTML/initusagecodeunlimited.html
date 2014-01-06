@@ -1,14 +1,14 @@
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
-   <title>TEsMachineInfoSet</title>
+   <title>InitUsageCodeUnlimited</title>
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, minimum-scale=1" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta http-equiv="content-language" content="en-us" />
-   <meta name="description" content="Used to determine what factors are gathered to generate a machine identifier." />
+   <meta name="description" content="InitUsageCodeUnlimited creates and initializes a usage code using Key, Count=65535, Expires=65535, and LastChange=1." />
    <meta http-equiv="Content-Style-Type" content="text/css" />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link id="tabscheme" type="text/css" href="hm_topic.css" rel="stylesheet" />   
@@ -45,18 +45,18 @@ var tVars = {
    hmHelpPage: "index.html",
    nextP: "",
    prevP: "",
-   currP: "tesmachineinfoset.html",
-   descr: "Used to determine what factors are gathered to generate a machine identifier.",
+   currP: "initusagecodeunlimited.html",
+   descr: "InitUsageCodeUnlimited creates and initializes a usage code using Key, Count=65535, Expires=65535, and LastChange=1.",
    keys: "",
    defP: "onguard_contents.html",
    mailUrl: "",
    mailUrlQuery: "",
    projectTitle: "OnGuard Help",
-   titleP: "TEsMachineInfoSet",
-   mailsubject: "Feedback on: OnGuard Help - TEsMachineInfoSet",
-   sharesubject: "OnGuard Help - TEsMachineInfoSet",
+   titleP: "InitUsageCodeUnlimited",
+   mailsubject: "Feedback on: OnGuard Help - InitUsageCodeUnlimited procedure InitUsageCode (const Key : TKey; var Code : TCode);",
+   sharesubject: "OnGuard Help - InitUsageCodeUnlimited procedure InitUsageCode (const Key : TKey; var Code : TCode);",
    simplesubject: "Documentation%20Feedback",
-   mailid: "TEsMachineInfoSet",
+   mailid: "InitUsageCodeUnlimited",
    mailpath: "Files &gt; OgReg /",
    mailbody: "Dear Support Staff,",
    fbtype: false,
@@ -115,7 +115,7 @@ var sortVars = {
 <script type="text/javascript" src="hmtopic.js"></script>
 
    <script type="text/javascript">
-     HMSyncTOC("index.html", "tesmachineinfoset.html");
+     HMSyncTOC("index.html", "initusagecodeunlimited.html");
    </script>
    <script type="text/javascript" src="highlight.js"></script>
    <script type="text/javascript">
@@ -129,14 +129,15 @@ var sortVars = {
 
 
 <ul id="topictabs" class="tabs">
-<li id="indextab" class="hmtabs"><a href="#" id="indextablink" class="current"><span>TEsMachineInfoSet</span></a></li>
+<li id="indextab" class="hmtabs"><a href="#" id="indextablink" class="current"><span>InitUsageCodeUnlimited</span></a></li>
 </ul>
 <div id="hmbox">
 <div id="hmheader">
 <div id="hmheadercontents">
 <p id="breadcrumbs" class="sync-toc">
-<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?tesmachineinfoset.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
-<h1 class="p_Heading1"><span class="f_FunctionHead">TEsMachineInfoSet</span></h1>
+<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?initusagecodeunlimited.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
+<h1 class="p_Heading1"><span class="f_FunctionHead">InitUsageCodeUnlimited</span></h1>
+<p style="margin: 0px 0px 8px 0px;"><span style="font-weight: bold; color: #010100;">procedure</span><span style="color: #010100;"> InitUsageCode (</span><span style="font-weight: bold; color: #010100;">const</span><span style="color: #010100;"> Key : TKey; </span><span style="font-weight: bold; color: #010100;">var</span><span style="color: #010100;"> Code : TCode);</span></p>
 
 </div>
 <div id="atocIcon" class="navdivs">
@@ -148,28 +149,12 @@ var sortVars = {
 <div id="idcontent">
 <div id="unclicker"></div>
 <!--ZOOMRESTART-->
-<p>Used to determine what factors are gathered to generate a machine identifier.</p>
-<p>&nbsp;</p>
-<p>TEsMachineInfoSet = set of (midUser, midSystem, midNetwork, midDrives, midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC, midDomain); &nbsp;  </p>
-<p>&nbsp;</p>
-<p>Defined in ogutil unit.</p>
-<p>Added in version 1.05.</p>
-<p>Added in version 1.15: midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC, midDomain</p>
-<p>&nbsp;</p>
-<p>Used by <a href="createmachineid.html" class="topiclink">CreateMachineID</a> function.</p>
-<p>&nbsp;</p>
-<p>To maintain compatibility with version 1.13, the midUser, midSystem, midNetwork, and midDrives code has not been altered.</p>
-<p>New factors were added instead.</p>
-<p>Refer to the <a href="createmachineid.html" class="topiclink">CreateMachineID</a> function for platform specific usage.</p>
-<p>&nbsp;</p>
-<p>The midCPUID factor is intended for fetching basic CPU identification.</p>
-<p>The midCPUIDJCL factor is intended for fetching enhanced CPU identification via the JCLSysInfo routines.</p>
-<p>The midBIOS factor is intended for fetching basic BIOS identifiers.</p>
-<p>The midWinProd factor is intended for fetching Microsoft Windows product identifiers.</p>
-<p>The midCryptoID factor is intended for fetching machine specific cryptography identifiers.</p>
-<p>The midNetMAC factor is intended for fetching the MAC addresses of known network adapters.</p>
-<p>The midDomain factor is intended for fetching the machine's domain membership.</p>
-<p>&nbsp;</p>
+<p style="margin: 8px 0px 8px 0px;"><img src="_bm1.png" width="11" height="12" alt="_bm1" style="border:none" /><span style="color: #010100;"> InitUsageCodeUnlimited creates and initializes a usage code using Key, Count=65535, Expires=65535, and LastChange=1.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">Count is stored as part of the Code. </span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">The resulting code is valid until the internal Count is 0 or the date stored in Expires is reached.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">This routine is defined in the OgUtil unit.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">Added in 1.15.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">Only available if the conditional define OgUsageUnlimited is enabled.</span></p>
 
 <!--ZOOMSTOP-->
 

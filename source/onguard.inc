@@ -636,3 +636,7 @@
 {Activate the following define to enable the borrowed JclSysInfo routines}
 {.$DEFINE UseOgJCL}
 
+{!!.15}
+{Activate the following define to enable an Unlimited Usage code}
+{.$DEFINE OgUsageUnlimited}
+
