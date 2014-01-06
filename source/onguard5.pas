@@ -23,36 +23,22 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD5.PAS 1.13                    *}
+{*                  ONGUARD5.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OnGuard5;
+unit onguard5;
 
 interface
 
 uses
   Controls,
   Forms,
-  OnGuard,
-{$IFDEF VERSION6}                                                      {!!.11}
+  onguard,
+{$IFDEF DELPHI6UP}
   DesignIntf,
   DesignEditors;
 {$ELSE}
@@ -75,9 +61,9 @@ type
 implementation
 
 uses
-  OgConst,
-  OgUtil,
-  Onguard2;
+  ogconst,
+  ogutil,
+  onguard2;
 
 {*** TOgCodeProperty ***}
 

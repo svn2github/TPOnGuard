@@ -23,41 +23,29 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD3.PAS 1.13                    *}
+{*                  ONGUARD3.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OnGuard3;
+unit onguard3;
   {-Key selection and maintenance}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+
+  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Clipbrd, IniFiles,
   StdCtrls, Buttons, Forms, Dialogs,
-  OgConst,
-  OgUtil,
-  OnGuard,
-  OnGuard1,
-  OnGuard4;
+  ogconst,
+  ogutil,
+  onguard,
+  onguard1,
+  onguard4;
 
 type
   TKeyMaintFrm = class(TForm)
@@ -248,16 +236,17 @@ procedure TKeyMaintFrm.DeleteBtnClick(Sender: TObject);
 var
   IniFile : TIniFile;
   I       : Integer;
-  {$IFNDEF Win32}
+  {$IFDEF Win16}
   Buf1    : array[0..255] of Char;
   Buf2    : array[0..255] of Char;
   {$ENDIF}
 begin
   I := GetListBoxItemIndex;                                          {!!.07}
   if (I > -1) then                                                   {!!.07}
-    if MessageDlg(StrRes[SCDeleteQuery], mtConfirmation,
+    if MessageDlg({$IFNDEF NoOgSrMgr}StrRes[SCDeleteQuery]{$ELSE}SCDeleteQuery{$ENDIF}, mtConfirmation,
        [mbYes, mbNo], 0) = mrYes then begin
-      {$IFDEF Win32}
+      {$IFDEF MSWINDOWS}
+      {$IFNDEF Win16}
       IniFile := TIniFile.Create(KeyFileName);
       try
         IniFile.DeleteKey(OgKeySection, ProductsLb.Items[I]);        {!!.07}
@@ -268,6 +257,7 @@ begin
       StrPLCopy(Buf1, ProductsLb.Items[I], 255);                     {!!.07}
       StrPLCopy(Buf2, KeyFileName, 255);
       WritePrivateProfileString(OgKeySection, Buf1, nil, Buf2);
+      {$ENDIF}
       {$ENDIF}
       BlockKeyEd.Text := '';
       BytesKeyEd.Text := '';

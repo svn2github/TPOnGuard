@@ -23,42 +23,34 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD2.PAS 1.13                    *}
+{*                  ONGUARD2.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-  {$G+} {286 Instructions}
-  {$N+} {Numeric Coprocessor}
-  {$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ELSE}
+{$IFDEF DELPHI}
+{$IFDEF Win32}
   {$J+} {Assignable Typed Constants}                                   {!!.11}
 {$ENDIF}
+{$ENDIF}
 
-unit OnGuard2;
+unit onguard2;
   {-Code generation dialog}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, ComCtrls, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win32} Windows, ComCtrls, {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Mask,
   ExtCtrls, Tabnotbk, StdCtrls, Buttons, Messages,
-  OgConst,
-  OgNetWrk,
-  OgUtil,
-  OnGuard,
-  OnGuard3;
+  ogconst,
+  ognetwrk,
+  ogutil,
+  onguard,
+  onguard3;
 
 const
   OGM_CHECK = WM_USER + 100;
@@ -257,7 +249,7 @@ begin
       for i := Length(S) downto 1 do                                 {!!.12}
         if Ord(S[i]) > 127 then                                      {!!.12}
           Delete(S, i, 1);                                           {!!.12}
-      L := StringHashELF(AnsiString(S));                                         {!!.11}
+      L := StringHashELF(S);                                         {!!.11}
     end;                                                             {!!.11}
 
     {set status of date field}
@@ -330,7 +322,7 @@ begin
               D1 := StrToDate(StartDateEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidStartDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidStartDate]{$ELSE}SCInvalidStartDate{$ENDIF});
                 StartDateEd.SetFocus;
                 Exit;
               end else
@@ -341,7 +333,7 @@ begin
               D2 := StrToDate(EndDateEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidStartDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidStartDate]{$ELSE}SCInvalidStartDate{$ENDIF});
                 EndDateEd.SetFocus;
                 Exit;
               end else
@@ -361,7 +353,7 @@ begin
               D1 := StrToDate(DaysExpiresEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidExDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
                 DaysExpiresEd.SetFocus;
                 Exit;
               end else
@@ -374,20 +366,20 @@ begin
               D1 := StrToDate(RegExpiresEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidExDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
                 RegExpiresEd.SetFocus;
                 Exit;
               end else
                 raise;
             end;
-            InitRegCode(K, AnsiString(RegStrEd.Text), D1, FCode);
+            InitRegCode(K, RegStrEd.Text, D1, FCode);
           end;
       3 : begin
             try
               D1 := StrToDate(SerialExpiresEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidExDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
                 SerialExpiresEd.SetFocus;
                 Exit;
               end else
@@ -400,7 +392,7 @@ begin
               D1 := StrToDate(UsageExpiresEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidExDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
                 UsageExpiresEd.SetFocus;
                 Exit;
               end else
@@ -420,7 +412,7 @@ begin
               D1 := StrToDate(SpecialExpiresEd.Text);
             except
               on EConvertError do begin
-                ShowMessage(StrRes[SCInvalidExDate]);
+                ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
                 SpecialExpiresEd.SetFocus;
                 Exit;
               end else
@@ -432,7 +424,7 @@ begin
 
     RegCodeEd.Text := BufferToHex(FCode, SizeOf(FCode));
   end else
-    MessageDlg(StrRes[SCInvalidKeyOrModifier], mtError, [mbOK], 0);
+    MessageDlg({$IFNDEF NoOgSrMgr}StrRes[SCInvalidKeyOrModifier]{$ELSE}SCInvalidKeyOrModifier{$ENDIF}, mtError, [mbOK], 0);
 end;
 
 procedure TCodeGenerateFrm.SerRandomBtnClick(Sender: TObject);
@@ -471,7 +463,7 @@ end;
 {!!.04}
 procedure TCodeGenerateFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (not OGCharInSet(Key, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateSeparator])) and (not (Key < #32)) then begin
+  if (not (Key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', {$IFDEF DELPHI15UP}FormatSettings.DateSeparator{$ELSE}DateSeparator{$ENDIF}])) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;
@@ -481,7 +473,7 @@ procedure TCodeGenerateFrm.NumberEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not OGCharInSet(Key, CIntChars)) and (not (Key < #32)) then begin
+  if (not (Key in CIntChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;
@@ -491,7 +483,7 @@ procedure TCodeGenerateFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not OGCharInSet(Key, CHexChars)) and (not (Key < #32)) then begin
+  if (not (Key in CHexChars)) and (not (Key < #32)) then begin
     MessageBeep(0);
     Key := #0;
   end;

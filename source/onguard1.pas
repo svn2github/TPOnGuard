@@ -23,35 +23,21 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD1.PAS 1.13                    *}
+{*                  ONGUARD1.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OnGuard1;
+unit onguard1;
   {-Key generation dialog}
 
 interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
-  OgUtil, OnGuard;
+  ogutil, onguard;
 
 type
   TKeyGenerateFrm = class(TForm)
@@ -201,13 +187,13 @@ begin
       end;
     1:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(AnsiUpperCase(KeyStringMe.Text)));
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiUpperCase(KeyStringMe.Text));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;
     2:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(KeyStringMe.Text));
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), KeyStringMe.Text);
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;

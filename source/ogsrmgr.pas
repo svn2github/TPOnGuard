@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       December 30, 2003                         {AH.01}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {* TurboPower String Resource Support: SRMGR.PAS 1.03    *}
@@ -79,13 +83,13 @@ Notes:
   --------------------------------------------------------------------
 }
 
-{$IFDEF Win32}
-  {include the resource compiled using BRCC32.EXE and SRMC.EXE}
-  {$R OGSRMGR.R32}
-{$ELSE}
-  {include the resource compiled using BRCC.EXE and SRMC.EXE}
-  {$R OGSRMGR.R16}
-{$ENDIF}
+{$I onguard.inc}
+
+{$IFNDEF NoOgSrMgr}
+
+{$IFDEF Win16} {$R ogsrmgr.r16} {$ENDIF}
+{$IFDEF Win32} {$R ogsrmgr.r32} {$ENDIF}
+{$IFDEF KYLIX} {$R ogsrmgr.r32} {$ENDIF}
 
 {$R-,S-,I-}
 
@@ -93,25 +97,19 @@ Notes:
   {$H+} {Long strings}                                                 {!!.02}
 {$ENDIF}
 
-{For BCB 3.0 package support.}
-{$IFDEF VER110}
-  {$ObjExportAll On}
 {$ENDIF}
 
-{$IFNDEF VER80}   {Delphi 1}
- {$IFNDEF VER90}  {Delphi 2}
-  {$IFNDEF VER93} {BCB 1}
-    {$DEFINE VERSION3} { Delphi 3.0 or BCB 3.0 or higher }
-  {$ENDIF}
- {$ENDIF}
-{$ENDIF}
-
-unit OgSrMgr;
+unit ogsrmgr;
 
 interface
 
+{$IFNDEF NoOgSrMgr}
+
 uses
-  {$IFDEF WIN32} Windows, {$ELSE} WinProcs, WinTypes, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF KYLIX} Libc, {$ENDIF}
+  {$IFDEF USINGCLX} Types, {$ENDIF}
   Classes, SysUtils;
 
 const
@@ -185,7 +183,11 @@ var
 
 {====================================================================}
 
+{$ENDIF}
+
 implementation
+
+{$IFNDEF NoOgSrMgr}
 
 {*** TOgStringResource ***}
 
@@ -356,9 +358,13 @@ begin
       OLen := P^.len;
       if OLen > 255 then
         OLen := 255;
+{$IFDEF MSWINDOWS}
       Result[0] := Char(OLen);
       Src := PChar(srP)+P^.ofs;
       move(Src^, Result[1], OLen);
+{$ELSE}
+      Result := Src;
+{$ENDIF}
     end;
   finally
     srUnLock;
@@ -415,17 +421,13 @@ var
   Buf : array[0..255] of Char;
 begin
   StrPLCopy(Buf, ResourceName, Length(Buf)-1);
-  {$IFDEF VERSION3}  { resource DLL mechanism started in D3 }
   {if not ModuleIsPackage then }                                                        {!!.04}
   Instance := FindResourceHInstance(Instance);  { get loaded Resource DLL if any }
-  {$ENDIF}
   H := FindResource(Instance, Buf, RT_RCDATA);  { attempt to load resource }
   if H = 0 then begin  { not found }
-    {$IFDEF VERSION3}                                                                   {!!.04}
     Instance := HInstance;                                                              {!!.04}
     H := FindResource(Instance, Buf, RT_RCDATA);  { try to find it in the main binary } {!!.04}
     if H = 0 then  { still not found?}
-    {$ENDIF}                                                                            {!!.04}
       raise ETpsStringResourceError.CreateFmt(TpsResStrings[3], [ResourceName]);  { whine }
   end;
   srHandle := LoadResource(Instance, H);
@@ -463,11 +465,10 @@ end;
 initialization
   TpsResStrings := TOgStringResource.Create(HInstance, 'OGSRMGR_STRINGS');{!!.01}
 
-{$IFDEF Win32}
 finalization
-  FreeTpsResStrings;
-{$ELSE}
-  AddExitProc(FreeTpsResStrings);
-{$ENDIF}
+{$IFDEF Win32} FreeTpsResStrings; {$ENDIF}
+{$IFDEF Win16} AddExitProc(FreeTpsResStrings); {$ENDIF}
+{$IFDEF KYLIX} FreeTpsResStrings;{$ENDIF}
 
+{$ENDIF}
 end.

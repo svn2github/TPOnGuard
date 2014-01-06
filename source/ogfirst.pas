@@ -21,38 +21,36 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       January 1, 2004                           {AH.01}
+ * Boguslaw Brandys      conversion to FPC
+ *                       June 14, 2006
+ *
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  OGFIRST.PAS 1.13                     *}
+{*                  OGFIRST.PAS 1.15                     *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OgFirst;
+unit ogfirst;
   {-limit instance routines}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Forms, SysUtils,
-  OgUtil;
+  {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF KYLIX} Libc, {$ENDIF}
+  {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF} LCLProc, {$ENDIF}
+  {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLEAPP} QForms, QDialogs, {$ENDIF} {$ENDIF}
+  {$IFDEF DELPHI} Forms, {$ENDIF}
+  SysUtils,
+  ogutil;
 
 {detect/Activate instance routines}
 function IsFirstInstance: Boolean;
@@ -69,16 +67,23 @@ var
   InstanceMutex : THandle;
 {$ENDIF}
 
+{$IFDEF LINUX}
+var
+  FirstInstance : Boolean;
+  server_name : String;
+  server_lock : Integer;
+{$ENDIF}
+
 {limit instances routines}
 function IsFirstInstance : Boolean;
 begin
-  {$IFDEF Win32}
-  Result := FirstInstance;
-  {$ELSE}
-  Result := HPrevInst = 0;
-  {$ENDIF}
+  Result := True; // true so unsupported platforms should still work
+  {$IFDEF Win16} Result := HPrevInst = 0; {$ENDIF}
+  {$IFDEF Win32} Result := FirstInstance; {$ENDIF}
+  {$IFDEF LINUX} Result := FirstInstance; {$ENDIF}
 end;
 
+{$REGION 'ActivateFirstInstance - Win32'}
 {$IFDEF Win32}
 procedure ActivateFirstInstance;
 var
@@ -88,14 +93,25 @@ var
   TopWnd    : hWnd;
   ThreadID  : DWord;                                                 {!!.07}
 begin
+{$IFDEF FPC}try{$ENDIF}
   if IsFirstInstance then begin
+    {$IFNDEF FPC}
     if IsIconic(Application.Handle) then
       Application.Restore
+	{$ELSE}
+    if IsIconic(HWND(Application.MainForm.Handle)) then
+      ShowWindow(HWND(Application.MainForm.Handle), SW_RESTORE)
+	{$ENDIF}
     else
       Application.BringToFront;
   end else begin
+    {$IFNDEF FPC}
     GetClassName(Application.Handle, ClassBuf, Length(ClassBuf));
     GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
+	{$ELSE}
+    GetClassName(HWND(Application.MainForm.Handle), ClassBuf, SizeOf(ClassBuf));
+    GetWindowText(HWND(Application.MainForm.Handle), WindowBuf, SizeOf(WindowBuf));
+	{$ENDIF}
     Wnd := FindWindow(ClassBuf, WindowBuf);
     if (Wnd <> 0) then begin
       GetWindowThreadProcessId(Wnd, @ThreadID);
@@ -116,9 +132,17 @@ begin
       end;
     end;
   end;
+{$IFDEF FPC}
+except on E:Exception do
+ DebugLn('ActivateFirstInstance exception : ' + E.Message + '.Move IsFirstInstance after CreateForm for MainForm');
 end;
-{$ELSE}
+{$ENDIF}
+end;
+{$ENDIF}
+{$ENDREGION}
 
+{$REGION 'ActivateFirstInstance - Win16'}
+{$IFDEF Win16}
 type
   PHWND = ^hWnd;
 
@@ -169,14 +193,93 @@ begin
   end;
 end;
 {$ENDIF}
+{$ENDREGION}
 
+
+{$REGION 'ActivateFirstInstance - Other Platforms'}
+
+{$REGION 'ActivateFirstInstance - Win64'}
+{$IFDEF Win64}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'ActivateFirstInstance - LINUX'}
+{$IFDEF KYLIX}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'ActivateFirstInstance - MACOS'}
+{$IFDEF MACOS}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'ActivateFirstInstance - iOS'}
+{$IFDEF IOS}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'ActivateFirstInstance - Android'}
+{$IFDEF ANDROID}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$ENDREGION}
+
+
+{$REGION 'Initialization/Finalization blocks'}
+
+{$REGION 'Win32'}
 {$IFDEF Win32}
 function GetMutexName : string;
 var
   WindowBuf : array [0..512] of Char;
 begin
+{$IFNDEF FPC}
   GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
   Result := 'PREVINST:' + WindowBuf;
+{$ELSE}
+try
+  {GetWindowText(HWND(Application.MainForm.Handle), WindowBuf, SizeOf(WindowBuf));}
+  Result := 'PREVINST:' + ExtractFileName(ParamStr(0)) + MAGIC;
+except on E:Exception do
+ DebugLn('GetMutexName exception : '  + E.Message);
+end;
+{$ENDIF}
 end;
 
 initialization
@@ -190,5 +293,59 @@ finalization
   if (InstanceMutex <> 0) then
     CloseHandle(InstanceMutex);
 {$ENDIF}
+{$ENDREGION}
 
+{$REGION 'Kylix'}
+{$IFDEF KYLIX}
+initialization
+  //server_lock := -1;
+  server_name := '/var/run/' + ExtractFileName(Application.ExeName) + '.lock';
+  server_lock := open(PChar(server_name), O_RDWR or O_CREAT or O_TRUNC or O_NOFOLLOW or O_EXCL, S_IRWXU);
+  if (server_lock = -1) then
+  begin
+    FirstInstance := False;
+    ShowMessage('Failed to create lock file. (' + IntToHex(errno,4) + ')' + #10 + server_name);
+  end
+  else
+  begin
+    FirstInstance := True;
+  end;
+
+finalization
+  if (server_lock > -1) then
+  begin
+    FileClose(server_lock);
+    unlink(PChar(server_name));
+  end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'FPC-UNIX'}
+{$IFDEF FPC}
+{$IFDEF UNIX}
+initialization
+
+ server_name := ExtractFilePath(ParamStr(0)) +  ExtractFileName(ParamStr(0)) + '.lck';
+ server_lock := fpopen(PChar(server_name), O_RDWR or O_CREAT or O_TRUNC or O_NOFOLLOW or O_EXCL, S_IRWXU);
+ if (server_lock = -1) then
+ begin
+  FirstInstance := False;
+  DebugLn('Failed to create lock file. (' + IntToHex(errno,4) + ')' + #10 + server_name);
+ end
+ else
+ begin
+  FirstInstance := True;
+ end;
+
+finalization
+ if (server_lock > -1) then
+ begin
+  FileClose(server_lock);
+  unlink(PChar(server_name));
+ end;
+{$ENDIF}
+{$ENDIF}
+{$ENDREGION}
+
+{$ENDREGION}
 end.

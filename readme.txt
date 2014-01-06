@@ -7,7 +7,6 @@ Table of contents
 2.  Package names
 3.  Installation
 4.  Version history
-4.1   Release 1.13
 
 ==============================================
 
@@ -32,15 +31,15 @@ designtime and runtime packages for Delphi 3 through 7 and C++Builder
 TurboPower OnGuard package names have the following form:
 
   GNNN_KVV.*
-   |   ||
-   |   |+------ VV  VCL version (30=Delphi 3, 40=Delphi 4, 70=Delphi 7)
-   |   +------- K   Kind of package (R=runtime, D=designtime)
-   |
+   |  |||
+   |  ||+------ VV  VCL version (30=Delphi 3, 40=Delphi 4, 70=Delphi 7)
+   |  |+------- K   Kind of package (R=runtime, D=designtime)
+   |  +-------- P   Platform (_=VCL, C=CLX, F=FMX, L=Lazarus)
    +----------- NNN Product version number (e.g., 113=version 1.13)
 
 
 For example, the OnGuard designtime package files for Delphi 7 have
-the filename G113_D70.*.
+the filename G115_D70.*.
 
 ==============================================
 
@@ -75,8 +74,25 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     -------------------------------------------------------------
     Added support for Delphi 7
 
-4.1 Release 1.14
+4.2 Release 1.14
 
     Enhancements
     -------------------------------------------------------------
     Added support for Unicode (Delphi 2009 and Delphi 2010)
+
+4.3 Release 1.15
+
+    Enhancements
+    -------------------------------------------------------------
+    Added packages for Delphi XE, XE2, XE3, XE4, XE5.
+    merged changes from SongBeamer.
+    merged changes from CLX port.
+    merged changes from FPC/Lazarus port.
+    added SourceForge feature request 5.
+    added SourceForge bug reports 6, 7, 8, and 10.
+    added CHM help file
+    added HxS help file
+    added HTML help files
+    added Unit Tests
+
+

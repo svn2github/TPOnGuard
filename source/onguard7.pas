@@ -23,35 +23,21 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD7.PAS 1.13                    *}
+{*                  ONGUARD7.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OnGuard7;
+unit onguard7;
   {-File name property editor}
 
 interface
 
 uses
   Dialogs, Forms,
-{$IFDEF VERSION6}                                                      {!!.13}
+{$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
   DesignEditors;
 {$ELSE}

@@ -23,36 +23,18 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                   OGREG.PAS 1.13                      *}
+{*                   OGREG.PAS 1.15                      *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
+unit ogreg;
 
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OgReg;
-
-{$IFDEF Win32}
-  {$IFNDEF VER93}
-    {$R OGREG.R32}
-  {$ENDIF}
-{$ELSE}
-  {$R OGREG.R16}
-{$ENDIF}
+{$IFDEF Win16} {$R ogreg.r16} {$ENDIF}
+{$IFDEF Win32} {$R ogreg.r32} {$ENDIF}
+{$IFDEF KYLIX} {$R ogreg.r32} {$ENDIF}
 
 interface
 
@@ -61,16 +43,24 @@ procedure Register;
 implementation
 
 uses
-  Classes, Forms,
-  OgAbout0, OgConst, OgFile, OgNetWrk, OgProExe, OgFirst,
-  OnGuard,
+  Classes, {$IFDEF UsingCLX} QForms, qogabout0, {$ELSE} Forms, ogabout0, {$ENDIF}
+  ogconst, ogfile, ognetwrk, ogproexe, ogfirst,
+  onguard,
+  {$IFDEF UsingCLX}
+  qonguard2,
+  qonguard3,
+  qonguard5,
+  qonguard6,
+  qonguard7,
+  {$ELSE}
   OnGuard2,
   OnGuard3,
   OnGuard5,
   OnGuard6,
   OnGuard7,
-  OgUtil,                                                            {!!.12}
-{$IFDEF VERSION6}                                                      {!!.13}
+  {$ENDIF}
+  ogutil,                                                            {!!.12}
+{$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
   DesignEditors;
 {$ELSE}

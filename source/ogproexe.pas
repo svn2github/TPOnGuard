@@ -21,37 +21,41 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       December 30, 2003                         {AH.01}
+ *
+ *
+ * Boguslaw Brandys      brandys@o2.pl
+ *                       conversion to Free Pascal
+ *                       June 04, 2006
+ *
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  OGPROEXE.PAS 1.13                    *}
+{*                  OGPROEXE.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
 
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
+{$IFDEF FPC}
+{$mode delphi}{$H+}
+{$ASMMODE INTEL}
 {$ENDIF}
-
-unit OgProExe;
+unit ogproexe;
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, MMSystem, SysUtils,
-  OgConst, OgUtil;
+  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF LINUX} Libc, {$ENDIF}                                    {AH.01}
+  {$IFDEF UsingCLX} Types, {$ENDIF}                                {AH.01}
+  Classes, {$IFDEF MSWINDOWS}MMSystem, {$ENDIF} SysUtils,
+  ogconst, ogutil;
 
 type
   {exe signature record}
@@ -92,7 +96,7 @@ type
 
     {property methods}
     function GetAbout : string;                                      {!!.08}
-    procedure SetAbout(const Value : string);                        {!!.08}
+    procedure SetAbout(const AValue : string);                        {!!.08}
 
   protected
     procedure DoOnChecked(Status : TExeStatus);
@@ -143,7 +147,15 @@ function UnprotectExe(const FileName : string) : Boolean;
 
 {checksum/CRC routines}
 procedure UpdateChecksum(var Sum : LongInt;  const Buf;  BufSize : LongInt);
+{$IFDEF Win32}
 function FileCRC32(const FileName : string) : DWord;                     {!!.07}
+{$ELSE}
+{$IFDEF FPC}
+function FileCRC32(const FileName : string) : DWord;                     {!!.BB}
+{$ELSE}
+function FileCRC32(const FileName : string) : LongInt;
+{$ENDIF}
+{$ENDIF}
 procedure UpdateCRC32(var CRC : DWord;  const Buf;  BufSize : LongInt);  {!!.07}
 
 
@@ -231,8 +243,9 @@ begin
     CheckExe(True);
 end;
 
-procedure TOgProtectExe.SetAbout(const Value : string);              {!!.08}
+procedure TOgProtectExe.SetAbout(const AValue : string);              {!!.08}
 begin
+  // do nothing
 end;
 
 function TOgProtectExe.StampExe(const FileName : string ;  EraseMarker : Boolean) : Boolean;
@@ -265,7 +278,7 @@ begin
     Exit;
   end;
 
-  Windows.GetModuleFileName(HInstance, Buf, Length(Buf));
+  Windows.GetModuleFileName(HInstance, Buf, SizeOf(Buf));
   Fh := CreateFile(Buf, GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE,
     nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   if (Fh <> INVALID_HANDLE_VALUE) then begin                         {!!.07}
@@ -305,7 +318,7 @@ var
   BytesRead   : LongInt;
   Size        : LongInt;
   Buf         : PAnsiChar;
-  CRC         : LongInt;
+  CRC         : {$IFDEF FPC}DWORD;{$ELSE}LongInt;{$ENDIF}
 begin
   Result := exeIntegrityError;
 
@@ -318,8 +331,12 @@ begin
 
   Buf := StrAlloc(BufSize);
   try
+    {$IFNDEF FPC}
     GetModuleFileName(HInstance, Buf, BufSize-1);
     Fh := FileOpen(StrPas(Buf), fmOpenRead or fmShareDenyWrite);
+	  {$ELSE}
+    Fh := FileOpen(ParamStr(0), fmOpenRead or fmShareDenyWrite);
+	  {$ENDIF}
     if (Fh >= 0 {HFILE_ERROR}) then begin
       Size := FileSeek(Fh, 0, 2); {get file size}
       FileSeek(Fh, 0, 0);  {reset to beginning of file}
@@ -336,14 +353,22 @@ begin
             BytesToRead := (StoredSignature.Offset - TotalRead);
           BytesRead := FileRead(Fh, Buf^, BytesToRead);
           Inc(TotalRead, BytesRead);
+		  {$IFNDEF FPC}
           UpdateCRC32(CRC, Buf^, BytesRead);
+		  {$ELSE}
+          UpdateCRC32(DWord(CRC), Buf^, BytesRead);
+		  {$ENDIF}
         end;
         {jump past signature record}
         FileSeek(Fh, SizeOf(StoredSignature), 1);
         repeat
           BytesRead := FileRead(Fh, Buf^, BufSize);
           Inc(TotalRead, BytesRead);
+		  {$IFNDEF FPC}
           UpdateCRC32(CRC, Buf^, BytesRead);
+		  {$ELSE}
+          UpdateCRC32(DWord(CRC), Buf^, BytesRead);
+		  {$ENDIF}
         until (BytesRead < BufSize);
         if (StoredSignature.CRC = not CRC) then
           Result := exeSuccess;
@@ -382,13 +407,21 @@ begin
       Memory := MapViewOfFile(FileMap, FILE_MAP_WRITE, 0, 0, 0);
       if (Memory <> nil) then begin
         for I := 0 to (Size - SizeOf(TSignatureRec)) - 1 do begin
+		  {$IFNDEF FPC}
           if (PSignatureRec(@Memory[I])^.Sig1 = $407E7E21) and
              (PSignatureRec(@Memory[I])^.Sig2 = $33435243) and
              (PSignatureRec(@Memory[I])^.Sig3 = $7E7E4032) and
              (PSignatureRec(@Memory[I])^.Sig4 = $407E7E21) and
              (PSignatureRec(@Memory[I])^.Sig5 = $33435243) and
              (PSignatureRec(@Memory[I])^.Sig6 = $7E7E4032) then begin
-
+		  {$ELSE} 
+          if (PSignatureRec(@Memory[I]).Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I]).Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig6 = $7E7E4032) then begin
+		  {$ENDIF}
             {found it}
             Sig := @Memory^[I];
 
@@ -432,7 +465,7 @@ var
   I, Size   : LongInt;
   Sig       : TSignatureRec;
   Buf       : PAnsiChar;
-  CRC       : LongInt;
+  CRC       : {$IFNDEF FPC}LongInt;{$ELSE}DWord;{$ENDIF}
   TotalRead : LongInt;
   BytesRead : LongInt;
 begin
@@ -475,7 +508,11 @@ begin
               Sig.Size := Size;
 
               {update crc up to the start of the signature record}
+			  {$IFNDEF FPC}
               UpdateCRC32(CRC, Buf^, I);
+			  {$ELSE}
+              UpdateCRC32(DWord(CRC), Buf^, I);
+			  {$ENDIF}
               {update crc for the remaing potion of the buffer (after the signature record)}
               UpdateCRC32(CRC, Buf[I+SizeOf(TSignatureRec)],
                           BytesRead-(I+SizeOf(TSignatureRec)));
@@ -484,7 +521,11 @@ begin
         end;
 
         if not Result then begin
+		  {$IFNDEF FPC}
           UpdateCRC32(CRC, Buf^, BytesRead-SizeOf(TSignatureRec));
+		  {$ELSE}
+          UpdateCRC32(DWord(CRC), Buf^, BytesRead-SizeOf(TSignatureRec));
+		  {$ENDIF}
           {back up by size of TSignatureRec to insure that split record is found}
           FileSeek(Fh, -SizeOf(TSignatureRec), 1);
           Inc(TotalRead, BytesRead-SizeOf(TSignatureRec));
@@ -495,7 +536,11 @@ begin
       if Result then begin
         repeat
           BytesRead := FileRead(Fh, Buf^, BufSize);
+		  {$IFNDEF FPC}
           UpdateCRC32(CRC, Buf^, BytesRead);
+		  {$ELSE}
+          UpdateCRC32(DWord(CRC), Buf^, BytesRead);
+		  {$ENDIF}
         until (BytesRead < BufSize);
       end;
 
@@ -537,21 +582,34 @@ begin
       Memory := MapViewOfFile(FileMap, FILE_MAP_WRITE, 0, 0, 0);
       if (Memory <> nil) then begin
         for I := 0 to (Size - SizeOf(TSignatureRec)) - 1 do begin
+		  {$IFNDEF FPC}
           if (PSignatureRec(@Memory[I])^.Sig1 = $407E7E21) and
              (PSignatureRec(@Memory[I])^.Sig2 = $33435243) and
              (PSignatureRec(@Memory[I])^.Sig3 = $7E7E4032) and
              (PSignatureRec(@Memory[I])^.Sig4 = $407E7E21) and
              (PSignatureRec(@Memory[I])^.Sig5 = $33435243) and
              (PSignatureRec(@Memory[I])^.Sig6 = $7E7E4032) then begin
-
+		  {$ELSE}
+          if (PSignatureRec(@Memory[I]).Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I]).Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig6 = $7E7E4032) then begin
+		  {$ENDIF}
             {found it}
             Sig := @Memory^[I];
 
             {restore to uninitialized state}
+			{$IFNDEF FPC}
             Sig.Offset := 1;                                         {!!.08}
             Sig.Size := 2;                                           {!!.08}
             Sig.CRC := 3;                                            {!!.08}
-
+			{$ELSE}
+            Sig^.Offset := 1;                                         {!!.08}
+            Sig^.Size := 2;                                           {!!.08}
+            Sig^.CRC := 3;                                            {!!.08}
+			{$ENDIF}
             Result := True;
             Break;
           end;
@@ -675,7 +733,7 @@ begin
   end;
 end;
 {$ELSE}
-function FileCRC32(const FileName : string) : LongInt;
+function FileCRC32(const FileName : string) : {$IFNDEF FPC}LongInt;{$ELSE}DWord;{$ENDIF}
 const
   BufSize = 4096;
 var
@@ -691,7 +749,11 @@ begin
       Result := $FFF00FFF;  {special CRC init}
       repeat
         BytesRead := FileRead(Fh, Buf^, BufSize);
+		{$IFNDEF FPC}
         UpdateCRC32(Result, Buf^, BytesRead);
+		{$ELSE}
+        UpdateCRC32(DWord(Result), Buf^, BytesRead);
+		{$ENDIF}
       until (BytesRead < BufSize);
       FileClose(Fh);
     end;

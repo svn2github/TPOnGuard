@@ -21,40 +21,33 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       December 30, 2003                         {AH.01}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  OGNETWRK.PAS 1.13                    *}
+{*                  OGNETWRK.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OgNetWrk;
+unit ognetwrk;
   {-network file routines}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF KYLIX} Libc, {$ENDIF}
+  {$IFDEF UsingCLX} Types, {$ENDIF}
   Classes, SysUtils,
-  OgConst,
-  OgUtil,
-  OnGuard;
+  ogconst,
+  ogutil,
+  onguard;
 
 type
   TNetAccess = packed record
@@ -168,6 +161,8 @@ function UnlockNetAccessFile(var NetAccess : TNetAccess) : Boolean;
 
 implementation
 
+uses
+  ogfile;
 
 {*** TOgNetCode ***}
 
@@ -183,6 +178,11 @@ begin
     if (nacNetAccess.Fh = -1) then begin                             {!!.09}
       if (FFileName = '') then                                       {!!.09}
         FFileName := DoOnGetFileName;                                {!!.09}
+      // attempt to fix ticket #7
+      if not FAutoCheck then begin
+        if not GetNetAccessFileInfo(FFileName, Key, nacNetAccessInfo) then
+          CreateAccessFile; {wasn't there, try to create it}
+      end;
       LockNetAccessFile(FFileName, Key, nacNetAccess);               {!!.09}
     end;                                                             {!!.09}
     if not CheckNetAccessFile(nacNetAccess) then
@@ -204,15 +204,15 @@ end;
 
 function TOgNetCode.CreateAccessFile : Boolean;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  Result := CreateNetAccessFileEx(FFileName, Key, Code);
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  Result := CreateNetAccessFileEx(FFileName, Key, ACode);
 end;
 
 destructor TOgNetCode.Destroy;
@@ -225,8 +225,9 @@ end;
 {!!.02}
 function TOgNetCode.DoOnGetFileName : string;
 begin
+  Result := '';
   if not Assigned(FOnGetFileName) then
-    raise EOnGuardException.Create(StrRes[SCNoOnGetFileName]);
+    raise EOnGuardException.Create({$IFNDEF NoOgSrMgr}StrRes[SCNoOnGetFileName]{$ELSE}SCNoOnGetFileName{$ENDIF});
 
   FOnGetFileName(Self, Result);
 end;
@@ -234,12 +235,12 @@ end;
 function TOgNetCode.GetActiveUsers : LongInt;
 var
   Key           : TKey;
-  Modifier      : LongInt;
+  AModifier      : LongInt;
   NetAccessInfo : TNetAccessInfo;
 begin
   DoOnGetKey(Key);
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
   if GetNetAccessFileInfo(FileName, Key, NetAccessInfo) then
     Result := NetAccessInfo.Locked
   else
@@ -249,12 +250,12 @@ end;
 function TOgNetCode.GetInvalidUsers : LongInt;
 var
   Key           : TKey;
-  Modifier      : LongInt;
+  AModifier      : LongInt;
   {NetAccessInfo : TNetAccessInfo;}                                  {!!.08}
 begin
   DoOnGetKey(Key);
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
   if GetNetAccessFileInfo(FFileName, Key, nacNetAccessInfo) then
     Result := nacNetAccessInfo.Invalid                               {!!.08}
   else
@@ -264,11 +265,11 @@ end;
 function TOgNetCode.GetMaxUsers : LongInt;
 var
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
   if GetNetAccessFileInfo(FFileName, Key, nacNetAccessInfo) then
     Result := nacNetAccessInfo.Total
   else
@@ -283,24 +284,24 @@ end;
 procedure TOgNetCode.Loaded;
 var
   Key      : TKey;
-  Code     : TCode;
-  Modifier : LongInt;
+  ACode     : TCode;
+  AModifier : LongInt;
 begin
   if FAutoCheck and not (csDesigning in ComponentState) then begin   {!!.08}
-    Code := DoOnGetCode;
+    ACode := DoOnGetCode;
     DoOnGetKey(Key);
-    Modifier := DoOnGetModifier;
+    AModifier := DoOnGetModifier;
 
     {if no file name, fire event to get one}                           {!!.02}
     if FFileName = '' then                                            {!!.02}
       FFilename := DoOnGetFileName;                                    {!!.02}
 
-    ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-    if DecodeNAFCountCode(Key, Code) > 0 then begin
+    ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+    if DecodeNAFCountCode(Key, ACode) > 0 then begin
       try
         if not GetNetAccessFileInfo(FFileName, Key, nacNetAccessInfo) then
           CreateAccessFile; {wasn't there, try to create it}
-        LockNetAccessFile(FFileName, Key, nacNetAccess); 
+        LockNetAccessFile(FFileName, Key, nacNetAccess);
       except
         {ignore errors - CheckCode will report that record is not locked}
       end;
@@ -313,11 +314,11 @@ end;
 function TOgNetCode.ResetAccessFile : Boolean;
 var
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
   Result := ResetNetAccessFile(FFileName, Key);
 end;
 
@@ -356,8 +357,12 @@ begin
       FileWrite(Fh, Code, SizeOf(Code));
     end;
 
-    FlushFileBuffers(Fh);
+    {$IFNDEF FPC}
+	FlushFileBuffers(Fh);
     Result := GetFileSize(Fh) = (Count * SizeOf(Code));
+	{$ELSE}
+    Result := ( GetFileSize(Fh) = (Count * SizeOf(Code)));
+	{$ENDIF}
     FileClose(Fh);
   end;
 end;
@@ -402,7 +407,7 @@ var
 begin
   Result := False;
 
-  Fh := FileOpen(FileName, fmOpenRead or fmShareDenyNone);
+  Fh := FileOpen(FileName, {$IFDEF MSWINDOWS}fmOpenRead{$ELSE}fmOpenReadWrite{$ENDIF} or fmShareDenyNone);
   if (Fh > -1) then begin
     NetAccessInfo.Total := GetFileSize(Fh) div SizeOf(Code);
     NetAccessInfo.Locked := 0;
@@ -426,18 +431,34 @@ begin
   end;
 end;
 
+function IsAppOnNetwork(const ExePath : string) : Boolean;
 {$IFDEF Win32}
-function IsAppOnNetwork(const ExePath : string) : Boolean;
 begin
-  Result := (GetDriveType(PChar(ExtractFileDrive(ExePath) + '\')) = DRIVE_REMOTE);
+  // fix for ticket #10 - use ExpandUNCFilename
+  Result := (GetDriveType(PChar(ExtractFileDrive(ExpandUNCFilename(ExePath)) + '\')) = DRIVE_REMOTE);
 end;
-{$ELSE}
-function IsAppOnNetwork(const ExePath : string) : Boolean;
+{$ENDIF}
+{$IFDEF Win64}
+begin
+  Result := (GetDriveType(PChar(ExtractFileDrive(ExpandUNCFilename(ExePath)) + '\')) = DRIVE_REMOTE);
+end;
+{$ENDIF}
+{$IFDEF Win16}
 var
   D : Integer;
 begin
   D := Ord(UpCase(ExePath[1])) - Ord('A');                             {!!.07}
   Result := GetDriveType(D) = DRIVE_REMOTE;
+end;
+{$ENDIF}
+{$IFDEF UNIX}
+begin
+  Result := False;
+end;
+{$ENDIF}
+{$IFDEF POSIX}
+begin
+  Result := False;
 end;
 {$ENDIF}
 

@@ -21,43 +21,48 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       December 30, 2003                         {AH.01}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  OGCONST.PAS 1.13                     *}
+{*                  OGCONST.PAS 1.15                     *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OgConst;
+unit ogconst;
   {-Resource constants}
 
-{$IFDEF Win32}
-  {$R OGCONST.R32}
-{$ELSE}
-  {$R OGCONST.R16}
+{$IFNDEF NoOgSrMgr}
+{$IFDEF Win32} {$R ogconst.r32} {$ENDIF}
+{$IFDEF Win16} {$R ogconst.r16} {$ENDIF}
+{$IFDEF LINUX} {$R ogconst.r32} {$ENDIF}
 {$ENDIF}
-
 interface
 
-{$I OGKEYINI.INC} {get ini file name used to store application keys}
+{$IFDEF NoOgSrMgr}
+resourcestring
+  SCNoOnCheck = '%s has no OnChecked event handler assigned';
+  SCNoOnGetCode = '%s has no OnGetCode event handler assigned';
+  SCNoOnGetKey = '%s has no OnGetKey event handler assigned';
+  SCNoOnChangeCode = '%s has no OnChangeCode event handler assigned';
+  SCDeleteQuery = 'Are you sure you want to delete this item?';
+  SCInvalidStartDate = 'Invalid start date';
+  SCInvalidEndDate = 'Invalid end date';
+  SCInvalidKeyOrModifier = 'Invalid key or modifier';
+  SCInvalidExDate = 'Invalid expiration date';
+  SCNoOnGetFileName = 'FileName is empty and OnGetFileName is not assigned';
+{$ENDIF}
 
-{$I OGCONST.INC}  {constant declarations}
+{$I ogkeyini.inc} {get ini file name used to store application keys}
+
+{$IFNDEF NoOgSrMgr}
+{$I ogconst.inc}  {constant declarations}
+{$ENDIF}
 
 implementation
 

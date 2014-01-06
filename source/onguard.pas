@@ -21,50 +21,54 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.01}
+ *                       conversion to CLX                         {AH.01}
+ *                       December 30, 2003                         {AH.01}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD.PAS 1.13                     *}
+{*                  ONGUARD.PAS 1.15                     *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-  {$G+} {286 Instructions}
-  {$N+} {Numeric Coprocessor}
-  {$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ELSE}
-  {$J+} {Assignable Typed Constants}                                   {!!.11}
+{$IFDEF FPC}
+{$I-} { I/O checks disabled}
+{$Q-} {Integer overflow check disabled.
+Warning : at least one function (MixBlock) causes overflow}
 {$ENDIF}
 
-unit OnGuard;
+unit onguard;
   {-code and key classes and routines}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF KYLIX}{$IFDEF CONSOLE} ConsoleStubs {$ENDIF}{$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF KYLIX} Libc, {$ENDIF}
+  {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QControls, QDialogs, {$ENDIF}{$ENDIF}
+  {$IFDEF DELPHI15UP} System.AnsiStrings, {$ENDIF}
   Classes, Controls, SysUtils,
-  OgConst,
-  OgUtil;
+  {$IFDEF UsingZLib} ZLib, {$ENDIF}
+  {$IFDEF FPC}{$IFDEF WIN32} idesn, {$ENDIF}{$ENDIF}
+  ogconst,
+  ogutil;
 
+{$REGION 'moved to ogutil.pas'}
+(*
 const
   {magic values}
-  DaysCheckCode    = $649B;
-  DateCheckCode    = $A4CB;
-  NetCheckCode     = $9341;
-  RegCheckCode     = $D9F6;
-  SerialCheckCode  = $3C69;
-  UsageCheckCode   = $F3D5;
-  SpecialCheckCode = $9C5B;
+  DaysCheckCode    = Word($649B);
+  DateCheckCode    = Word($A4CB);
+  NetCheckCode     = Word($9341);
+  RegCheckCode     = Word($D9F6);
+  SerialCheckCode  = Word($3C69);
+  UsageCheckCode   = Word($F3D5);
+  SpecialCheckCode = Word($9C5B);
 
 type
   {code tyes}
@@ -123,9 +127,17 @@ type
                  ogNetCountUsed, {number of authorized users has been exceeded}
                  ogCodeExpired); {expiration date has been reached}
 
+
 type
   EOnGuardException = class(Exception);
+  EOnGuardBadDateException = class(EOnGuardException);                 {!!.15}
+  EOnGuardClockIssueException = class(EOnGuardException);              {!!.15}
 
+*)
+{$ENDREGION}
+
+
+{$REGION 'Component declarations'}
 type
   TChangeCodeEvent =
     procedure(Sender : TObject; Code : TCode)
@@ -517,6 +529,11 @@ type
       write FOnChangeCode;
   end;
 
+{$ENDREGION}
+
+
+{$REGION 'moved to ogutil.pas'}
+(*
 
 function GetCodeType(const Key : TKey; const Code : TCode) : TCodeType;
   {-return the type of code}
@@ -537,6 +554,7 @@ function IsDaysCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
 function IsRegCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 function IsRegCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
+function IsRegCodeRegisteredTo(const Key : TKey; const Code : TCode; const RegStr: AnsiString) : Boolean;
 
 procedure InitSerialNumberCode(const Key : TKey;  Serial : LongInt; Expires : TDateTime; var Code : TCode);
 function IsSerialNumberCodeValid(const Key : TKey; const Code : TCode) : Boolean;
@@ -581,15 +599,20 @@ function ShrinkDate(D : TDateTime) : Word;
 const
   BaseDate : LongInt = 0;
 
+*)
+{$ENDREGION}
 
 implementation
 
 uses
-  {$IFDEF VERSION3} ActiveX {$ELSE} OLE2 {$ENDIF}                     {!!.06}
-  {$IFNDEF NoMakeCodesSupport} , OnGuard2 {$ENDIF}                    {!!.10}           {!!.10}
-  {$IFNDEF NoMakeKeysSupport} , OnGuard3  {$ENDIF}                    {!!.10}           {!!.10}
+  {$IFDEF DELPHI}{$IFDEF DELPHI3UP} ActiveX {$ELSE} OLE2 {$ENDIF}{$ENDIF}
+  {$IFNDEF NoMakeCodesSupport} , {$IFDEF UsingCLX} qonguard2 {$ELSE} onguard2 {$ENDIF}{$ENDIF}
+  {$IFNDEF NoMakeKeysSupport} , {$IFDEF UsingCLX} qonguard3 {$ELSE} onguard3  {$ENDIF}{$ENDIF}
   ;
 
+{$REGION 'moved to ogutil.pas'}
+
+(*
 {first 2048 bits of Pi in hexadecimal, low to high, without the leading "3"}
 const
   Pi2048: array [0..255] of Byte = (
@@ -694,6 +717,7 @@ begin
   Result := HashElf(Str[1], Length(Str));
 end;
 
+{$REGION 'MD5 routines'}
 {internal routines for MD5}
 type
   TMD5ContextEx = record
@@ -710,7 +734,8 @@ asm
   mov  ecx, edx         {get count to cl}
   rol  eax, cl          {rotate eax by cl}
 end;
-{$ELSE}
+{$ENDIF}
+{$IFDEF Win16}
 function RolX(I, C : DWord) : DWord; assembler;                        {!!.07}
 asm
   db $66
@@ -724,6 +749,13 @@ asm
   {set result}
   pop  ax               {low word to ax}
   pop  dx               {high word to dx}
+end;
+{$ENDIF}
+{$IFDEF KYLIX}
+function RolX(I, C : DWord) : DWord; register;                         {!!.07}
+asm
+  mov  ecx, edx         {get count to cl}
+  rol  eax, cl          {rotate eax by cl}
 end;
 {$ENDIF}
 
@@ -973,8 +1005,9 @@ begin
   UpdateMD5(Context, Buf, BufSize);
   Result := FinalizeMD5(Context);
 end;
+{$ENDREGION}
 
-
+{$REGION 'message digest routines'}
 {message digest routines}
 type
   TMDContextEx = record
@@ -1078,6 +1111,10 @@ begin
   FinalizeTMD(Context, Digest, DigestSize);
 end;
 
+{$ENDREGION}
+
+
+{$REGION 'Win32'}
 {$IFDEF Win32}
 {!!.05} {added}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
@@ -1093,6 +1130,10 @@ const
   sCurVerNT = 'Software\Microsoft\Windows NT\CurrentVersion';        {!!.11}
   sRegOwner = 'RegisteredOwner';                                     {!!.11}
   sRegOrg   = 'RegisteredOrganization';                              {!!.11}
+  sProdID   = 'ProductID';                                           {!!.15}
+  sInstDate = 'InstallDate';                                         {!!.15}
+  sCrypto   = 'Software\Microsoft\Cryptography';                     {!!.15}
+  sMachID   = 'MachineGUID';                                         {!!.15}
 
 type                                                                     {!!.11}
   TUuidCreateSequential = function (lpGUID : Pointer): HResult; stdcall; {!!.11}
@@ -1109,6 +1150,13 @@ var
   Context : TTMDContext;
   UserInfoFound : Boolean;                                           {!!.11}
   Buf     : array [0..1023] of Byte;
+  // for ticket #8
+  device  : array [0..2] of AnsiChar;                                {!!.15}
+  subst   : array [0..1023] of AnsiChar;                             {!!.15}
+  {$IFDEF FPC}
+  iController, iDrive, maxController : Integer;
+  BufStr : AnsiString;
+  {$ENDIF}
 begin
   InitTMD(Context);
 
@@ -1194,14 +1242,23 @@ begin
 
   if midNetwork in MachineInfo then begin
     {include network ID}
+	{$IFNDEF FPC}
     CoCreateGuid(GUID1);
     CoCreateGuid(GUID2);
+	{$ELSE}
+    CreateGuid(GUID1);
+    CreateGuid(GUID2);
+	{$ENDIF}
 
 {!!.11}
     { use UuidCreateSequential instead of CoCreateGuid if available }
         hRPCTR4 := LoadLibrary('rpcrt4.dll');
         if (hRPCTR4 <> 0) then begin
+		  {$IFNDEF FPC}
           @UuidCreateSequential := GetProcAddress(hRPCTR4, 'UuidCreateSequential');
+		  {$ELSE}
+      	  UuidCreateSequential := TUuidCreateSequential(GetProcAddress(hRPCTR4, 'UuidCreateSequential'));
+		  {$ENDIF}
           if Assigned(UuidCreateSequential) then begin
             UuidCreateSequential(@GUID1);
             UuidCreateSequential(@GUID2);
@@ -1222,22 +1279,50 @@ begin
 
   if midDrives in MachineInfo then begin
     {include drive specific information}
+    {$IFDEF FPC}
+    maxController := 15;
+    if Win32Platform <> VER_PLATFORM_WIN32_NT then
+      maxController := 0;
+    for iController := 0 to maxController do
+    begin
+      for iDrive := 0 to 4 do
+      begin
+        BufStr := '';
+        if GetIdeDiskSerialNumber(iController,iDrive,BufStr) then
+           if BufStr<>'' then UpdateTMD(Context, BufStr[1], 5);
+      end;
+    end;
+    {$ELSE}
     for Drive := 'C' to 'Z' do begin
 
       if (GetDriveType(PChar(Drive + ':\')) = DRIVE_FIXED) then begin
-        FillChar(Buf, Sizeof(Buf), 0);
-        Buf[0] := Byte(Drive);
-        {!!.16} {removed cluster information}
-        GetVolumeInformation(PChar(Drive + ':\'), nil, 0,
-          PDWord(@Buf[1]){serial number}, I{not used}, I{not used}, nil, 0);
-        UpdateTMD(Context, Buf, 5);
+        // detect SUBST drives and ignore - see ticket #8                        {!!.15}
+        device[0] := AnsiChar(Drive);                                            {!!.15}
+        device[1] := ':';                                                        {!!.15}
+        device[2] := #0;                                                         {!!.15}
+        FillChar(subst, SizeOf(subst), 0);                                       {!!.15}
+        QueryDosDeviceA(device, subst, 1024);                                     {!!.15}
+        // SUBST drives return a \??\ prefix                                     {!!.15}
+        if(Copy({$IFDEF DELPHI15UP}System.AnsiStrings.StrPas(subst){$ELSE}StrPas(subst){$ENDIF}, 1, 4)) <> '\??\' then begin                        {!!.15}
+          FillChar(Buf, Sizeof(Buf), 0);
+          Buf[0] := Byte(Drive);
+          {!!.16} {removed cluster information}
+          GetVolumeInformation(PChar(Drive + ':\'), nil, 0,
+            PDWord(@Buf[1]){serial number}, I{not used}, I{not used}, nil, 0);
+          UpdateTMD(Context, Buf, 5);
+        end;                                                                     {!!.15}
       end;
     end;
+	{$ENDIF}
   end;
 
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
-{$ELSE}
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'Win16'}
+{$IFDEF Win16}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
 var
   I       : DWord;
@@ -1294,7 +1379,231 @@ begin
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
 {$ENDIF}
+{$ENDREGION}
 
+{$REGION 'Kylix'}
+{$IFDEF KYLIX}
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+var
+  I       : DWord;
+  RegKey  : DWord;
+  GUID1   : TGUID;
+  GUID2   : TGUID;
+  Drive   : Integer;
+  Context : TTMDContext;
+  Buf     : array [0..2047] of Byte;
+  iFileHandle : Integer;
+begin
+  InitTMD(Context);
+
+  {include user specific information}
+  if midUser in MachineInfo then
+  begin
+   //[to do] find some organization specific info
+  end;
+
+  if midSystem in MachineInfo then
+  begin
+    {include system specific information}
+    iFileHandle := FileOpen('/proc/cpuinfo', fmopenRead or fmShareDenyNone);
+    I := FileSeek(iFileHandle,0,2);
+    FileSeek(iFileHandle,0,0);
+    if I < 2047 then
+    begin
+     FileRead(iFileHandle, Buf, I);
+     UpdateTMD(Context, Buf, I);
+    end;
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/version', fmopenRead or fmShareDenyNone);
+    I := FileSeek(iFileHandle,0,2);
+    FileSeek(iFileHandle,0,0);
+    if I < 2047 then
+    begin
+     FileRead(iFileHandle, Buf, I);
+     UpdateTMD(Context, Buf, I);
+    end;
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/osrelease', fmopenRead or fmShareDenyNone);
+    I := FileSeek(iFileHandle,0,2);
+    FileSeek(iFileHandle,0,0);
+    if I < 2047 then
+    begin
+     FileRead(iFileHandle, Buf, I);
+     UpdateTMD(Context, Buf, I);
+    end;
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/hostname', fmopenRead or fmShareDenyNone);
+    I := FileSeek(iFileHandle,0,2);
+    FileSeek(iFileHandle,0,0);
+    if I < 2047 then
+    begin
+     FileRead(iFileHandle, Buf, I);
+     UpdateTMD(Context, Buf, I);
+    end;
+    FileClose(iFileHandle);
+  end;
+
+  if midNetwork in MachineInfo then
+  begin
+    {include network ID}
+    CoCreateGuid(GUID1);
+    CoCreateGuid(GUID2);
+    {check to see if "network" ID is available}
+    if (GUID1.D4[2] = GUID2.D4[2]) and
+       (GUID1.D4[3] = GUID2.D4[3]) and
+       (GUID1.D4[4] = GUID2.D4[4]) and
+       (GUID1.D4[5] = GUID2.D4[5]) and
+       (GUID1.D4[6] = GUID2.D4[6]) and
+       (GUID1.D4[7] = GUID2.D4[7]) then
+      UpdateTMD(Context, GUID1.D4[2], 6);
+  end;
+
+  if midDrives in MachineInfo then
+  begin
+    {include drive specific information}
+    for Drive := 2 {C} to 25 {Z} do begin
+      if GetDriveType(Drive) = 3 {DRIVE_FIXED} then begin
+        FillChar(Buf, Sizeof(Buf), 0);
+        Buf[0] := Drive;
+        {!!.06} {removed cluster information}
+        PLongInt(@Buf[1])^ := GetDiskSerialNumber(Chr(Drive+Ord('A')));{!!.06}
+        UpdateTMD(Context, Buf, 5);
+      end;
+    end;
+  end;
+
+  FinalizeTMD(Context, Result, SizeOf(Result));
+end;
+{$ENDIF}
+{$ENDREGION}
+
+{$REGION 'FPC-UNIX'}
+{$IFDEF FPC}
+{$IFDEF UNIX}
+{$NOTE Make sure we have some FreeBSD and MacOSX support too at some point }
+{ We now assume Linux is used }
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+var
+  I       : LongInt;
+  RegKey  : DWord;
+  GUID1   : TGUID;
+  GUID2   : TGUID;
+  Drive   : Integer;
+  Context : TTMDContext;
+  Buf     : array [0..2047] of Byte;
+  sl: TStringList;
+  iFileHandle : LongInt;
+  s: string;
+
+  function lGetUnixUserName: string;
+  begin
+    // the first two are used when run from a normal login shell
+    Result := GetEnvironmentVariable('USERNAME');
+    if Result = '' then
+      Result := GetEnvironmentVariable('USER');
+    // Used if program is run from cron jobs
+    if Result = '' then
+      Result := GetEnvironmentVariable('LOGNAME');
+  end;
+
+begin
+  InitTMD(Context);
+
+  {include user specific information}
+  if midUser in MachineInfo then
+  begin
+    // There is no organization specific info, so lets use the user login name
+    s := lGetUnixUserName;
+    I := Length(s);
+    if i > 2048 then
+    begin
+      s := Copy(s, 1, 2048);  // only first 2048 characters
+      i := 2048;
+    end;
+    FillChar(Buf, Sizeof(Buf), 0);
+    Move(s[1], Buf, I);
+    UpdateTMD(Context, Buf, I);
+  end;
+
+  if midSystem in MachineInfo then
+  begin
+    {include system specific information}
+    iFileHandle := FileOpen('/proc/cpuinfo', fmopenRead or fmShareDenyNone);
+    I := FileRead(iFileHandle, Buf,2048);
+    if I > 0 then
+    begin
+      sl := TStringList.Create;
+      try
+        SetLength(s, Length(Buf));
+        Move(Buf, s[1], Length(Buf));
+        sl.Text := s;
+        { two cpu properties change between reboot. Blank them out }
+        for i := 0 to sl.Count-1 do
+        begin
+          if Pos('cpu MHz', sl[i]) > 0 then
+            sl[i] := 'cpu MHz'
+          else if Pos('bogomips', sl[i]) > 0 then
+            sl[i] := 'bogomips';
+        end;
+        s := sl.Text;
+        { place new data into Buf buffer }
+        FillChar(Buf, Sizeof(Buf), 0);
+        Move(s[1], Buf, Length(s));
+        UpdateTMD(Context, Buf, I-1);
+      finally
+        sl.Free;
+      end;
+    end;
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/version', fmopenRead or fmShareDenyNone);
+    I := FileRead(iFileHandle, Buf, 2048);
+    if I > 0 then  UpdateTMD(Context, Buf, I-1);
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/osrelease', fmopenRead or fmShareDenyNone);
+    I := FileRead(iFileHandle, Buf, 2048);
+    if I > 0 then  UpdateTMD(Context, Buf, I-1);
+    FileClose(iFileHandle);
+
+    iFileHandle := FileOpen('/proc/sys/kernel/hostname', fmopenRead or fmShareDenyNone);
+    I := FileRead(iFileHandle, Buf, 2048);
+    if I > 0 then  UpdateTMD(Context, Buf, I-1);
+    FileClose(iFileHandle);
+  end;
+
+  if midNetwork in MachineInfo then
+  begin
+    {include network ID}
+    CreateGuid(GUID1);
+    CreateGuid(GUID2);
+    {check to see if "network" ID is available}
+    if (GUID1.D4[2] = GUID2.D4[2]) and
+       (GUID1.D4[3] = GUID2.D4[3]) and
+       (GUID1.D4[4] = GUID2.D4[4]) and
+       (GUID1.D4[5] = GUID2.D4[5]) and
+       (GUID1.D4[6] = GUID2.D4[6]) and
+       (GUID1.D4[7] = GUID2.D4[7]) then
+      UpdateTMD(Context, GUID1.D4[2], 6);
+  end;
+
+  // TODO: This midDrives code is rubbish and doesn't work with SATA or SCSI drives.
+  if midDrives in MachineInfo then
+  begin
+  end;
+
+  FinalizeTMD(Context, Result, SizeOf(Result));
+end;
+
+{$ENDIF}
+{$ENDIF}
+
+{$ENDREGION}
+
+{$REGION 'key generation routines'}
 {key generation routines }
 procedure GenerateRandomKeyPrim(var Key; KeySize: Cardinal);
 var
@@ -1335,8 +1644,9 @@ begin
   D := HashMD5(S2[1], Length(S2));                                     {!!.06}
   Key := TKey(D);
 end;
+{$ENDREGION}
 
-
+{$REGION 'modifier routines'}
 {modifier routines}
 function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
 var
@@ -1352,7 +1662,11 @@ begin
     if Ord(S2[I]) > 127 then                                           {!!.06}
       Delete(S2, I, 1);                                                {!!.06}
 
-  StrPLCopy(Sig, AnsiString(AnsiUpperCase(string(S2))), Min(4, Length(S2)));               {!!.06}
+  {$IFDEF DELPHI15UP}
+  System.AnsiStrings.StrPLCopy(Sig, AnsiString(System.AnsiStrings.AnsiUpperCase(S2)), Min(4, Length(S2)));               {!!.06}
+  {$ELSE}
+  StrPLCopy(Sig, AnsiString(AnsiUpperCase(S2)), Min(4, Length(S2)));               {!!.06}
+  {$ENDIF}
   Result := PLongInt(@Sig[0])^;
 end;
 
@@ -1360,7 +1674,11 @@ function GenerateUniqueModifierPrim : LongInt;
 var
   ID : TGUID;
 begin
+  {$IFNDEF FPC}
   CoCreateGuid(ID);
+  {$ELSE}
+  CreateGuid(ID);
+  {$ENDIF}
   Mix128(T128Bit(ID));
   Result := T128Bit(ID)[3];
 end;
@@ -1383,7 +1701,11 @@ begin
     XorMem(Key, Modifier, Min(SizeOf(Modifier), KeySize));
 end;
 
+{$ENDREGION}
+*)
+{$ENDREGION}
 
+{$REGION '*** TogCodeBase ***'}
 {*** TogCodeBase ***}
 
 constructor TOgCodeBase.Create(AOwner : TComponent);
@@ -1401,7 +1723,7 @@ begin
   if Assigned(FOnChecked) then
     FOnChecked(Self, Value)
   else if FAutoCheck then
-    raise EOnGuardException.CreateFmt(StrRes[SCNoOnCheck], [Self.ClassName]);
+    raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnCheck]{$ELSE}SCNoOnCheck{$ENDIF}, [Self.ClassName]);
 end;
 
 function TOgCodeBase.DoOnGetCode : TCode;
@@ -1413,7 +1735,7 @@ begin
     if Assigned(FOnGetCode) then
       FOnGetCode(Self, Result)
     else
-      raise EOnGuardException.CreateFmt(StrRes[SCNoOnGetCode], [Self.ClassName]);
+      raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnGetCode]{$ELSE}SCNoOnGetCode{$ENDIF}, [Self.ClassName]);
   end;
 
   {store code for easy access using the Code property}                 {!!.02}
@@ -1426,7 +1748,7 @@ begin
   if Assigned(FOnGetKey) then
     FOnGetKey(Self, Key)
   else
-    raise EOnGuardException.CreateFmt(StrRes[SCNoOnGetKey], [Self.ClassName]);
+    raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnGetKey]{$ELSE}SCNoOnGetKey{$ENDIF}, [Self.ClassName]);
 end;
 
 {!!.02} {revised}
@@ -1511,7 +1833,9 @@ procedure TOgCodeBase.SetAbout(const Value : string);                {!!.08}
 begin
 end;
 
+{$ENDREGION}
 
+{$REGION '*** TOgDateCode ***'}
 {*** TOgDateCode ***}
 
 function TOgDateCode.CheckCode(Report : Boolean) : TCodeStatus;
@@ -1550,8 +1874,9 @@ begin
   ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
   Result := GetDateCodeValue(Key, Code);
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgDaysCode ***'}
 {*** TOgDaysCode ***}
 
 function TOgDaysCode.CheckCode(Report : Boolean) : TCodeStatus;
@@ -1613,7 +1938,7 @@ begin
   if Assigned(FOnChangeCode) then
     FOnChangeCode(Self, Value)
   else
-    raise EOnGuardException.CreateFmt(StrRes[SCNoOnChangeCode], [Self.ClassName]);
+    raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnChangeCode]{$ELSE}SCNoOnChangeCode{$ENDIF}, [Self.ClassName]);
 end;
 
 function TOgDaysCode.GetValue : LongInt;
@@ -1637,8 +1962,9 @@ begin
   if FAutoDecrease and not (csDesigning in ComponentState) then
     Decrease;
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgMakeCodes ***'}
 {*** TOgMakeCodes ***}
 
 constructor TOgMakeCodes.Create(AOwner : TComponent);
@@ -1663,7 +1989,7 @@ begin
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
     F.ShowHint := FShowHints;
-    Result := F.ShowModal = mrOK;
+    Result := F.ShowModal = {$IFNDEF FPC}mrOK{$ELSE}1{$ENDIF};// was mrOK but that pulls in a GUI framework
     if Result then begin
       FCode := F.Code;
       F.GetKey(FKey);                                                {!!.08}
@@ -1706,8 +2032,9 @@ procedure TOgMakeCodes.SetKey(Value : TKey);                         {!!.08}
 begin
   FKey := Value;
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgMakeKeys ***'}
 {*** TOgMakeKeys ***}
 
 constructor TOgMakeKeys.Create(AOwner : TComponent);
@@ -1731,7 +2058,7 @@ begin
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
     F.ShowHint := FShowHints;
-    Result := F.ShowModal = mrOK;
+    Result := F.ShowModal = {$IFNDEF FPC}mrOK{$ELSE}1{$ENDIF};// was mrOK but that pulls in a GUI framework
     if Result then begin
       F.GetKey(FKey);                                                {!!.08}
       FKeyType := F.KeyType;
@@ -1798,28 +2125,29 @@ procedure TOgMakeKeys.SetKey(Value : TKey);                          {!!.08}
 begin
   FKey := Value;
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgRegistrationCode ***'}
 {*** TOgRegistrationCode ***}
 
 function TOgRegistrationCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
   {RegStr   : string;}                                                 {!!.02}
 begin
   Result := ogValidCode;
 
   FRegString := DoOnGetRegString;                                      {!!.02}
   DoOnGetKey(Key);
-  Code       := DoOnGetCode;
-  Modifier   := DoOnGetModifier;
+  ACode       := DoOnGetCode;
+  AModifier   := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  if not IsRegCodeValid(Key, Code) then
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  if not IsRegCodeValid(Key, ACode) then
     Result := ogInvalidCode
-  else if GetExpirationDate(Key, Code) < Date then
+  else if GetExpirationDate(Key, ACode) < Date then
     Result := ogCodeExpired;
 
   if Report then
@@ -1842,26 +2170,27 @@ begin
   else if Assigned(FOnGetRegString) then
     FOnGetRegString(Self, Result)
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgSerialNumberCode ***'}
 {*** TOgSerialNumberCode ***}
 
 function TOgSerialNumberCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   Result := ogValidCode;
 
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  if not IsSerialNumberCodeValid(Key, Code) then
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  if not IsSerialNumberCodeValid(Key, ACode) then
     Result := ogInvalidCode
-  else if GetExpirationDate(Key, Code) < Date then
+  else if GetExpirationDate(Key, ACode) < Date then
     Result := ogCodeExpired;
 
   if Report then
@@ -1870,37 +2199,38 @@ end;
 
 function TOgSerialNumberCode.GetValue : LongInt;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  Result := GetSerialNumberCodeValue(Key, Code);
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  Result := GetSerialNumberCodeValue(Key, ACode);
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgSpecialCode ***'}
 {*** TOgSpecialCode ***}
 
 function TOgSpecialCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   Result := ogValidCode;
 
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  if not IsSpecialCodeValid(Key, Code) then
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  if not IsSpecialCodeValid(Key, ACode) then
     Result := ogInvalidCode
-  else if GetExpirationDate(Key, Code) < Date then
+  else if GetExpirationDate(Key, ACode) < Date then
     Result := ogCodeExpired;
 
   if Report then
@@ -1909,38 +2239,39 @@ end;
 
 function TOgSpecialCode.GetValue : LongInt;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  Result := GetSpecialCodeValue(Key, Code);
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  Result := GetSpecialCodeValue(Key, ACode);
 end;
+{$ENDREGION}
 
-
+{$REGION '*** TOgUsageCode ***'}
 {*** TOgUsageCode ***}
 
 function TOgUsageCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   Result := ogValidCode;
 
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
 
-  if IsUsageCodeValid(Key, Code) then begin
-    if IsUsageCodeExpired(Key, Code) then begin
+  if IsUsageCodeValid(Key, ACode) then begin
+    if IsUsageCodeExpired(Key, ACode) then begin
       Result := ogRunCountUsed;
-      if GetExpirationDate(Key, Code) < Date then
+      if GetExpirationDate(Key, ACode) < Date then
         Result := ogCodeExpired;
     end;
   end else
@@ -1959,16 +2290,16 @@ end;
 
 procedure TOgUsageCode.Decrease;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Work     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Work := Code;
-  Modifier := DoOnGetModifier;
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
+  ACode := DoOnGetCode;
+  Work := ACode;
+  AModifier := DoOnGetModifier;
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
 
   {code is decreased each time this routine is called}
   DecUsageCode(Key, Work);
@@ -1981,32 +2312,39 @@ begin
   if Assigned(FOnChangeCode) then
     FOnChangeCode(Self, Value)
   else
-    raise EOnGuardException.CreateFmt(StrRes[SCNoOnChangeCode], [Self.ClassName]);
+    raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnChangeCode]{$ELSE}SCNoOnChangeCode{$ENDIF}, [Self.ClassName]);
 end;
 
 function TOgUsageCode.GetValue : LongInt;
 var
-  Code     : TCode;
+  ACode     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  AModifier : LongInt;
 begin
   DoOnGetKey(Key);
-  Code := DoOnGetCode;
-  Modifier := DoOnGetModifier;
+  ACode := DoOnGetCode;
+  AModifier := DoOnGetModifier;
 
-  ApplyModifierToKeyPrim(Modifier, Key, SizeOf(Key));
-  Result := GetUsageCodeValue(Key, Code);
+  ApplyModifierToKeyPrim(AModifier, Key, SizeOf(Key));
+  Result := GetUsageCodeValue(Key, ACode);
 end;
 
 procedure TOgUsageCode.Loaded;
 begin
   inherited Loaded;
 
-  if FAutoDecrease and not (csDesigning in ComponentState) then
+  // added (not FAutoCheck) to fix ticket #6
+  if FAutoDecrease and (not FAutoCheck) and (not (csDesigning in ComponentState)) then
     Decrease;
 end;
+{$ENDREGION}
 
+{$REGION 'moved to ogutil.pas'}
+(*
 
+{$REGION '*** general routines ***'}
+
+{$REGION 'general'}
 {*** general routines ***}
 function GetCodeType(const Key : TKey; const Code : TCode) : TCodeType;
 var
@@ -2060,12 +2398,17 @@ begin
     Result := ExpandDate(0)
   end;
 end;
+{$ENDREGION}
 
+{$REGION '*** date code ***'}
 {*** date code ***}
 
 procedure InitDateCode(const Key : TKey;
           StartDate, EndDate : TDateTime; var Code : TCode);
 begin
+  if StartDate <= BaseDate then EOnGuardBadDateException.Create('Start Date is less than or equal to BaseDate.');
+  if StartDate > EncodeDate(2175,6,6) then EOnGuardBadDateException.Create('Start Date is greater than 2175-Jun-06 which is not supported.');
+
   Code.CheckValue := DateCheckCode;
   Code.Expiration := 0; {not used for date codes}
   Code.FirstDate := ShrinkDate(StartDate);
@@ -2081,6 +2424,10 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.CheckValue = DateCheckCode) and
             (ExpandDate(Work.FirstDate) <= Date);
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = DateCheckCode then
+      if ExpandDate(Work.FirstDate) > Date then EonGuardClockIssueException.Create('The code''s FirstDate is in the future.')
+  {$ENDIF}
 end;
 
 function GetDateCodeValue(const Key : TKey; const Code : TCode) : TDateTime;
@@ -2101,8 +2448,9 @@ function IsDateCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 begin
   Result := (GetDateCodeValue(Key, Code) < Date);
 end;
+{$ENDREGION}
 
-
+{$REGION '*** days code ***'}
 {*** days code ***}
 
 procedure InitDaysCode(const Key : TKey; Days : Word; Expires : TDateTime;
@@ -2123,6 +2471,10 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.CheckValue = DaysCheckCode) and
             (ExpandDate(Work.LastAccess) <= Date);
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = DaysCheckCode then
+      if ExpandDate(Work.LastAccess) > Date then EonGuardClockIssueException.Create('The code''s LastAccess is in the future.')
+  {$ENDIF}
 end;
 
 procedure DecDaysCode(const Key : TKey; var Code : TCode);
@@ -2150,6 +2502,10 @@ begin
     Result := Work.Days
   else
     Result := 0;
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = DaysCheckCode then
+      if ExpandDate(Work.LastAccess) > Date then EonGuardClockIssueException.Create('The code''s LastAccess is in the future.')
+  {$ENDIF}
 end;
 
 function IsDaysCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
@@ -2160,8 +2516,9 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.Days = 0) or (ExpandDate(Work.Expiration) < Date);
 end;
+{$ENDREGION}
 
-
+{$REGION '*** registration code ***'}
 {*** registration code ***}
 
 procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
@@ -2176,7 +2533,7 @@ begin
   for I := Length(S) downto 1 do                                       {!!.06}
     if Ord(S[I]) > 127 then                                            {!!.06}
       Delete(S, I, 1);                                                 {!!.06}
-  Code.RegString := StringHashElf(AnsiString(AnsiUpperCase(string(S))));                   {!!.06}
+  Code.RegString := StringHashElf(AnsiString(AnsiUpperCase(S)));                   {!!.06}
   MixBlock(T128bit(Key), Code, True);
 end;
 
@@ -2198,7 +2555,27 @@ begin
   Result := ExpandDate(Work.Expiration) < Date;
 end;
 
+function IsRegCodeRegisteredTo(const Key : TKey; const Code : TCode; const RegStr: AnsiString) : Boolean;
+var
+  Work : TCode;
+  S : AnsiString;
+  I : Integer;
+  v : LongInt;
+begin
+  Result := False;
+  Work := Code;
+  MixBlock(T128bit(Key), Work, False);
+  {strip accented characters from the registration string}             {!!.06}
+  S := RegStr;                                                         {!!.06}
+  for I := Length(S) downto 1 do                                       {!!.06}
+    if Ord(S[I]) > 127 then                                            {!!.06}
+      Delete(S, I, 1);                                                 {!!.06}
+  v := StringHashElf(AnsiString(AnsiUpperCase(S)));
+  Result := v = Work.RegString;
+end;
+{$ENDREGION}
 
+{$REGION '*** serial number code ***'}
 {*** serial number code ***}
 
 procedure InitSerialNumberCode(const Key : TKey; Serial : LongInt; Expires : TDateTime; var Code : TCode);
@@ -2238,8 +2615,9 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := ExpandDate(Work.Expiration) < Date;
 end;
+{$ENDREGION}
 
-
+{$REGION '*** special code ***'}
 {*** special code ***}
 
 procedure InitSpecialCode(const Key : TKey; Value : LongInt; Expires : TDateTime; var Code : TCode);
@@ -2279,8 +2657,9 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := ExpandDate(Work.Expiration) < Date;
 end;
+{$ENDREGION}
 
-
+{$REGION '*** usage code ***'}
 {*** usage code ***}
 
 procedure InitUsageCode(const Key : TKey; Count : Word; Expires : TDateTime; var Code : TCode);
@@ -2300,6 +2679,10 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.CheckValue = UsageCheckCode) and                     {!!.02}
             (ExpandDate(Work.LastChange) <= Date);                     {!!.02}
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = UsageCheckCode then
+      if ExpandDate(Work.LastChange) > Date then EonGuardClockIssueException.Create('The code''s LastChange is in the future.')
+  {$ENDIF}
 end;
 
 procedure DecUsageCode(const Key : TKey; var Code : TCode);
@@ -2327,6 +2710,10 @@ begin
     Result := Work.UsageCount                                          {!!.02}
   else
     Result := 0;
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = UsageCheckCode then
+      if ExpandDate(Work.LastChange) > Date then EonGuardClockIssueException.Create('The code''s LastChange is in the future.')
+  {$ENDIF}
 end;
 
 function IsUsageCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
@@ -2336,178 +2723,20 @@ begin
   Work := Code;
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.UsageCount = 0) or (ExpandDate(Work.Expiration) < Date);
+  {$IFNDEF NoOnGuardExceptions}
+    if Work.CheckValue = UsageCheckCode then
+      if ExpandDate(Work.LastChange) > Date then EonGuardClockIssueException.Create('The code''s LastChange is in the future.')
+  {$ENDIF}
 end;
+{$ENDREGION}
 
-(*
-procedure Mix128xR(R : LongInt;  var X : T128Bit);
-var
-  I,
-  AA, BB, CC, DD : LongInt;
-begin
-  AA := X[0];  BB := X[1];  CC := X[2];  DD := X[3];
-
-  for I := 0 to R - 1 do begin
-    AA := AA + DD;  DD := DD + AA;  AA := AA xor (AA shr 7);
-    BB := BB + AA;  AA := AA + BB;  BB := BB xor (BB shl 13);
-    CC := CC + BB;  BB := BB + CC;  CC := CC xor (CC shr 17);
-    DD := DD + CC;  CC := CC + DD;  DD := DD xor (DD shl 9);
-    AA := AA + DD;  DD := DD + AA;  AA := AA xor (AA shr 3);
-    BB := BB + AA;  AA := AA + BB;  BB := BB xor (BB shl 7);
-    CC := CC + BB;  BB := BB + CC;  CC := CC xor (DD shr 15);
-    DD := DD + CC;  CC := CC + DD;  DD := DD xor (DD shl 11);
-  end;
-
-  X[0] := AA;  X[1] := BB;  X[2] := CC;  X[3] := DD;
-end;
-
-procedure Mix256(var X : T256Bit);
-var
-  AA, BB, CC, DD : LongInt;
-  EE, FF, GG, HH : LongInt;
-begin
-  AA := X[0];  BB := X[1];  CC := X[2];  DD := X[3];
-  EE := X[4];  FF := X[5];  GG := X[6];  HH := X[7];
-
-  AA := AA xor (BB shl 11);  DD := DD + AA;  BB := BB + CC;
-  BB := BB xor (CC shr 2);   EE := EE + BB;  CC := CC + DD;
-  CC := CC xor (DD shl 8);   FF := FF + CC;  DD := DD + EE;
-  DD := DD xor (EE shr 16);  GG := GG + DD;  EE := EE + FF;
-  EE := EE xor (FF shl 10);  HH := HH + EE;  FF := FF + GG;
-  FF := FF xor (GG shr 4);   AA := AA + FF;  GG := GG + HH;
-  GG := GG xor (HH shl 8);   BB := BB + GG;  HH := HH + AA;
-  HH := HH xor (AA shr 9);   CC := CC + HH;  AA := AA + BB;
-
-  X[0] := AA;  X[1] := BB;  X[2] := CC;  X[3] := DD;
-  X[4] := EE;  X[5] := FF;  X[6] := GG;  X[7] := HH;
-end;
-
-procedure Mix256xR(R : LongInt;  var X : T256Bit);
-var
-  I              : LongInt;
-  AA, BB, CC, DD : LongInt;
-  EE, FF, GG, HH : LongInt;
-begin
-  AA := X[0];  BB := X[1];  CC := X[2];  DD := X[3];
-  EE := X[4];  FF := X[5];  GG := X[6];  HH := X[7];
-
-  for I := 0 to R - 1 do begin
-    AA := AA xor (BB shl 11);  DD := DD + AA;  BB := BB + CC;
-    BB := BB xor (CC shr 2);   EE := EE + BB;  CC := CC + DD;
-    CC := CC xor (DD shl 8);   FF := FF + CC;  DD := DD + EE;
-    DD := DD xor (EE shr 16);  GG := GG + DD;  EE := EE + FF;
-    EE := EE xor (FF shl 10);  HH := HH + EE;  FF := FF + GG;
-    FF := FF xor (GG shr 4);   AA := AA + FF;  GG := GG + HH;
-    GG := GG xor (HH shl 8);   BB := BB + GG;  HH := HH + AA;
-    HH := HH xor (AA shr 9);   CC := CC + HH;  AA := AA + BB;
-  end;
-
-  X[0] := AA;  X[1] := BB;  X[2] := CC;  X[3] := DD;
-  X[4] := EE;  X[5] := FF;  X[6] := GG;  X[7] := HH;
-end;
-
-{hash routines}
-function HashMix128(const Buf;  BufSize : LongInt) : LongInt;
-type
-  T128BitArray = array [0..0] of T128Bit;
-var
-  Buf128Bit : T128BitArray absolute Buf;
-  BufBytes  : TByteArray absolute Buf;
-  Temp      : T128Bit;
-  TempBytes : TByteArray absolute Temp;
-  I, L      : LongInt;
-begin
-  Temp[0] := $243F6A88;  {first 16 bytes of Pi in binary}
-  Temp[1] := $93F40317;
-  Temp[2] := $0C110496;
-  Temp[3] := $C709C289;
-
-  L := BufSize div SizeOf(T128Bit);
-  for I := 0 to L - 1 do begin
-    Temp[0] := Temp[0] + Buf128Bit[I, 0];
-    Temp[1] := Temp[1] + Buf128Bit[I, 1];
-    Temp[2] := Temp[2] + Buf128Bit[I, 2];
-    Temp[3] := Temp[3] + Buf128Bit[I, 3];
-    Mix128(Temp);
-  end;
-
-  if (BufSize > L * SizeOf(T128Bit)) then begin
-    for I := 0 to (BufSize - L * SizeOf(T128Bit)) - 1 do
-      TempBytes[I] := TempBytes[I] + BufBytes[(L * SizeOf(T128Bit)) + I];
-    Mix128(Temp);
-  end;
-
-  Result := Temp[3];
-end;
-
-function StringHashMix128(const Str : string) : LongInt;
-begin
-  Result := HashMix128(Str[1], Length(Str));
-end;
-
-{$IFDEF Win32}
-function HashRol(const Buf;  BufSize : LongInt) : LongInt; register;
-asm
-  mov  ecx, edx
-  test ecx, ecx
-  jz   @Exit
-
-  mov  edx, eax
-  xor  eax, eax
-
-@Loop:
-  rol  eax, 3
-  xor  al, byte ptr [edx]
-  inc  edx
-  Loop @Loop
-
-@Exit:
-end;
-{$ELSE}
-function HashRol(const Buf;  BufSize : LongInt) : LongInt; assembler;
-asm
-  db   $66
-  mov  cx, word ptr BufSize  {ecx = BufSize}
-  db   $66
-  test cx,cx
-  jz   @Exit
-
-  db   $66
-  mov  di, word ptr Buf      {edi = Buf}
-  db   $66
-  xor  ax,ax                 {eax = 0}
-
-@Loop:
-  db   $66
-  rol  ax, 3
-  db   $66
-  xor  al, byte ptr [di]
-  db   $66
-  inc  di
-  loop @Loop
-@Exit:
-end;
-{$ENDIF}
-
-function StringHashRol(const Str : string) : LongInt;
-begin
-  Result := HashRol(Str[1], Length(Str));
-end;
-
-function StringHashMD5(const Str : string) : TMD5Digest;
-begin
-  Result := HashMD5(Str[1], Length(Str));
-end;
-
-procedure StringHashTMD(var Digest; DigestSize : LongInt; const Str : string);
-begin
-  HashTMD(Digest, DigestSize, Str[1], Length(Str));
-end;
-*)
-
+{$ENDREGION}
 
 initialization
   {record our baseline date}
   BaseDate := Trunc(EncodeDate(1996, 1, 1));
+*)
+{$ENDREGION}
 
 end.
 

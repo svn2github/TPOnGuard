@@ -23,38 +23,25 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD4.PAS 1.13                    *}
+{*                  ONGUARD4.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-{$G+} {286 Instructions}
-{$N+} {Numeric Coprocessor}
-
-{$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OnGuard4;
+unit onguard4;
   {-Product description dialog}
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
   StdCtrls, Buttons, ExtCtrls, Controls, Classes, Forms,
-  OgUtil,
-  OnGuard,
-  OnGuard1;
+  ogutil,
+  onguard,
+  onguard1;
 
 type
   TEditProductFrm = class(TForm)

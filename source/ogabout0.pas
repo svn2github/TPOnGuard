@@ -23,35 +23,23 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  OGABOUT0.PAS 1.13                    *}
+{*                  OGABOUT0.PAS 1.15                    *}
 {*      Copyright (c) 1997-00 TurboPower Software Co     *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ONGUARD.INC}
+{$I onguard.inc}
 
-{$B-} {Complete Boolean Evaluation}
-{$I+} {Input/Output-Checking}
-{$P+} {Open Parameters}
-{$T-} {Typed @ Operator}
-{$W-} {Windows Stack Frame}
-{$X+} {Extended Syntax}
-
-{$IFNDEF Win32}
-  {$G+} {286 Instructions}
-  {$N+} {Numeric Coprocessor}
-  {$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
-{$ENDIF}
-
-unit OgAbout0;
+unit ogabout0;
 
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win32} Windows, {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, OgUtil, ShellAPI,
-{$IFDEF VERSION6}                                                      {!!.13}
+{$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
   DesignEditors;
 {$ELSE}
