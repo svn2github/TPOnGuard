@@ -142,6 +142,13 @@
 { NoMakeKeysSupport     prevent the TOgMakeKeys Form being compiled into the exe.
 { NoMakeCodesSupport    prevent the TOgMakeCodes Form being compiled into the exe.
 {
+{
+{
+{ OgPUREPASCAL_ROLX     RolX function
+{ OgPUREPASCAL_XorMem   XorMem function
+{ OgPUREPASCAL_Min      Min function
+{ OgPUREPASCAL_Max      Max function
+{
 {----------------------------------------------------------------------------}
 
 {Conditional defines that affect compilation}
@@ -557,6 +564,11 @@
   {$P+} {Open Parameters}
   {$T-} {Typed @ Operator}
   {$DEFINE NoOgSrMgr}
+  {$DEFINE OgPUREPASCAL_XorMem}
+  {$IFNDEF Win32}
+    {$DEFINE OgPUREPASCAL_Min}
+    {$DEFINE OgPUREPASCAL_Max}
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF KYLIX}
@@ -605,7 +617,13 @@
     {$J+} {Assignable Typed Constants}                                   {!!.11}
   {$ENDIF}
 
+  {$IFNDEF Win32}
+    {$DEFINE OgPUREPASCAL_Min}
+    {$DEFINE OgPUREPASCAL_Max}
+  {$ENDIF}
+
 {$ENDIF}
+
 
 {$IFDEF DELPHI12UP}
   // do not use the String Resource Manager

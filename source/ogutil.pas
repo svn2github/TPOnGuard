@@ -408,6 +408,13 @@ type
 
 {MD5 routines}
 
+
+{$IFDEF OgPUREPASCAL_ROLX}
+function RolX(I,C: DWord): DWord;
+begin
+  Result := (I shl C) or (I shr (32-C));
+end;
+{$ELSE}
 {$IFDEF Win32}
 function RolX(I, C : DWord) : DWord; register;                         {!!.07}
 asm
@@ -438,6 +445,7 @@ asm
   rol  eax, cl          {rotate eax by cl}
 end;
 {$ENDIF}
+{$ENDIF OgPUREPASCAL_ROLX}
 
 {!!.07}
 procedure Transform(var Buffer : array of DWord;  const InBuf : array of DWord);
@@ -795,8 +803,9 @@ end;
 
 {$REGION 'CreateMachineID'}
 
-{$REGION 'Win32'}
-{$IFDEF Win32}
+{$REGION 'Win32 + Win64'}
+{$IFDEF MSWINDOWS}
+{$IFNDEF Win16}
 {!!.05} {added}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
 { Obtains information from:
@@ -1015,13 +1024,15 @@ begin
         device[2] := #0;                                                         {!!.15}
         FillChar(subst, SizeOf(subst), 0);                                       {!!.15}
         QueryDosDeviceA(device, subst, 1024);                                    {!!.15}
+        OutputDebugString(PChar(Format('CreateMachineID:midDrives %s:\ %s', [Drive, {$IFDEF DELPHI15UP}System.AnsiStrings.StrPas(subst){$ELSE}StrPas(subst){$ENDIF}])));
         // SUBST drives return a \??\ prefix                                     {!!.15}
         if(Copy({$IFDEF DELPHI15UP}System.AnsiStrings.StrPas(subst){$ELSE}StrPas(subst){$ENDIF}, 1, 4)) <> '\??\' then begin                        {!!.15}
           FillChar(Buf, Sizeof(Buf), 0);
           Buf[0] := Byte(Drive);
-          {!!.16} {removed cluster information}
+          {!!.15} {removed cluster information}
           GetVolumeInformation(PChar(Drive + ':\'), nil, 0,
             PDWord(@Buf[1]){serial number}, I{not used}, I{not used}, nil, 0);
+
           UpdateTMD(Context, Buf, 5);
         end;                                                                     {!!.15}
       end;
@@ -1244,7 +1255,8 @@ begin
 
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
-{$ENDIF}
+{$ENDIF Win16}
+{$ENDIF MSWINDOWS}
 {$ENDREGION}
 
 {$REGION 'Win16'}
@@ -1539,6 +1551,68 @@ end;
 {$ENDIF}
 {$ENDREGION}
 
+{$REGION 'Delphi-POSIX: MACOS LINUX ANDROID'}
+{$IFDEF DELPHI19UP}
+{$IFDEF POSIX}
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+var
+  Context : TTMDContext;
+  Buf     : array [0..2047] of Byte;
+begin
+  InitTMD(Context);
+
+  if midUser in MachineInfo then
+  begin
+    //UpdateTMD(Context, Buf, I);
+  end;
+
+  if midSystem in MachineInfo then
+  begin
+  end;
+
+  if midNetwork in MachineInfo then
+  begin
+  end;
+
+  if midDrives in MachineInfo then
+  begin
+  end;
+
+  if midCPUID in MachineInfo then
+  begin
+  end;
+
+  if midCPUIDJCL in MachineInfo then
+  begin
+  end;
+
+  if midBIOS in MachineInfo then
+  begin
+  end;
+
+  if midWinProd in MachineInfo then
+  begin
+  end;
+
+  if midCryptoID in MachineInfo then
+  begin
+  end;
+
+  if midNetMAC in MachineInfo then
+  begin
+  end;
+
+  if midDomain in MachineInfo then
+  begin
+  end;
+
+  FinalizeTMD(Context, Result, SizeOf(Result));
+end;
+{$ENDIF POSIX}
+{$ENDIF DELPHI19UP}
+{$ENDREGION}
+
+
 {$ENDREGION}
 
 {$REGION 'key generation routines'}
@@ -1640,12 +1714,6 @@ begin
 end;
 
 {$ENDREGION}
-
-
-
-
-
-
 
 
 
@@ -2119,7 +2187,6 @@ end;
 
 
 
-// tested
 function BufferToHex(const Buf; BufSize : Cardinal) : string;
 var
   Bytes : TByteArray absolute Buf;
@@ -2146,6 +2213,7 @@ begin
     Result := Result + ',' + HexStr + IntToHex(Bytes[I], 2);
 end;
 
+{$REGION 'function GetDiskSerialNumber - multiplatform'}
 {$IFDEF Win16}
 type
   PMediaIDRec = ^TMediaIDRec;
@@ -2331,6 +2399,7 @@ begin
   Result := 0;
 end;
 {$ENDIF FreeBSD}
+{$ENDREGION}
 
 function HexStringIsZero(const Hex : string) : Boolean;
 var
@@ -2389,6 +2458,8 @@ begin
   Result := True;
 end;
 
+{$REGION 'function Max'}
+{$IFNDEF OgPUREPASCAL_Max}
 {$IFDEF Win32}
 function Max(A, B : LongInt) : LongInt; register;
 asm
@@ -2397,6 +2468,7 @@ asm
   mov  eax, edx
 @Exit:
 end;
+{$ENDIF}
 {$ELSE}
 function Max(A, B : LongInt) : LongInt;
 begin
@@ -2406,7 +2478,10 @@ begin
     Result := B;
 end;
 {$ENDIF}
+{$ENDREGION}
 
+{$REGION 'function Min'}
+{$IFNDEF OgPUREPASCAL_Min}
 {$IFDEF Win32}
 function Min(A, B : LongInt) : LongInt; register;
 asm
@@ -2415,6 +2490,7 @@ asm
   mov  eax, edx
 @Exit:
 end;
+{$ENDIF}
 {$ELSE}
 function Min(A, B : LongInt) : LongInt;
 begin
@@ -2424,9 +2500,12 @@ begin
     Result := B;
 end;
 {$ENDIF}
+{$ENDREGION}
 
-{$IFNDEF FPC}
-{$IFDEF Win32}
+{$REGION 'procedure XorMem'}
+{$IFNDEF OgPUREPASCAL_XorMem}
+{$IFDEF MSWINDOWS}
+{$IFNDEF Win16}
 procedure XorMem(var Mem1; const Mem2; Count : Cardinal); register;
 asm
   push esi
@@ -2465,6 +2544,7 @@ asm
   pop  edi
   pop  esi
 end;
+{$ENDIF}
 {$ENDIF}
 {!!.02} {revised}
 {$IFDEF Win16}
@@ -2529,7 +2609,7 @@ asm
   pop  esi
 end;
 {$ENDIF}
-{$ELSE} //FPC
+{$ELSE}
 procedure XorMem(var Mem1; const Mem2; Count : Cardinal);
 var
   pB1,pB2 : PByte;
@@ -2550,7 +2630,8 @@ begin
     Inc(i);
   end;
 end;
-{$ENDIF}
+{$ENDIF OgPUREPASCAL_XorMem}
+{$ENDREGION}
 
 {!!.09}
 function OgFormatDate(Value : TDateTime) : string;
