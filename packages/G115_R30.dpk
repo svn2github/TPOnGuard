@@ -64,6 +64,8 @@ contains
   OnGuard3,
   OnGuard4,
   OgFirst,
-  OgSrMgr;
+  OgSrMgr,
+  OgFile,
+  OgJcl;
 
 end.

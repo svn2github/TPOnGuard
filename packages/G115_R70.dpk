@@ -64,6 +64,8 @@ contains
   OnGuard3 in '..\source\OnGuard3.pas',
   OnGuard4 in '..\source\OnGuard4.pas',
   OgFirst in '..\source\OgFirst.pas',
-  OgSrMgr in '..\source\OgSrMgr.pas';
+  OgSrMgr in '..\source\OgSrMgr.pas',
+  ogfile in '..\source\ogfile.pas',
+  ogjcl in '..\source\ogjcl.pas';
 
 end.

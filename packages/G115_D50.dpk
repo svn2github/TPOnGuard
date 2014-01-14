@@ -61,7 +61,6 @@ contains
   OnGuard7 in '..\source\OnGuard7.pas',
   OgReg in '..\source\OgReg.pas',
   OgAbout0 in '..\source\OgAbout0.pas',
-  OgProExe in '..\source\OgProExe.pas',
-  OgFile in '..\source\OgFile.pas';
+  OgProExe in '..\source\OgProExe.pas';
 
 end.

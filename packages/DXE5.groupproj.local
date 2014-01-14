@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>2013/12/23 12:23:58.000.108,C:\Users\ahaines\Documents\RAD Studio\Projects\ProjectGroup1.groupproj=C:\projects\components\tp\onguard\OnGuard\packages\DXE5.groupproj</Transaction>
-  </Transactions>
-	<Default.Personality>
-		<Projects ActiveProject="C:\projects\components\tp\onguard\OnGuard\packages\G115_D190.dproj"/>
-	</Default.Personality>
-</BorlandProject>

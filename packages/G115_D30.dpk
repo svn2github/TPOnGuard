@@ -61,7 +61,6 @@ contains
   OnGuard7,
   OgReg,
   OgAbout0,
-  OgProExe,
-  OgFile;
+  OgProExe;
 
 end.
