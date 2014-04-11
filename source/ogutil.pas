@@ -43,6 +43,11 @@ uses
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QDialogs, {$ENDIF} {$ENDIF}
   {$IFDEF DELPHI15UP} System.AnsiStrings, {$ENDIF}
   SysUtils,
+  {$IFDEF DELPHI19UP}
+    {$IFDEF POSIX}Posix.Base, Posix.SysSocket, Posix.NetIf, Posix.NetinetIn, Posix.ArpaInet, ogposix,{$ENDIF}
+    {$IFDEF IOS}iOSApi.UIKit,{$ENDIF}
+    {$IFDEF ANDROID}androidapi.JNI.JavaTypes, androidapi.JNI.Os,{$ENDIF}
+  {$ENDIF}
   ogconst {$IFNDEF NoOgSrMgr},  ogsrmgr {$ENDIF} {$IFDEF UseOgJcl}, ogjcl{$ENDIF} ;
 
 const
@@ -73,6 +78,11 @@ type
   TGUID      = GUID;   {Delphi 1.0 defines it as GUID - Delphi 2.0 defines it as TGUID}
   AnsiChar   = Char;
   PAnsiChar  = PChar;
+  {$ENDIF}
+
+  {$IFDEF MACOS}
+  DWord      = Cardinal;
+  PDWord     = ^DWord;
   {$ENDIF}
 
   {$IFNDEF FPC}
@@ -290,8 +300,10 @@ var
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF DELPHI}{$IFDEF DELPHI3UP} ActiveX; {$ELSE} OLE2; {$ENDIF}{$ENDIF}
+{$ENDIF}
 
 {first 2048 bits of Pi in hexadecimal, low to high, without the leading "3"}
 const
@@ -1551,23 +1563,86 @@ end;
 {$ENDIF}
 {$ENDREGION}
 
-{$REGION 'Delphi-POSIX: MACOS LINUX ANDROID'}
+{$REGION 'Delphi-POSIX: MACOS LINUX IOS ANDROID'}
 {$IFDEF DELPHI19UP}
 {$IFDEF POSIX}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
 var
   Context : TTMDContext;
   Buf     : array [0..2047] of Byte;
+
+  {$IF defined(MACOS) or defined(LINUX)}
+  ifap, Next : pifaddrs;
+  sdp : sockaddr_dl;
+  {$ENDIF}
+
+  {$IFDEF IOS}
+  Device : UIDevice;
+  ID : UTF8String absolute Buf;
+  {$ENDIF}
+
+  {$IFDEF ANDROID}
+  ID: String absolute Buf;
+  {$ENDIF}
+
+
 begin
   InitTMD(Context);
+
+  {$IFDEF IOS}
+  Device := TUIDevice.Wrap(TUIDevice.OCClass.currentDevice);
+  {$ENDIF}
 
   if midUser in MachineInfo then
   begin
     //UpdateTMD(Context, Buf, I);
+
+    {$IFDEF ANDROID}
+    ID := JStringToString(TJBuild.JavaClass.USER);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    {$ENDIF}
   end;
 
   if midSystem in MachineInfo then
   begin
+    {$IFDEF IOS}
+    // see https://developer.apple.com/library/ios/documentation/uikit/reference/UIDevice_Class/Reference/UIDevice.html
+    ID := Device.identifierForVendor.UUIDString.UTF8String;
+    UpdateTMD(Contect, Buf, Length(ID));
+    {$ENDIF}
+
+    {$IFDEF ANDROID}
+    ID := JStringToString(TJBuild.JavaClass.BOARD);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.BOOTLOADER);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.BRAND);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.DEVICE);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.DISPLAY);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char))));
+    ID := JStringToString(TJBuild.JavaClass.HARDWARE);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.HOST);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.ID);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.MANUFACTURER);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.MODEL);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.PRODUCT);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.RADIO);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.MODEL);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.SERIAL);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    ID := JStringToString(TJBuild.JavaClass.TAGS);
+    UpdateTMD(Context, Buf, (Length(ID)*SizeOf(Char)));
+    {$ENDIF}
   end;
 
   if midNetwork in MachineInfo then
@@ -1600,6 +1675,38 @@ begin
 
   if midNetMAC in MachineInfo then
   begin
+    // not available in IOS 7 and later
+    {$IF defined(MACOS) or defined(LINUX)}
+
+    if getifaddrs(ifap)=0 then
+    begin
+      try
+        Next := ifap;
+        while Next <> nil do
+        begin
+          case Next.ifa_addr.sa_family of
+            AF_LINK:
+              begin
+                sdp := psockaddr_dl(Next.ifa_addr)^;
+                if sdp.sdl_type = IFT_ETHER then
+                begin
+                  Move(Pointer(PAnsiChar(@sdp.sdl_data[0]) + sdp.sdl_nlen)^, Buf, 6);
+                  UpdateTMD(Context, Buf, 6);
+                end;
+              end;
+            AF_INET,
+            AF_INET6:
+              begin
+              end;
+          end;
+          Next := Next.ifa_next;
+        end;
+      finally
+        freeifaddrs(ifap);
+      end;
+    end;
+
+    {$ENDIF}
   end;
 
   if midDomain in MachineInfo then
@@ -1686,11 +1793,7 @@ function GenerateUniqueModifierPrim : LongInt;
 var
   ID : TGUID;
 begin
-  {$IFNDEF FPC}
-  CoCreateGuid(ID);
-  {$ELSE}
   CreateGuid(ID);
-  {$ENDIF}
   Mix128(T128Bit(ID));
   Result := T128Bit(ID)[3];
 end;

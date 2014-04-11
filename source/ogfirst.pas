@@ -61,7 +61,7 @@ procedure ActivateFirstInstance;
 implementation
 
 
-{$IFDEF Win32}
+{$IFDEF MSWINDOWS}
 var
   FirstInstance : Boolean;
   InstanceMutex : THandle;
@@ -263,8 +263,9 @@ end;
 
 {$REGION 'Initialization/Finalization blocks'}
 
-{$REGION 'Win32'}
-{$IFDEF Win32}
+{$REGION 'Windows'}
+{$IFDEF MSWINDOWS}
+{$IFNDEF Win16}
 function GetMutexName : string;
 var
   WindowBuf : array [0..512] of Char;
@@ -292,6 +293,7 @@ initialization
 finalization
   if (InstanceMutex <> 0) then
     CloseHandle(InstanceMutex);
+{$ENDIF}
 {$ENDIF}
 {$ENDREGION}
 

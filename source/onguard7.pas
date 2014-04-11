@@ -36,7 +36,13 @@ unit onguard7;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
   Dialogs, Forms,
+  {$ENDIF}
+  {$IFDEF UseOgFMX}
+  FMX.Dialogs, FMX.Forms,
+  {$ENDIF}
+
 {$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
   DesignEditors;

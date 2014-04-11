@@ -112,6 +112,7 @@
 { DOS             any DOS (plain and DPMI)
 { REALMODE        16bit realmode DOS
 { PROTECTEDMODE   16bit DPMI DOS
+{ CONSOLE         console application
 {
 { MSWINDOWS       any Windows platform
 { WIN16           16bit Windows
@@ -141,7 +142,7 @@
 { NoOnGuardExceptions   disable the use of exceptions.
 { NoMakeKeysSupport     prevent the TOgMakeKeys Form being compiled into the exe.
 { NoMakeCodesSupport    prevent the TOgMakeCodes Form being compiled into the exe.
-{
+{ UseOgFMX              use Firemonkey
 {
 {
 { OgPUREPASCAL_ROLX     RolX function
@@ -622,12 +623,30 @@
     {$DEFINE OgPUREPASCAL_Max}
   {$ENDIF}
 
+  {$IFDEF MACOS}
+    {$DEFINE OgPUREPASCAL_Min}
+    {$DEFINE OgPUREPASCAL_Max}
+    {$DEFINE OgPUREPASCAL_XorMem}
+    {$DEFINE OgPUREPASCAL_ROLX}
+    {$DEFINE NoOgSrMgr}
+    {.$DEFINE NoMakeCodesSupport}  //temporary
+    {.$DEFINE NoMakeKeysSupport}   //temporary
+    {$IFNDEF CONSOLE}{$DEFINE UseOgFMX}{$ENDIF}
+  {$ENDIF}
+
 {$ENDIF}
 
 
 {$IFDEF DELPHI12UP}
   // do not use the String Resource Manager
   {$DEFINE NoOgSrMgr}
+{$ENDIF}
+
+{$IFDEF CPUARM}
+  {$DEFINE NoOgSrMgr}
+  {$DEFINE OgPUREPASCAL_Min}
+  {$DEFINE OgPUREPASCAL_Max}
+  {$DEFINE OgPUREPASCAL_XorMem}
 {$ENDIF}
 
 {====General defines=================================================}

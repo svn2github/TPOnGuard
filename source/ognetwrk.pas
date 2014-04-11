@@ -44,6 +44,7 @@ uses
   {$IFDEF Win32} Windows, {$ENDIF}
   {$IFDEF KYLIX} Libc, {$ENDIF}
   {$IFDEF UsingCLX} Types, {$ENDIF}
+  {$IFDEF MACOS}Posix.Unistd, {$ENDIF}
   Classes, SysUtils,
   ogconst,
   ogutil,
@@ -163,6 +164,13 @@ implementation
 
 uses
   ogfile;
+
+{$IFDEF MACOS}
+function HiWord(L: DWORD): Word;
+begin
+  Result := L shr 16;
+end;
+{$ENDIF}
 
 {*** TOgNetCode ***}
 

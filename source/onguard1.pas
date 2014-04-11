@@ -36,7 +36,15 @@ unit onguard1;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
   Windows, SysUtils, Classes, Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
+  {$ENDIF}
+  {$IFDEF UseOgFMX}
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects, FMX.ExtCtrls,
+  FMX.Memo, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
+  FMX.ListBox,
+  {$ENDIF}
   ogutil, onguard;
 
 type
@@ -52,8 +60,8 @@ type
     GenerateBtn: TButton;
     KeyTypeCb: TComboBox;
     ByteKeyEd: TEdit;
-    CancelBtn: TBitBtn;
-    OKBtn: TBitBtn;
+    CancelBtn: {$IFDEF MSWINDOWS}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
+    OKBtn: {$IFDEF MSWINDOWS}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
     procedure FormCreate(Sender: TObject);
     procedure KeyStringMeChange(Sender: TObject);
     procedure KeyTypeCbChange(Sender: TObject);
@@ -84,7 +92,8 @@ type
 
 implementation
 
-{$R *.DFM}
+{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
 
 procedure TKeyGenerateFrm.FormCreate(Sender: TObject);
 begin
@@ -92,11 +101,12 @@ begin
 
   {set state of memo and generate button}
   KeyStringMe.Enabled := (KeyTypeCb.ItemIndex <> 0);
+  {$IFNDEF UseOgFMX}
   case KeyStringMe.Enabled of
     True  : KeyStringMe.Color := clWindow;
     False : KeyStringMe.Color := clBtnFace;
   end;
-
+  {$ENDIF}
   GenerateBtn.Enabled := (KeyTypeCb.ItemIndex = 0) or
     (KeyStringMe.Lines.Count > 0);
 end;
@@ -118,10 +128,12 @@ begin
 
   {set state of memo and generate button}
   KeyStringMe.Enabled := (KeyTypeCb.ItemIndex <> 0);
+  {$IFNDEF UseOgFMX}
   case KeyStringMe.Enabled of
     True  : KeyStringMe.Color := clWindow;
     False : KeyStringMe.Color := clBtnFace;
   end;
+  {$ENDIF}
   GenerateBtn.Enabled := (KeyTypeCb.ItemIndex = 0) or
     (KeyStringMe.Lines.Count > 0);
 
@@ -176,13 +188,17 @@ begin
   case KeyTypeCb.ItemIndex of
     0:
       begin
+        {$IFDEF MSWINDOWS}
         Screen.Cursor := crHourGlass;
+        {$ENDIF}
         try
           GenerateRandomKeyPrim(FKey, SizeOf(FKey));
           BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
           ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
         finally
+          {$IFDEF MSWINDOWS}
           Screen.Cursor := crDefault;
+          {$ENDIF}
         end;
       end;
     1:

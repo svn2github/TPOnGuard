@@ -39,8 +39,16 @@ uses
 
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF MSWINDOWS}
   SysUtils, Messages, Classes, Graphics, Controls, Clipbrd, IniFiles,
   StdCtrls, Buttons, Forms, Dialogs,
+  {$ENDIF}
+  {$IFDEF UseOgFMX}
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.IniFiles,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects,
+  FMX.ExtCtrls, FMX.ListBox, FMX.Layouts, FMX.Edit, FMX.Platform,
+  Fmx.StdCtrls, FMX.Header, FMX.Graphics,
+  {$ENDIF}
   ogconst,
   ogutil,
   onguard,
@@ -54,13 +62,20 @@ type
     AddBtn: TButton;
     DeleteBtn: TButton;
     EditBtn: TButton;
+    {$IFNDEF UseOgFMX}
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
+    OpenBtn: TBitBtn;
+    {$ENDIF}
+    {$IFDEF UseOgFMX}
+    OKBtn: TButton;
+    CancelBtn: TButton;
+    OpenBtn: TButton;
+    {$ENDIF}
     OpenDialog1: TOpenDialog;
     FileNameGb: TGroupBox;
     FileNameEd: TEdit;
     OpenFileSb: TSpeedButton;
-    OpenBtn: TBitBtn;
     GroupBox1: TGroupBox;
     BlockKeyEd: TEdit;
     BytesKeyEd: TEdit;
@@ -106,7 +121,8 @@ type
 
 implementation
 
-{$R *.DFM}
+{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
 
 {!! This function is required to get round a bug in Delphi 4}        {!!.07}
 function TKeyMaintFrm.GetListBoxItemIndex : integer;                 {!!.07}
@@ -188,7 +204,9 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
+    {$IFDEF MSWINDOWS}
     F.ShowHint := ShowHint;
+    {$ENDIF}
     if F.ShowModal = mrOK then begin
       IniFile := TIniFile.Create(KeyFileName);
       try
@@ -215,7 +233,9 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
+    {$IFDEF MSWINDOWS}
     F.ShowHint := ShowHint;
+    {$ENDIF}
     IniFile := TIniFile.Create(KeyFileName);
     try
       F.ProductEd.Text := ProductsLb.Items[GetListBoxItemIndex];     {!!.07}
@@ -243,8 +263,9 @@ var
 begin
   I := GetListBoxItemIndex;                                          {!!.07}
   if (I > -1) then                                                   {!!.07}
-    if MessageDlg({$IFNDEF NoOgSrMgr}StrRes[SCDeleteQuery]{$ELSE}SCDeleteQuery{$ENDIF}, mtConfirmation,
-       [mbYes, mbNo], 0) = mrYes then begin
+    if MessageDlg({$IFNDEF NoOgSrMgr}StrRes[SCDeleteQuery]{$ELSE}SCDeleteQuery{$ENDIF},
+                  {$IFDEF UseOgFMX}TMsgDlgType.{$ENDIF}mtConfirmation,
+                  {$IFDEF UseOgFMX}mbYesNo{$ELSE}[mbYes, mbNo]{$ENDIF}, 0) = mrYes then begin
       {$IFDEF MSWINDOWS}
       {$IFNDEF Win16}
       IniFile := TIniFile.Create(KeyFileName);

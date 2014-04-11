@@ -52,9 +52,11 @@ uses
   {$IFDEF KYLIX} Libc, {$ENDIF}
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QControls, QDialogs, {$ENDIF}{$ENDIF}
   {$IFDEF DELPHI15UP} System.AnsiStrings, {$ENDIF}
-  Classes, Controls, SysUtils,
+  Classes, SysUtils,
+  {$IFDEF MSWINDOWS} Controls, {$ENDIF}
   {$IFDEF UsingZLib} ZLib, {$ENDIF}
   {$IFDEF FPC}{$IFDEF WIN32} idesn, {$ENDIF}{$ENDIF}
+  {$IFDEF UseOgFMX}System.UITypes,{$ENDIF}
   ogconst,
   ogutil;
 
@@ -604,11 +606,20 @@ const
 
 implementation
 
+{$IF defined(MSWINDOWS) or defined(KYLIX)}
 uses
   {$IFDEF DELPHI}{$IFDEF DELPHI3UP} ActiveX {$ELSE} OLE2 {$ENDIF}{$ENDIF}
   {$IFNDEF NoMakeCodesSupport} , {$IFDEF UsingCLX} qonguard2 {$ELSE} onguard2 {$ENDIF}{$ENDIF}
   {$IFNDEF NoMakeKeysSupport} , {$IFDEF UsingCLX} qonguard3 {$ELSE} onguard3  {$ENDIF}{$ENDIF}
   ;
+{$ENDIF}
+{$IFDEF UseOgFMX}
+{$IF not defined(NoMakeCodesSupport) or  not defined(NoMakeKeysSupport)}
+uses
+  {$IFNDEF NoMakeCodesSupport}onguard2{$IFNDEF NoMakeKeysSupport},onguard3{$ENDIF}{$ENDIF}
+  ;
+{$ENDIF}
+{$ENDIF}
 
 {$REGION 'moved to ogutil.pas'}
 
@@ -1988,7 +1999,9 @@ begin
     F.SetKey(FKey);                                                  {!!.08}
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
+    {$IFNDEF UseOgFMX}
     F.ShowHint := FShowHints;
+    {$ENDIF}
     Result := F.ShowModal = {$IFNDEF FPC}mrOK{$ELSE}1{$ENDIF};// was mrOK but that pulls in a GUI framework
     if Result then begin
       FCode := F.Code;
@@ -2057,7 +2070,9 @@ begin
     F.SetKey(FKey);                                                  {!!.08}
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
+    {$IFNDEF UseOgFMX}
     F.ShowHint := FShowHints;
+    {$ENDIF}
     Result := F.ShowModal = {$IFNDEF FPC}mrOK{$ELSE}1{$ENDIF};// was mrOK but that pulls in a GUI framework
     if Result then begin
       F.GetKey(FKey);                                                {!!.08}
