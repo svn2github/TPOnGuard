@@ -93,7 +93,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFNDEF UseOgFMX}{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
 
 

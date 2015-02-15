@@ -288,11 +288,13 @@
   {$DEFINE DELPHI8UP}
   {$DEFINE DELPHI9UP}
   {$DEFINE DELPHI10UP}
+  (*
   {$IF CompilerVersion >= 11}
     {$DEFINE DELPHI11}
     {$DEFINE DELPHI11UP}
     {$UNDEFINE DELPHI10}
   {$ENDIF}
+  *)
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CAST OFF}
@@ -626,6 +628,7 @@
   {$UNDEF UsingCLX}
   {$UNDEF BCB}
   {$UNDEF CBUILDER}
+  {$UNDEF UseOgFMX}
   {$B-} {Complete Boolean Evaluation}
   {$I+} {Input/Output-Checking}
   {$P+} {Open Parameters}
@@ -645,6 +648,7 @@
   {$V-} {Var-String Checking}             //to be removed
 
   {$DEFINE UsingCLX}
+  {$UNDEF UseOgFMX}
 {$ENDIF}
 
 
@@ -682,6 +686,10 @@
     {$C MOVEABLE,DEMANDLOAD,DISCARDABLE}
   {$ELSE}
     {$J+} {Assignable Typed Constants}                                   {!!.11}
+  {$ENDIF}
+
+  {$IFNDEF DELPHI15UP}
+    {$UNDEF UseOgFMX}
   {$ENDIF}
 
   {$IFNDEF Win32}

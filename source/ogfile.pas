@@ -88,25 +88,20 @@ function FlushFileBuffers(Handle : THandle) : Boolean;
 implementation
 
 
-{$REGION 'Win32'}
 {$IFDEF Win32}
 function GetFileSize(Handle : THandle) : Cardinal;
 begin
   Result := Windows.GetFileSize(Handle, nil);
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Win64'}
 {$IFDEF Win64}
 function GetFileSize(Handle : THandle) : Cardinal;
 begin
   Result := Windows.GetFileSize(Handle, nil);
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Win16'}
 {$IFDEF Win16}
 function GetFileSize(Handle : THandle) : Cardinal;
 var
@@ -177,9 +172,7 @@ begin
   Result := Error = 0;
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Kylix'}
 {$IFDEF KYLIX}
 function GetFileSize(Handle : THandle) : Cardinal;
 var
@@ -227,9 +220,7 @@ begin
   Result := True;
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'FPC'}
 {$IFDEF FPC}
 {$IFNDEF MSWINDOWS}
 
@@ -314,9 +305,7 @@ end;
 
 {$ENDIF}
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'OSX'}
 {$IFDEF DELPHI}
 {$IFDEF MACOS}
 function GetFileSize(Handle : THandle) : Cardinal;
@@ -365,6 +354,5 @@ end;
 
 {$ENDIF}
 {$ENDIF}
-{$ENDREGION}
 
 end.

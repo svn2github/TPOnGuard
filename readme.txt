@@ -103,5 +103,14 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added XE6 & XE7 in onguard.inc
     confirmed SourceForge bug report 12 is already in place
 
+4.3.1 Release 1.15 r17
+
+    Enhancements
+    -------------------------------------------------------------
+    removed code folding "{$REGION}" for Delphi 3-7 support
+    confirmed {$IF } ... {$IFEND} usage
+
+
+
 
 

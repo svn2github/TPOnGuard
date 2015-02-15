@@ -104,7 +104,6 @@ type
           HiHi: Byte);
   end;
 
-{$REGION 'moved from onguard.pas'}
 // moved from onguard.pas
 const
   {magic values}
@@ -252,7 +251,6 @@ const
   BaseDate : LongInt = 35065;  //35065 = 1996-Jan-1
 
 
-{$ENDREGION}
 
 
 function BufferToHex(const Buf; BufSize : Cardinal) : string;
@@ -409,7 +407,6 @@ begin
   Result := HashElf(Str[1], Length(Str));
 end;
 
-{$REGION 'MD5 routines'}
 {internal routines for MD5}
 type
   TMD5ContextEx = record
@@ -705,9 +702,7 @@ begin
   UpdateMD5(Context, Buf, BufSize);
   Result := FinalizeMD5(Context);
 end;
-{$ENDREGION}
 
-{$REGION 'message digest routines'}
 {message digest routines}
 type
   TMDContextEx = record
@@ -811,11 +806,7 @@ begin
   FinalizeTMD(Context, Digest, DigestSize);
 end;
 
-{$ENDREGION}
 
-{$REGION 'CreateMachineID'}
-
-{$REGION 'Win32 + Win64'}
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
 {!!.05} {added}
@@ -1269,9 +1260,7 @@ begin
 end;
 {$ENDIF Win16}
 {$ENDIF MSWINDOWS}
-{$ENDREGION}
 
-{$REGION 'Win16'}
 {$IFDEF Win16}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
 var
@@ -1329,9 +1318,7 @@ begin
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Kylix'}
 {$IFDEF KYLIX}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
 var
@@ -1428,9 +1415,7 @@ begin
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'FPC-UNIX'}
 {$IFDEF FPC}
 {$IFDEF UNIX}
 {$NOTE Make sure we have some FreeBSD and MacOSX support too at some point }
@@ -1561,9 +1546,7 @@ end;
 
 {$ENDIF}
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Delphi-POSIX: MACOS LINUX IOS ANDROID'}
 {$IFDEF DELPHI19UP}
 {$IFDEF POSIX}
 function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
@@ -1574,7 +1557,7 @@ var
   {$IF defined(MACOS) or defined(LINUX)}
   ifap, Next : pifaddrs;
   sdp : sockaddr_dl;
-  {$ENDIF}
+  {$IFEND}
 
   {$IFDEF IOS}
   Device : UIDevice;
@@ -1706,7 +1689,7 @@ begin
       end;
     end;
 
-    {$ENDIF}
+    {$IFEND}
   end;
 
   if midDomain in MachineInfo then
@@ -1717,12 +1700,9 @@ begin
 end;
 {$ENDIF POSIX}
 {$ENDIF DELPHI19UP}
-{$ENDREGION}
 
 
-{$ENDREGION}
 
-{$REGION 'key generation routines'}
 {key generation routines }
 procedure GenerateRandomKeyPrim(var Key; KeySize: Cardinal);
 var
@@ -1763,9 +1743,7 @@ begin
   D := HashMD5(S2[1], Length(S2));                                     {!!.06}
   Key := TKey(D);
 end;
-{$ENDREGION}
 
-{$REGION 'modifier routines'}
 {modifier routines}
 function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
 var
@@ -1816,14 +1794,11 @@ begin
     XorMem(Key, Modifier, Min(SizeOf(Modifier), KeySize));
 end;
 
-{$ENDREGION}
 
 
 
 
-{$REGION '*** general routines ***'}
 
-{$REGION 'general'}
 {*** general routines ***}
 function GetCodeType(const Key : TKey; const Code : TCode) : TCodeType;
 var
@@ -1877,9 +1852,7 @@ begin
     Result := ExpandDate(0)
   end;
 end;
-{$ENDREGION}
 
-{$REGION '*** date code ***'}
 {*** date code ***}
 
 procedure InitDateCode(const Key : TKey;
@@ -1969,9 +1942,7 @@ begin
     Result := 0;
 end;
 
-{$ENDREGION}
 
-{$REGION '*** days code ***'}
 {*** days code ***}
 
 procedure InitDaysCode(const Key : TKey; Days : Word; Expires : TDateTime;
@@ -2037,9 +2008,7 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.Days = 0) or (ExpandDate(Work.Expiration) < Date);
 end;
-{$ENDREGION}
 
-{$REGION '*** registration code ***'}
 {*** registration code ***}
 
 procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
@@ -2094,9 +2063,7 @@ begin
   v := StringHashElf(AnsiString(AnsiUpperCase(S)));
   Result := v = Work.RegString;
 end;
-{$ENDREGION}
 
-{$REGION '*** serial number code ***'}
 {*** serial number code ***}
 
 procedure InitSerialNumberCode(const Key : TKey; Serial : LongInt; Expires : TDateTime; var Code : TCode);
@@ -2146,9 +2113,7 @@ begin
   Result := (Work.CheckValue = SerialCheckCode) and (Serial = Work.SerialNumber);
 end;
 
-{$ENDREGION}
 
-{$REGION '*** special code ***'}
 {*** special code ***}
 
 procedure InitSpecialCode(const Key : TKey; Value : LongInt; Expires : TDateTime; var Code : TCode);
@@ -2198,9 +2163,7 @@ begin
   Result := (Work.CheckValue = SpecialCheckCode) and (Work.Value = Value);
 end;
 
-{$ENDREGION}
 
-{$REGION '*** usage code ***'}
 {*** usage code ***}
 
 procedure InitUsageCode(const Key : TKey; Count : Word; Expires : TDateTime; var Code : TCode);
@@ -2284,12 +2247,6 @@ begin
 end;
 {$ENDIF}
 
-{$ENDREGION}
-
-{$ENDREGION}
-
-
-
 function BufferToHex(const Buf; BufSize : Cardinal) : string;
 var
   Bytes : TByteArray absolute Buf;
@@ -2316,7 +2273,6 @@ begin
     Result := Result + ',' + HexStr + IntToHex(Bytes[I], 2);
 end;
 
-{$REGION 'function GetDiskSerialNumber - multiplatform'}
 {$IFDEF Win16}
 type
   PMediaIDRec = ^TMediaIDRec;
@@ -2502,7 +2458,6 @@ begin
   Result := 0;
 end;
 {$ENDIF FreeBSD}
-{$ENDREGION}
 
 function HexStringIsZero(const Hex : string) : Boolean;
 var
@@ -2561,7 +2516,6 @@ begin
   Result := True;
 end;
 
-{$REGION 'function Max'}
 {$IFNDEF OgPUREPASCAL_Max}
 {$IFDEF Win32}
 function Max(A, B : LongInt) : LongInt; register;
@@ -2581,9 +2535,7 @@ begin
     Result := B;
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'function Min'}
 {$IFNDEF OgPUREPASCAL_Min}
 {$IFDEF Win32}
 function Min(A, B : LongInt) : LongInt; register;
@@ -2603,9 +2555,7 @@ begin
     Result := B;
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'procedure XorMem'}
 {$IFNDEF OgPUREPASCAL_XorMem}
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
@@ -2734,7 +2684,6 @@ begin
   end;
 end;
 {$ENDIF OgPUREPASCAL_XorMem}
-{$ENDREGION}
 
 {!!.09}
 function OgFormatDate(Value : TDateTime) : string;

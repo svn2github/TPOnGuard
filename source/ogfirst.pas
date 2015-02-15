@@ -83,7 +83,6 @@ begin
   {$IFDEF LINUX} Result := FirstInstance; {$ENDIF}
 end;
 
-{$REGION 'ActivateFirstInstance - Win32'}
 {$IFDEF Win32}
 procedure ActivateFirstInstance;
 var
@@ -139,9 +138,7 @@ end;
 {$ENDIF}
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'ActivateFirstInstance - Win16'}
 {$IFDEF Win16}
 type
   PHWND = ^hWnd;
@@ -193,12 +190,9 @@ begin
   end;
 end;
 {$ENDIF}
-{$ENDREGION}
 
 
-{$REGION 'ActivateFirstInstance - Other Platforms'}
 
-{$REGION 'ActivateFirstInstance - Win64'}
 {$IFDEF Win64}
 procedure ActivateFirstInstance;
 begin
@@ -208,9 +202,7 @@ begin
  //look at the running processes
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'ActivateFirstInstance - LINUX'}
 {$IFDEF KYLIX}
 procedure ActivateFirstInstance;
 begin
@@ -220,9 +212,7 @@ begin
  //look at the running processes
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'ActivateFirstInstance - MACOS'}
 {$IFDEF MACOS}
 procedure ActivateFirstInstance;
 begin
@@ -232,9 +222,7 @@ begin
  //look at the running processes
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'ActivateFirstInstance - iOS'}
 {$IFDEF IOS}
 procedure ActivateFirstInstance;
 begin
@@ -244,9 +232,7 @@ begin
  //look at the running processes
 end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'ActivateFirstInstance - Android'}
 {$IFDEF ANDROID}
 procedure ActivateFirstInstance;
 begin
@@ -256,14 +242,10 @@ begin
  //look at the running processes
 end;
 {$ENDIF}
-{$ENDREGION}
-
-{$ENDREGION}
 
 
-{$REGION 'Initialization/Finalization blocks'}
 
-{$REGION 'Windows'}
+
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
 function GetMutexName : string;
@@ -295,9 +277,7 @@ finalization
     CloseHandle(InstanceMutex);
 {$ENDIF}
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'Kylix'}
 {$IFDEF KYLIX}
 initialization
   //server_lock := -1;
@@ -320,9 +300,7 @@ finalization
     unlink(PChar(server_name));
   end;
 {$ENDIF}
-{$ENDREGION}
 
-{$REGION 'FPC-UNIX'}
 {$IFDEF FPC}
 {$IFDEF UNIX}
 initialization
@@ -347,7 +325,4 @@ finalization
  end;
 {$ENDIF}
 {$ENDIF}
-{$ENDREGION}
-
-{$ENDREGION}
 end.
