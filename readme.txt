@@ -95,4 +95,13 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added HTML help files
     added Unit Tests
 
+4.3.1 Release 1.15 r16
+
+    Enhancements
+    -------------------------------------------------------------
+    added packages for XE6 and XE7
+    added XE6 & XE7 in onguard.inc
+    confirmed SourceForge bug report 12 is already in place
+
+
 
