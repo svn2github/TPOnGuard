@@ -58,6 +58,8 @@ uses
   ogconst, ogutil;
 
 type
+{$IFNDEF OgProExeStampUsed}
+{$DEFINE OgProExeUsed}
   {exe signature record}
   PSignatureRec = ^TSignatureRec;
   TSignatureRec = packed record
@@ -71,6 +73,7 @@ type
     Sig5   : DWord;                                                  {!!.07}
     Sig6   : DWord;                                                  {!!.07}
   end;
+{$ENDIF}
 
   TExeStatus = (
     exeSuccess,             {no error}
@@ -161,13 +164,14 @@ procedure UpdateCRC32(var CRC : DWord;  const Buf;  BufSize : LongInt);  {!!.07}
 
 implementation
 
-
+{$IFNDEF OgProExeStampUsed}
 {signature = '!~~@CRC32@~~' used before and after}
 const
   StoredSignature : TSignatureRec = (
     Sig1:$407E7E21;  Sig2:$33435243;  Sig3:$7E7E4032;
     Offset:1;  Size:2;  CRC:3;
     Sig4:$407E7E21;  Sig5:$33435243;  Sig6:$7E7E4032);
+{$ENDIF}
 
 {CRC32 lookup table}
 const
