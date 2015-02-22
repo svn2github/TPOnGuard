@@ -53,6 +53,8 @@
 { DELPHI17        Delphi XE3
 { DELPHI18        Delphi XE4
 { DELPHI19        Delphi XE5
+{ DELPHI20        Delphi XE6
+{ DELPHI21        Delphi XE7
 { KYLIX1          Kylix 1.0
 { KYLIX2          Kylix 2.0
 { KYLIX3          Kylix 3.0
@@ -82,6 +84,8 @@
 { DELPHI17UP      Delphi XE3 and above
 { DELPHI18UP      Delphi XE4 and above
 { DELPHI19UP      Delphi XE5 and above
+{ DELPHI20UP      Delphi XE6 and above
+{ DELPHI21UP      Delphi XE7 and above
 { KYLIX1UP        Kylix 1.0 and above (any Kylix)
 { KYLIX2UP        Kylix 2.0 and above (any Kylix)
 { KYLIX3UP        Kylix 3.0 and above (any Kylix)

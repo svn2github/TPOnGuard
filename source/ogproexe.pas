@@ -49,6 +49,14 @@ unit ogproexe;
 
 interface
 
+{$IFDEF KYLIX}{$MESSAGE WARN 'Kylix not supported.'}{$ENDIF}
+{$IFDEF LINUX}{$MESSAGE WARN 'Linux not supported.'}{$ENDIF}
+{$IFDEF FREESBD}{$MESSAGE WARN 'FreeBSD not supported.'}{$ENDIF}
+{$IFDEF Win64}{$MESSAGE WARN 'Win64 not supported.'}{$ENDIF}
+{$IFDEF ANDROID}{$MESSAGE WARN 'Android not supported.'}{$ENDIF}
+{$IFDEF IOS}{$MESSAGE WARN 'IOS not supported.'}{$ENDIF}
+{$IFDEF MACOS}{$MESSAGE WARN 'Mac OSX not supported.'}{$ENDIF}
+
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
@@ -310,7 +318,8 @@ begin
       Result := exeAccessDenied;                                       {!!.05}
   end;                                                                 {!!.05}
 end;
-{$ELSE}
+{$ENDIF}
+{$IFDEF Win16}
 function IsExeTampered(CheckSize : Boolean) : TExeStatus;
   {-return one of the possible TExeResult states}
 const
@@ -459,7 +468,8 @@ begin
     CloseHandle(Fh);
   end;
 end;
-{$ELSE}
+{$ENDIF}
+{$IFDEF Win16}
 function ProtectExe(const FileName : string;  EraseMarker : Boolean) : Boolean;
   {-stamp exe with crc and file size. optionally erase search markers}
 const
@@ -625,7 +635,8 @@ begin
     CloseHandle(Fh);
   end;
 end;
-{$ELSE}
+{$ENDIF}
+{$IFDEF Win16}
 function UnprotectExe(const FileName : string) : Boolean;
   {-writes uninitialized signature record. marker must not have been erased}
 const
@@ -736,7 +747,8 @@ begin
     CloseHandle(Fh);
   end;
 end;
-{$ELSE}
+{$ENDIF}
+{$IFDEF Win16}
 function FileCRC32(const FileName : string) : {$IFNDEF FPC}LongInt;{$ELSE}DWord;{$ENDIF}
 const
   BufSize = 4096;
