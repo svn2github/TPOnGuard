@@ -1,0 +1,102 @@
+object EditProductFrm: TEditProductFrm
+  Left = 299
+  Top = 201
+  BorderIcons = []
+  Caption = 'Description and Key'
+  ClientHeight = 110
+  ClientWidth = 464
+  Position = poScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [dkDesktop, dkiPhone, dkiPad]
+  OnCreate = FormCreate
+  Left = 299
+  Top = 201
+  DesignerMobile = False
+  DesignerWidth = 0
+  DesignerHeight = 0
+  DesignerDeviceName = ''
+  DesignerOrientation = 0
+  DesignerOSVersion = ''
+  object OKBtn: TButton
+    Default = True
+    Height = 25.000000000000000000
+    ModalResult = 1
+    Position.X = 305.000000000000000000
+    Position.Y = 80.000000000000000000
+    TabOrder = 0
+    Text = 'OK'
+    Width = 75.000000000000000000
+  end
+  object CancelBtn: TButton
+    Cancel = True
+    Height = 25.000000000000000000
+    ModalResult = 2
+    Position.X = 385.000000000000000000
+    Position.Y = 80.000000000000000000
+    TabOrder = 1
+    Text = 'Cancel'
+    Width = 75.000000000000000000
+  end
+  object Panel1: TPanel
+    Height = 68.000000000000000000
+    Position.X = 4.000000000000000000
+    Position.Y = 5.000000000000000000
+    Width = 456.000000000000000000
+    TabOrder = 2
+    object Label1: TLabel
+      AutoSize = True
+      Height = 19.000000000000000000
+      Position.X = 12.000000000000000000
+      Position.Y = 12.000000000000000000
+      Text = 'Description:'
+      Width = 62.000000000000000000
+      WordWrap = False
+    end
+    object Label2: TLabel
+      AutoSize = True
+      Height = 19.000000000000000000
+      Position.X = 12.000000000000000000
+      Position.Y = 40.000000000000000000
+      Text = 'Key:'
+      Width = 24.000000000000000000
+      WordWrap = False
+    end
+    object GenerateKeySb: TSpeedButton
+      Height = 23.000000000000000000
+      Position.X = 426.000000000000000000
+      Position.Y = 37.000000000000000000
+      Width = 23.000000000000000000
+      WordWrap = True
+      OnClick = GenerateKeySbClick
+    end
+    object KeyPasteSb: TSpeedButton
+      Height = 23.000000000000000000
+      Position.X = 400.000000000000000000
+      Position.Y = 37.000000000000000000
+      Width = 23.000000000000000000
+      WordWrap = True
+      OnClick = KeyPasteSbClick
+    end
+    object ProductEd: TEdit
+      Touch.InteractiveGestures = [igLongTap, igDoubleTap]
+      TabOrder = 0
+      Position.X = 80.000000000000000000
+      Position.Y = 8.000000000000000000
+      Width = 318.000000000000000000
+      Height = 21.000000000000000000
+      KillFocusByReturn = False
+      OnChange = InfoChanged
+    end
+    object KeyEd: TEdit
+      Touch.InteractiveGestures = [igLongTap, igDoubleTap]
+      TabOrder = 1
+      Position.X = 80.000000000000000000
+      Position.Y = 38.000000000000000000
+      Width = 318.000000000000000000
+      Height = 21.000000000000000000
+      KillFocusByReturn = False
+      OnChange = InfoChanged
+    end
+  end
+end

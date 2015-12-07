@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{79A78D39-D87E-4068-83D3-F8C6A459D2BF}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="G115_R220.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="G115_D220.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Tests\G115_R220Tests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="G115_R220">
+        <MSBuild Projects="G115_R220.dproj"/>
+    </Target>
+    <Target Name="G115_R220:Clean">
+        <MSBuild Projects="G115_R220.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115_R220:Make">
+        <MSBuild Projects="G115_R220.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="G115_D220">
+        <MSBuild Projects="G115_D220.dproj"/>
+    </Target>
+    <Target Name="G115_D220:Clean">
+        <MSBuild Projects="G115_D220.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115_D220:Make">
+        <MSBuild Projects="G115_D220.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="G115_R220Tests">
+        <MSBuild Projects="..\Tests\G115_R220Tests.dproj"/>
+    </Target>
+    <Target Name="G115_R220Tests:Clean">
+        <MSBuild Projects="..\Tests\G115_R220Tests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115_R220Tests:Make">
+        <MSBuild Projects="..\Tests\G115_R220Tests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="G115_R220;G115_D220;G115_R220Tests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="G115_R220:Clean;G115_D220:Clean;G115_R220Tests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="G115_R220:Make;G115_D220:Make;G115_R220Tests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

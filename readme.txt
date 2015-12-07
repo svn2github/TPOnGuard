@@ -103,12 +103,55 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added XE6 & XE7 in onguard.inc
     confirmed SourceForge bug report 12 is already in place
 
-4.3.1 Release 1.15 r17
+4.3.2 Release 1.15 r17
 
     Enhancements
     -------------------------------------------------------------
     removed code folding "{$REGION}" for Delphi 3-7 support
     confirmed {$IF } ... {$IFEND} usage
+
+4.3.3 Release 1.15 r18
+
+    Enhancements
+    -------------------------------------------------------------
+    added ogstamp.pas
+
+4.3.4 Release 1.15 r19
+
+    Enhancements
+    -------------------------------------------------------------
+    added ogcodesign.pas
+
+4.3.5 Release 1.15 r20
+
+    Enhancements
+    -------------------------------------------------------------
+    split ognetwrk.pas to separate visual/non-visual code, adding ognetwrkutil.pas
+    added XE8 in onguard.inc
+    added Delphi 10 Seattle in onguard.inc
+    added Delphi 10 Seattle packages and group project
+    added 64 bit support
+    added "bin" folder for storing compiler output
+    added UseOgVCL define to enable VCL usage (enabled by default for Delphi)
+    added DUnit tests for Delphi 10 Seattle (32 and 64 bit, Windows only)
+    fixed XE5 group project and package files
+    fixed XE6 group project and package files
+    added DUnit tests for Delphi XE6 (32 and 64 bit, Windows only)
+    fixed DPK files for Delphi 3-7, 2005-2010, XE-XE4 for new files and structure.
+    fixed XE7 group project and package files
+    added DUnit tests for Delphi XE7 (32 and 64 bit, Windows only)
+    added XE8 group project and package files
+    added DUnit tests for Delphi XE8 (32 and 64 bit, Windows only)
+    various documentation updates
+
+
+    Known Issues
+    -------------------------------------------------------------
+    BCB package files do not have changes for new files and structure.
+    Kylix package files do not have changes for new files and structure.
+    Lazarus package files do not have changes for new files and structure.
+    ogcodesign.pas is not in any package.
+    IsFileTampered function does not use the file's stamp.
 
 
 

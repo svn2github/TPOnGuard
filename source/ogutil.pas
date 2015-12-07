@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                   OGUTIL.PAS 1.15                     *}
@@ -38,10 +42,12 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF Win64} Windows, {$ENDIF}                                        {AH.02}
   {$IFDEF KYLIX} Libc, {$ENDIF}
   {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF}{$ENDIF}
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QDialogs, {$ENDIF} {$ENDIF}
-  {$IFDEF DELPHI15UP} System.AnsiStrings, {$ENDIF}
+  {$IFDEF DELPHI16UP} System.AnsiStrings, {$ENDIF}
+  {$IFDEF DELPHI12UP} Character, {$ENDIF}
   SysUtils,
   {$IFDEF DELPHI19UP}
     {$IFDEF POSIX}Posix.Base, Posix.SysSocket, Posix.NetIf, Posix.NetinetIn, Posix.ArpaInet, ogposix,{$ENDIF}
@@ -72,6 +78,13 @@ const
   {$ENDIF}
 
 type
+  {$IFDEF DELPHI22UP}                                             {AH.02}
+  ogLongInt = FixedInt;                                           {AH.02}
+  {$ELSE}                                                         {AH.02}
+  ogLongInt = LongInt;                                            {AH.02}
+  {$ENDIF}                                                        {AH.02}
+  PogLongInt = ^ogLongInt;                                        {AH.02}
+
   {$IFDEF Win16}
   DWord      = LongInt;
   PDWord     = ^DWord;
@@ -93,6 +106,8 @@ type
   {$ENDIF}
   PLongIntArray = ^TLongIntArray;
   TLongIntArray = array [0..MaxStructSize div SizeOf(LongInt) - 1] of LongInt;
+  PogLongIntArray = ^TogLongIntArray;                                                  {AH.02}
+  TogLongIntArray = array [0..MaxStructSize div SizeOf(ogLongInt) - 1] of ogLongInt;   {AH.02}
 
   TLongIntRec = record
     case Byte of
@@ -126,12 +141,12 @@ type
            EndDate      : Word);
       1 : (Days         : Word;      {for days code}
            LastAccess   : Word);
-      2 : (RegString    : LongInt);  {for reg code}
-      3 : (SerialNumber : LongInt);  {for serial number code}
+      2 : (RegString    : ogLongInt);  {for reg code}
+      3 : (SerialNumber : ogLongInt);  {for serial number code}
       4 : (UsageCount   : Word;      {for usage count code}            {!!.02}
            LastChange   : Word);                                       {!!.02}
-      5 : (Value        : LongInt);  {for specail codes}
-      6 : (NetIndex     : LongInt);  {for net codes}
+      5 : (Value        : ogLongInt);  {for specail codes}
+      6 : (NetIndex     : ogLongInt);  {for net codes}
   end;
 
 type
@@ -151,8 +166,8 @@ type
   TMD5Digest  = array [0..15] of Byte;
 
   {bit mixing types}
-  T128Bit     = array [0..3] of LongInt;
-  T256Bit     = array [0..7] of LongInt;
+  T128Bit     = array [0..3] of ogLongInt;
+  T256Bit     = array [0..7] of ogLongInt;
 
 const
   DefCodeType      = ctDate;
@@ -195,7 +210,7 @@ function GetDateCodeEnd(const Key : TKey; const Code : TCode) : TDateTime;
 procedure InitDaysCode(const Key : TKey; Days : Word; Expires : TDateTime; var Code : TCode);
 function IsDaysCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 procedure DecDaysCode(const Key : TKey; var Code : TCode);
-function GetDaysCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetDaysCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 function IsDaysCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 
 procedure InitRegCode(const Key : TKey; const RegStr : AnsiString; Expires : TDateTime; var Code : TCode);
@@ -203,22 +218,22 @@ function IsRegCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 function IsRegCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
 function IsRegCodeRegisteredTo(const Key : TKey; const Code : TCode; const RegStr: AnsiString) : Boolean;
 
-procedure InitSerialNumberCode(const Key : TKey;  Serial : LongInt; Expires : TDateTime; var Code : TCode);
+procedure InitSerialNumberCode(const Key : TKey;  Serial : ogLongInt; Expires : TDateTime; var Code : TCode);
 function IsSerialNumberCodeValid(const Key : TKey; const Code : TCode) : Boolean;
-function GetSerialNumberCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetSerialNumberCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 function IsSerialNumberCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
-function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: LongInt) : Boolean;
+function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: ogLongInt) : Boolean;
 
-procedure InitSpecialCode(const Key : TKey; Value : LongInt; Expires : TDateTime; var Code : TCode);
+procedure InitSpecialCode(const Key : TKey; Value : ogLongInt; Expires : TDateTime; var Code : TCode);
 function IsSpecialCodeValid(const Key : TKey; const Code : TCode) : Boolean;
-function GetSpecialCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetSpecialCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 function IsSpecialCodeExpired(const Key : TKey; const Code : TCode) : Boolean;
-function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: LongInt) : Boolean;
+function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: ogLongInt) : Boolean;
 
 procedure InitUsageCode(const Key : TKey; Count : Word; Expires : TDateTime; var Code : TCode);
 function IsUsageCodeValid(const Key : TKey; const Code : TCode) : Boolean;
 procedure DecUsageCode(const Key : TKey; var Code : TCode);
-function GetUsageCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetUsageCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 function IsUsageCodeExpired(const Key : TKey; const Code: TCode) : Boolean;
 {$IFDEF OgUsageUnlimited}
 procedure InitUsageCodeUnlimited(const Key : TKey; var Code : TCode);
@@ -230,15 +245,15 @@ procedure GenerateTMDKeyPrim(var Key; KeySize : Cardinal; const Str : AnsiString
 procedure GenerateMD5KeyPrim(var Key: TKey; const Str : AnsiString);
 
 {modifier routines}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;   {!!.05}
-function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
-function GenerateUniqueModifierPrim : LongInt;
-function GenerateMachineModifierPrim : LongInt;
-function GenerateDateModifierPrim(D : TDateTime) : LongInt;
-procedure ApplyModifierToKeyPrim(Modifier : LongInt; var Key; KeySize : Cardinal);
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : ogLongInt;   {!!.05}
+function GenerateStringModifierPrim(const S : AnsiString) : ogLongInt;
+function GenerateUniqueModifierPrim : ogLongInt;
+function GenerateMachineModifierPrim : ogLongInt;
+function GenerateDateModifierPrim(D : TDateTime) : ogLongInt;
+procedure ApplyModifierToKeyPrim(Modifier : ogLongInt; var Key; KeySize : Cardinal);
 
 {hash routines}
-function StringHashElf(const Str : AnsiString) : LongInt;
+function StringHashElf(const Str : AnsiString) : ogLongInt;
 
 {mixing routines}
 procedure MixBlock(const Matrix : T128Bit; var Block; Encrypt : Boolean);
@@ -248,7 +263,7 @@ function ExpandDate(D : Word) : TDateTime;
 function ShrinkDate(D : TDateTime) : Word;
 
 const
-  BaseDate : LongInt = 35065;  //35065 = 1996-Jan-1
+  BaseDate : ogLongInt = 35065;  //35065 = 1996-Jan-1
 
 
 
@@ -256,16 +271,16 @@ const
 function BufferToHex(const Buf; BufSize : Cardinal) : string;
 function BufferToHexBytes(const Buf; BufSize : Cardinal) : string;
 {$IFDEF Win16}
-function GetDiskSerialNumber(Drive : AnsiChar) : LongInt;
+function GetDiskSerialNumber(Drive : AnsiChar) : ogLongInt;
 {$ENDIF}
 {$IFDEF LINUX}
-function GetDiskSerialNumber(Drive : AnsiChar) : LongInt;
-function MyHashElf(const Buf;  BufSize : LongInt) : LongInt;
+function GetDiskSerialNumber(Drive : AnsiChar) : ogLongInt;
+function MyHashElf(const Buf;  BufSize : ogLongInt) : ogLongInt;
 {$ENDIF}
 function HexStringIsZero(const Hex : string) : Boolean;
 function HexToBuffer(const Hex : string; var Buf; BufSize : Cardinal) : Boolean;
-function Max(A, B : LongInt): LongInt;
-function Min(A, B : LongInt) : LongInt;
+function Max(A, B : ogLongInt): ogLongInt;
+function Min(A, B : ogLongInt) : ogLongInt;
 procedure XorMem(var Mem1; const Mem2; Count : Cardinal);
 function OgFormatDate(Value : TDateTime) : string;                     {!!.09}
 
@@ -327,7 +342,7 @@ const
 {mixing routines}
 procedure Mix128(var X : T128Bit);
 var
-  AA, BB, CC, DD : LongInt;
+  AA, BB, CC, DD : ogLongInt;
 begin
   AA := X[0];  BB := X[1];  CC := X[2];  DD := X[3];
 
@@ -346,17 +361,17 @@ end;
 {quick (block) mixer routine}
 procedure MixBlock(const Matrix : T128bit; var Block; Encrypt : Boolean);
 const
-  CKeyBox : array [False..True, 0..3, 0..2] of LongInt =
+  CKeyBox : array [False..True, 0..3, 0..2] of ogLongInt =
     (((0, 3, 1), (2, 1, 3), (1, 0, 2), (3, 2, 0)),
      ((3, 2, 0), (1, 0, 2), (2, 1, 3), (0, 3, 1)));
 var
-  Blocks  : array [0..1] of LongInt absolute Block;
-  Work    : LongInt;
-  Right   : LongInt;
-  Left    : LongInt;
-  R       : LongInt;
-  AA, BB  : LongInt;
-  CC, DD  : LongInt;
+  Blocks  : array [0..1] of ogLongInt absolute Block;
+  Work    : ogLongInt;
+  Right   : ogLongInt;
+  Left    : ogLongInt;
+  R       : ogLongInt;
+  AA, BB  : ogLongInt;
+  CC, DD  : ogLongInt;
 begin
   Right := Blocks[0];
   Left := Blocks[1];
@@ -387,10 +402,10 @@ begin
   Blocks[1] := Right;
 end;
 
-function HashElf(const Buf;  BufSize : LongInt) : LongInt;
+function HashElf(const Buf;  BufSize : ogLongInt) : ogLongInt;
 var
   Bytes : TByteArray absolute Buf;
-  I, X  : LongInt;
+  I, X  : ogLongInt;
 begin
   Result := 0;
   for I := 0 to BufSize - 1 do begin
@@ -402,7 +417,7 @@ begin
   end;
 end;
 
-function StringHashElf(const Str : AnsiString) : LongInt;
+function StringHashElf(const Str : AnsiString) : ogLongInt;
 begin
   Result := HashElf(Str[1], Length(Str));
 end;
@@ -601,12 +616,12 @@ begin
   MD5.State[3] := $10325476;
 end;
 
-procedure UpdateMD5(var Context : TMD5Context;  const Buf;  BufSize : LongInt);
+procedure UpdateMD5(var Context : TMD5Context;  const Buf;  BufSize : ogLongInt);
 var
   MD5    : TMD5ContextEx absolute Context;
   Bytes  : TByteArray absolute Buf;
   InBuf  : array [0..15] of DWord;                                     {!!.07}
-  BufOfs : LongInt;
+  BufOfs : ogLongInt;
   MDI    : Word;
   I      : Word;
   II     : Word;
@@ -630,10 +645,10 @@ begin
     if (MDI = $40) then begin
       II := 0;
       for I := 0 to 15 do begin
-        InBuf[I] := LongInt(MD5.Buf[II + 3]) shl 24 or
-          LongInt(MD5.Buf[II + 2]) shl 16 or
-          LongInt(MD5.Buf[II + 1]) shl 8 or
-          LongInt(MD5.Buf[II]);
+        InBuf[I] := ogLongInt(MD5.Buf[II + 3]) shl 24 or
+          ogLongInt(MD5.Buf[II + 2]) shl 16 or
+          ogLongInt(MD5.Buf[II + 1]) shl 8 or
+          ogLongInt(MD5.Buf[II]);
         Inc(II, 4);
       end;
       Transform(MD5.State, InBuf);
@@ -652,7 +667,7 @@ const
 var
   MD5    : TMD5ContextEx absolute Context;
   InBuf  : array [0..15] of DWord;                                     {!!.07}
-  MDI    : LongInt;
+  MDI    : ogLongInt;
   I      : Word;
   II     : Word;
   PadLen : Word;
@@ -674,10 +689,10 @@ begin
   {append length in bits and transform}
   II := 0;
   for I := 0 to 13 do begin
-    InBuf[I] := (LongInt(MD5.Buf[II + 3]) shl 24) or
-      (LongInt(MD5.Buf[II + 2]) shl 16) or
-      (LongInt(MD5.Buf[II + 1]) shl 8) or
-      LongInt(MD5.Buf[II]);
+    InBuf[I] := (ogLongInt(MD5.Buf[II + 3]) shl 24) or
+      (ogLongInt(MD5.Buf[II + 2]) shl 16) or
+      (ogLongInt(MD5.Buf[II + 1]) shl 8) or
+      ogLongInt(MD5.Buf[II]);
     Inc(II, 4);
   end;
   Transform(MD5.State, InBuf);
@@ -694,7 +709,7 @@ begin
   end;
 end;
 
-function HashMD5(const Buf;  BufSize : LongInt) : TMD5Digest;
+function HashMD5(const Buf;  BufSize : ogLongInt) : TMD5Digest;
 var
   Context : TMD5Context;
 begin
@@ -706,11 +721,11 @@ end;
 {message digest routines}
 type
   TMDContextEx = record
-    DigestIndex : LongInt;
+    DigestIndex : ogLongInt;
     Digest      : array [0..255] of Byte;
-    KeyIndex    : LongInt;
+    KeyIndex    : ogLongInt;
     case Byte of
-      0: (KeyInts : array [0..3] of LongInt);
+      0: (KeyInts : array [0..3] of ogLongInt);
       1: (Key     : TKey);
   end;
   TBlock2048 = array [0..255] of Byte;
@@ -729,13 +744,13 @@ begin
   ContextEx.KeyInts[3] := $55555555;
 end;
 
-procedure UpdateTMD(var Context : TTMDContext; const Buf; BufSize : LongInt);
+procedure UpdateTMD(var Context : TTMDContext; const Buf; BufSize : ogLongInt);
 var
   ContextEx : TMDContextEx absolute Context;
   BufBytes  : TByteArray absolute Buf;
-  AA, BB    : LongInt;
-  CC, DD    : LongInt;
-  I, R      : LongInt;
+  AA, BB    : ogLongInt;
+  CC, DD    : ogLongInt;
+  I, R      : ogLongInt;
 begin
   for I := 0 to BufSize - 1 do
     with ContextEx do begin
@@ -777,7 +792,7 @@ begin
     end;
 end;
 
-procedure FinalizeTMD(var Context : TTMDContext; var Digest; DigestSize : LongInt);
+procedure FinalizeTMD(var Context : TTMDContext; var Digest; DigestSize : ogLongInt);
 const
   Padding : array [0..7] of Byte = (1, 0, 0, 0, 0, 0, 0, 0);
 var
@@ -797,7 +812,7 @@ begin
 end;
 
 {message digest hash}
-procedure HashTMD(var Digest; DigestSize : LongInt; const Buf; BufSize : LongInt);
+procedure HashTMD(var Digest; DigestSize : ogLongInt; const Buf; BufSize : ogLongInt);
 var
   Context : TTMDContext;
 begin
@@ -810,7 +825,7 @@ end;
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
 {!!.05} {added}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : ogLongInt;
 { Obtains information from:
     - Volume sizes (NOT free space)
     - Volume serial numbers
@@ -1262,7 +1277,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF Win16}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : ogLongInt;
 var
   I       : DWord;
   RegKey  : DWord;
@@ -1320,7 +1335,7 @@ end;
 {$ENDIF}
 
 {$IFDEF KYLIX}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : ogLongInt;
 var
   I       : DWord;
   RegKey  : DWord;
@@ -1420,9 +1435,9 @@ end;
 {$IFDEF UNIX}
 {$NOTE Make sure we have some FreeBSD and MacOSX support too at some point }
 { We now assume Linux is used }
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet) : ogLongInt;
 var
-  I       : LongInt;
+  I       : ogLongInt;
   RegKey  : DWord;
   GUID1   : TGUID;
   GUID2   : TGUID;
@@ -1430,7 +1445,7 @@ var
   Context : TTMDContext;
   Buf     : array [0..2047] of Byte;
   sl: TStringList;
-  iFileHandle : LongInt;
+  iFileHandle : ogLongInt;
   s: string;
 
   function lGetUnixUserName: string;
@@ -1549,7 +1564,7 @@ end;
 
 {$IFDEF DELPHI19UP}
 {$IFDEF POSIX}
-function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : LongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : ogLongInt;
 var
   Context : TTMDContext;
   Buf     : array [0..2047] of Byte;
@@ -1745,7 +1760,7 @@ begin
 end;
 
 {modifier routines}
-function GenerateStringModifierPrim(const S : AnsiString) : LongInt;
+function GenerateStringModifierPrim(const S : AnsiString) : ogLongInt;
 var
   I   : Integer;                                                       {!!.06}
   Sig : array [0..4] of AnsiChar;
@@ -1767,7 +1782,7 @@ begin
   Result := PLongInt(@Sig[0])^;
 end;
 
-function GenerateUniqueModifierPrim : LongInt;
+function GenerateUniqueModifierPrim : ogLongInt;
 var
   ID : TGUID;
 begin
@@ -1777,18 +1792,18 @@ begin
 end;
 
 {!!.05} {revised}
-function GenerateMachineModifierPrim : LongInt;
+function GenerateMachineModifierPrim : ogLongInt;
 begin
   Result := CreateMachineID([midUser, midSystem, {midNetwork,} midDrives]);
 end;
 
-function GenerateDateModifierPrim(D : TDateTime) : LongInt;
+function GenerateDateModifierPrim(D : TDateTime) : ogLongInt;
 begin
   Result := Trunc(D);
   TLongIntRec(Result).Hi := TLongIntRec(Result).Lo xor $AAAA;
 end;
 
-procedure ApplyModifierToKeyPrim(Modifier : LongInt; var Key; KeySize : Cardinal);
+procedure ApplyModifierToKeyPrim(Modifier : ogLongInt; var Key; KeySize : Cardinal);
 begin
   if Modifier <> 0 then
     XorMem(Key, Modifier, Min(SizeOf(Modifier), KeySize));
@@ -1822,7 +1837,7 @@ end;
 function ExpandDate(D : Word) : TDateTime;
 begin
   if D > 0 then
-    Result := LongInt(D) + BaseDate
+    Result := ogLongInt(D) + BaseDate
   else
     Result := EncodeDate(9999, 1, 1);
 end;
@@ -1971,7 +1986,7 @@ end;
 
 procedure DecDaysCode(const Key : TKey; var Code : TCode);
 var
-  X : LongInt;
+  X : ogLongInt;
 begin
   MixBlock(T128bit(Key), Code, False);
   X := ShrinkDate(Date);
@@ -1983,7 +1998,7 @@ begin
   MixBlock(T128bit(Key), Code, True);
 end;
 
-function GetDaysCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetDaysCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 var
   Work : TCode;
 begin
@@ -2050,7 +2065,7 @@ var
   Work : TCode;
   S : AnsiString;
   I : Integer;
-  v : LongInt;
+  v : ogLongInt;
 begin
   Result := False;
   Work := Code;
@@ -2066,7 +2081,7 @@ end;
 
 {*** serial number code ***}
 
-procedure InitSerialNumberCode(const Key : TKey; Serial : LongInt; Expires : TDateTime; var Code : TCode);
+procedure InitSerialNumberCode(const Key : TKey; Serial : ogLongInt; Expires : TDateTime; var Code : TCode);
 begin
   Code.CheckValue := SerialCheckCode;
   Code.Expiration := ShrinkDate(Expires);
@@ -2083,7 +2098,7 @@ begin
   Result := (Work.CheckValue = SerialCheckCode);
 end;
 
-function GetSerialNumberCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetSerialNumberCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 var
   Work : TCode;
 begin
@@ -2104,7 +2119,7 @@ begin
   Result := ExpandDate(Work.Expiration) < Date;
 end;
 
-function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: LongInt) : Boolean;
+function IsSerialNumberCodeValidFor(const Key : TKey; const Code : TCode; const Serial: ogLongInt) : Boolean;
 var
   Work : TCode;
 begin
@@ -2116,7 +2131,7 @@ end;
 
 {*** special code ***}
 
-procedure InitSpecialCode(const Key : TKey; Value : LongInt; Expires : TDateTime; var Code : TCode);
+procedure InitSpecialCode(const Key : TKey; Value : ogLongInt; Expires : TDateTime; var Code : TCode);
 begin
   Code.CheckValue := SpecialCheckCode;
   Code.Expiration := ShrinkDate(Expires);
@@ -2133,7 +2148,7 @@ begin
   Result := (Work.CheckValue = SpecialCheckCode);
 end;
 
-function GetSpecialCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetSpecialCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 var
   Work : TCode;
 begin
@@ -2154,7 +2169,7 @@ begin
   Result := ExpandDate(Work.Expiration) < Date;
 end;
 
-function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: LongInt) : Boolean;
+function IsSpecialCodeValidFor(const Key : TKey; const Code : TCode; const Value: ogLongInt) : Boolean;
 var
   Work : TCode;
 begin
@@ -2206,7 +2221,7 @@ begin
   MixBlock(T128bit(Key), Code, True);
 end;
 
-function GetUsageCodeValue(const Key : TKey; const Code : TCode) : LongInt;
+function GetUsageCodeValue(const Key : TKey; const Code : TCode) : ogLongInt;
 var
   Work : TCode;
 begin
@@ -2250,7 +2265,7 @@ end;
 function BufferToHex(const Buf; BufSize : Cardinal) : string;
 var
   Bytes : TByteArray absolute Buf;
-  I     : LongInt;
+  I     : ogLongInt;
 begin
   Result := '';
   for I := 0 to BufSize - 1 do
@@ -2260,7 +2275,7 @@ end;
 function BufferToHexBytes(const Buf;  BufSize : Cardinal) : string;
 var
   Bytes  : TByteArray absolute Buf;
-  I      : LongInt;
+  I      : ogLongInt;
   HexStr : string;
 begin
   {$IFDEF BCB}
@@ -2278,22 +2293,22 @@ type
   PMediaIDRec = ^TMediaIDRec;
   TMediaIDRec = packed record
     InfoLevel    : Word;                      {reserved for future use}
-    SerialNumber : LongInt;                   {disk serial number}
+    SerialNumber : ogLongInt;                   {disk serial number}
     VolumeLabel  : array[0..10] of AnsiChar;  {disk volume label}
     FileSystemID : array[0..7] of AnsiChar;   {string for internal use by the OS}
   end;
 
 type
   DPMIRegisters = record
-    DI : LongInt;
-    SI : LongInt;
-    BP : LongInt;
-    Reserved : LongInt;
+    DI : ogLongInt;
+    SI : ogLongInt;
+    BP : ogLongInt;
+    Reserved : ogLongInt;
     case integer of
-    1 : ( BX : LongInt;
-          DX : LongInt;
-          CX : LongInt;
-          AX : LongInt;
+    1 : ( BX : ogLongInt;
+          DX : ogLongInt;
+          CX : ogLongInt;
+          AX : ogLongInt;
           Flags : Word;
           ES : Word;
           DS : Word;
@@ -2337,7 +2352,7 @@ function GetMediaID(Drive : Byte; var MediaIDRec : TMediaIDRec) : Boolean;
 type
   DoubleWord = record LoWord, HiWord : Word; end;
 var
-  L      : LongInt;
+  L      : ogLongInt;
   RP, PP : PMediaIDRec;
   Regs   : DPMIRegisters;
 begin
@@ -2367,7 +2382,7 @@ begin
   end;
 end;
 
-function GetDiskSerialNumber(Drive : Char) : LongInt;
+function GetDiskSerialNumber(Drive : Char) : ogLongInt;
 var
   MR : TMediaIDRec;
 begin
@@ -2379,10 +2394,10 @@ end;
 {$ENDIF}
 
 {$IFDEF LINUX}
-function MyHashElf(const Buf;  BufSize : LongInt) : LongInt;
+function MyHashElf(const Buf;  BufSize : ogLongInt) : ogLongInt;
 var
   Bytes : TByteArray absolute Buf;
-  I, X  : LongInt;
+  I, X  : ogLongInt;
 begin
   Result := 0;
   for I := 0 to BufSize - 1 do begin
@@ -2394,7 +2409,7 @@ begin
   end;
 end;
 
-function GetDiskSerialNumber(Drive : AnsiChar) : LongInt;
+function GetDiskSerialNumber(Drive : AnsiChar) : ogLongInt;
 var
    boot_partition : String;
    drive_model : String;
@@ -2443,17 +2458,26 @@ begin
 
     // create a hash value of the drive_model to return an integer
     Result := MyHashElf(drive_model[1], Length(drive_model));
+
+    //[to do] udevinfo -q path -n /dev/sda
+    //[to do] udevinfo -q env -q /block/sda
+    //[to do] look for ID_SERIAL=
+
+    //[to do] use "ls -l /dev/disk/by-path"
+
+    //[to do] use "lsblk --nodeps -o name,model,serial"
+
 end;
 {$ENDIF}
 
 {$IFDEF FreeBSD}
-function GetDiskSerialNumber(Drive : AnsiChar) : LongInt;
+function GetDiskSerialNumber(Drive : AnsiChar) : ogLongInt;
 begin
   {$NOTE: Still to be implemented }
   Result := 0;
 end;
 
-function MyHashElf(const Buf;  BufSize : LongInt) : LongInt;
+function MyHashElf(const Buf;  BufSize : ogLongInt) : ogLongInt;
 begin
   Result := 0;
 end;
@@ -2471,9 +2495,11 @@ begin
 
   Str := '';
   for I := 1 to Length(Hex) do
-    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then
-      Str := Str + Hex[I];
-
+    {$IFDEF DELPHI12UP}
+    if(Hex[I].IsDigit) or (CharInSet(Hex[I], ['0'..'9', 'A'..'F', 'a'..'f'])) then Str := Str + Hex[I];
+    {$ELSE}
+    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then Str := Str + Hex[I];
+    {$ENDIF}
   // check if string is blank
   if Str = '' then Exit;
 
@@ -2498,8 +2524,11 @@ begin
 
   Str := '';
   for I := 1 to Length(Hex) do
-    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then
-      Str := Str + Hex[I];
+    {$IFDEF DELPHI12UP}
+    if(Hex[I].IsDigit) or (CharInSet(Hex[I], ['0'..'9', 'A'..'F', 'a'..'f'])) then Str := Str + Hex[I];
+    {$ELSE}
+    if Upcase(Hex[I]) in ['0'..'9', 'A'..'F'] then Str := Str + Hex[I];
+    {$ENDIF}
 
   // check if Str is a blank string
   if Str = '' then Exit;
@@ -2518,7 +2547,7 @@ end;
 
 {$IFNDEF OgPUREPASCAL_Max}
 {$IFDEF Win32}
-function Max(A, B : LongInt) : LongInt; register;
+function Max(A, B : ogLongInt) : ogLongInt; register;
 asm
   cmp  eax, edx
   jge  @Exit
@@ -2527,7 +2556,7 @@ asm
 end;
 {$ENDIF}
 {$ELSE}
-function Max(A, B : LongInt) : LongInt;
+function Max(A, B : ogLongInt) : ogLongInt;
 begin
   if A > B then
     Result := A
@@ -2538,7 +2567,7 @@ end;
 
 {$IFNDEF OgPUREPASCAL_Min}
 {$IFDEF Win32}
-function Min(A, B : LongInt) : LongInt; register;
+function Min(A, B : ogLongInt) : ogLongInt; register;
 asm
   cmp  eax, edx
   jle  @Exit
@@ -2547,7 +2576,7 @@ asm
 end;
 {$ENDIF}
 {$ELSE}
-function Min(A, B : LongInt) : LongInt;
+function Min(A, B : ogLongInt) : ogLongInt;
 begin
   if A < B then
     Result := A
@@ -2790,7 +2819,7 @@ var
   iBytesRead : Integer;
   Buffer : PChar;
   sSeconds : String;
-  iSeconds : LongInt;
+  iSeconds : ogLongInt;
   i64Seconds : Int64;
 begin
  iSeconds := -1;

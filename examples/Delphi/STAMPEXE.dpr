@@ -2,8 +2,8 @@ program Stampexe;
 
 uses
   Forms,
-  Stampex1 in 'STAMPEX1.PAS' {frmStamp};
-
+  STAMPEX1 in 'STAMPEX1.PAS' {frmStamp},
+  ogstamp in '..\..\source\ogstamp.pas';
 
 begin
   Application.CreateForm(TfrmStamp, frmStamp);

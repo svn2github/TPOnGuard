@@ -37,7 +37,10 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, SysUtils, Classes, Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
+  Windows, SysUtils, Classes,
+  {$ENDIF}
+  {$IFDEF UseOgVCL}
+  Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
   {$ENDIF}
   {$IFDEF UseOgFMX}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
@@ -60,8 +63,8 @@ type
     GenerateBtn: TButton;
     KeyTypeCb: TComboBox;
     ByteKeyEd: TEdit;
-    CancelBtn: {$IFDEF MSWINDOWS}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
-    OKBtn: {$IFDEF MSWINDOWS}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
+    CancelBtn: {$IFDEF UseOgVCL}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
+    OKBtn: {$IFDEF UseOgVCL}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
     procedure FormCreate(Sender: TObject);
     procedure KeyStringMeChange(Sender: TObject);
     procedure KeyTypeCbChange(Sender: TObject);
@@ -92,7 +95,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
 
 procedure TKeyGenerateFrm.FormCreate(Sender: TObject);
@@ -188,7 +191,7 @@ begin
   case KeyTypeCb.ItemIndex of
     0:
       begin
-        {$IFDEF MSWINDOWS}
+        {$IFDEF UseOgVCL}
         Screen.Cursor := crHourGlass;
         {$ENDIF}
         try
@@ -196,20 +199,20 @@ begin
           BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
           ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
         finally
-          {$IFDEF MSWINDOWS}
+          {$IFDEF UseOgVCL}
           Screen.Cursor := crDefault;
           {$ENDIF}
         end;
       end;
     1:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiUpperCase(KeyStringMe.Text));
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(AnsiUpperCase(KeyStringMe.Text)));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;
     2:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), KeyStringMe.Text);
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(KeyStringMe.Text));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;

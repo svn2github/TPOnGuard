@@ -55,17 +55,19 @@ requires
   VCLX40;
 
 contains
-  OgNetWrk in '..\source\OgNetWrk.pas',
-  OgUtil in '..\source\OgUtil.pas',
-  OgConst in '..\source\OgConst.pas',
-  OnGuard in '..\source\OnGuard.pas',
-  OnGuard1 in '..\source\OnGuard1.pas',
-  OnGuard2 in '..\source\OnGuard2.pas',
-  OnGuard3 in '..\source\OnGuard3.pas',
-  OnGuard4 in '..\source\OnGuard4.pas',
-  OgFirst in '..\source\OgFirst.pas',
-  OgSrMgr in '..\source\OgSrMgr.pas',
+  ognetwrkutil in '..\source\ognetwrkutil.pas',
+  ogutil in '..\source\ogutil.pas',
+  ogconst in '..\source\ogconst.pas',
+  onguard in '..\source\onguard.pas',
+  onguard1 in '..\source\onguard1.pas',
+  onguard2 in '..\source\onguard2.pas',
+  onguard3 in '..\source\onguard3.pas',
+  onguard4 in '..\source\onguard4.pas',
+  ogfirst in '..\source\ogfirst.pas',
+  ogsrmgr in '..\source\ogsrmgr.pas',
   ogfile in '..\source\ogfile.pas',
-  ogjcl in '..\source\ogjcl.pas';
+  ogjcl in '..\source\ogjcl.pas',
+  ogproexeutil in '..\source\ogproexeutil.pas',
+  ogstamp in '..\source\ogstamp.pas';
 
 end.

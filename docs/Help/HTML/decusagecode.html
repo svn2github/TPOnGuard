@@ -59,7 +59,7 @@ procedure DecUsageCode (const Key : TKey; var Code : TCode);",
    sharesubject: "OnGuard Help - DecUsageCode procedure DecUsageCode (const Key : TKey; var Code : TCode);",
    simplesubject: "Documentation%20Feedback",
    mailid: "DecUsageCode",
-   mailpath: "Files &gt; OgReg /",
+   mailpath: "Files &gt; OgStamp /",
    mailbody: "Dear Support Staff,",
    fbtype: false,
    header: true,
@@ -155,11 +155,6 @@ procedure DecUsageCode (const Key : TKey; var Code : TCode);</span></a></li>
 <p style="margin: 8px 0px 8px 0px;"><img src="_bm1.png" width="11" height="12" alt="_bm1" style="border:none" /><span style="color: #010100;"> DecUsageCode reduces the internal &quot;usage count&quot; value by one and returns the modified code as the Code parameter.</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">Key must be the same key that was used to create the code or the code is considered invalid.</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">This routine is defined in the OnGuard unit. (as of 1.15 this routine has been moved to the OgUtil unit)</span></p>
-<p style="margin: 0px 0px 8px 0px;"><span style="color: #000000;">&nbsp;</span></p>
-<p style="margin: 0px 0px 8px 0px;">In version 1.15:</p>
-<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">If the conditional define OgUsageUnlimited is enabled then a check is made to see if the usage count = 65535 and expiration = 65535 and last change = 1 is set.</span><br />
-<span style="color: #010100;">If all three conditions are true then the code is treated as an unlimited usage code in which case it is not decremented nor is the last updated date changed.</span></p>
-<p style="margin: 0px 0px 8px 0px;"><span style="color: #000000;">&nbsp;</span></p>
 
 <!--ZOOMSTOP-->
 

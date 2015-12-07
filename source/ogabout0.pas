@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                  OGABOUT0.PAS 1.15                    *}
@@ -37,7 +41,8 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF Win64} Windows, {$ENDIF}                                   {AH.02}
+  {$IFDEF UseOgVCL}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ShellAPI,
   {$ENDIF}
@@ -93,7 +98,7 @@ type
 
 implementation
 
-{$IFNDEF UseOgFMX}{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
 
 

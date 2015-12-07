@@ -25,6 +25,10 @@
  *                       conversion to CLX                         {AH.01}
  *                       December 30, 2003                         {AH.01}
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                  ONGUARD.PAS 1.15                     *}
@@ -49,11 +53,12 @@ uses
   {$IFDEF KYLIX}{$IFDEF CONSOLE} ConsoleStubs {$ENDIF}{$ENDIF}
   {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
   {$IFDEF KYLIX} Libc, {$ENDIF}
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QControls, QDialogs, {$ENDIF}{$ENDIF}
-  {$IFDEF DELPHI15UP} System.AnsiStrings, {$ENDIF}
+  {$IFDEF DELPHI16UP} System.AnsiStrings, {$ENDIF}
   Classes, SysUtils,
-  {$IFDEF MSWINDOWS} Controls, {$ENDIF}
+  {$IFDEF UseOgVCL} Controls, {$ENDIF}
   {$IFDEF UsingZLib} ZLib, {$ENDIF}
   {$IFDEF FPC}{$IFDEF WIN32} idesn, {$ENDIF}{$ENDIF}
   {$IFDEF UseOgFMX}System.UITypes,{$ENDIF}
@@ -76,7 +81,7 @@ type
     procedure(Sender : TObject; var Key : TKey)
     of object;
   TGetModifierEvent =
-    procedure(Sender : TObject; var Value : LongInt)
+    procedure(Sender : TObject; var Value : ogLongInt)
     of object;
   TGetRegStringEvent =
     procedure(Sender : TObject; var Value : string)
@@ -88,7 +93,7 @@ type
     {property variables}
     FAutoCheck     : Boolean;          {true to test code when loaded}
     FCode          : TCode;            {release code}
-    FModifier      : LongInt;          {key modifier}
+    FModifier      : ogLongInt;          {key modifier}
     FStoreCode     : Boolean;          {true to store release code on stream}
     FStoreModifier : Boolean;          {true to store key modifier on stream}
 
@@ -116,7 +121,7 @@ type
       dynamic;
     procedure DoOnGetKey(var Key : TKey);
       dynamic;
-    function DoOnGetModifier : LongInt;
+    function DoOnGetModifier : ogLongInt;
       dynamic;
 
     {protected properties}
@@ -245,19 +250,19 @@ type
       override;
     function Execute : Boolean;
 
-    procedure ApplyModifierToKey(Modifier : LongInt; var Key; KeySize : Cardinal);
+    procedure ApplyModifierToKey(Modifier : ogLongInt; var Key; KeySize : Cardinal);
       {-signs the key with the modifier}
-    function GenerateDateModifier(D : TDateTime) : LongInt;
+    function GenerateDateModifier(D : TDateTime) : ogLongInt;
       {-returns a modifier based on the current date}
-    function GenerateMachineModifier : LongInt;
+    function GenerateMachineModifier : ogLongInt;
       {-returns a modifier based on hardware information}
     procedure GenerateMDKey(var Key; KeySize : Cardinal; const Str : AnsiString);
       {-generate a key based on the message digest of Str}
     procedure GenerateRandomKey(var Key; KeySize : Cardinal);
       {-generate a random key}
-    function GenerateStringModifier(const S : AnsiString) : LongInt;
+    function GenerateStringModifier(const S : AnsiString) : ogLongInt;
       {-returns a modifier based on S}
-    function GenerateUniqueModifier : LongInt;
+    function GenerateUniqueModifier : ogLongInt;
       {-returns a unique/random modifier}
     procedure SetKey(Value : TKey);                                  {!!.08}
     procedure GetKey(var Value : TKey);                              {!!.08}
@@ -323,7 +328,7 @@ type
       override;
     procedure Decrease;
       {-reduce days and generate modified code}
-    function GetValue : LongInt;
+    function GetValue : ogLongInt;
       {-return number of days remaining}
 
   published
@@ -387,7 +392,7 @@ type
   public
     function CheckCode(Report : Boolean) : TCodeStatus;
       override;
-    function GetValue : LongInt;
+    function GetValue : ogLongInt;
       {-return serial number (0 for error)}
 
   published
@@ -403,7 +408,7 @@ type
   TOgSpecialCode = class(TOgCodeBase)
     function CheckCode(Report : Boolean) : TCodeStatus;
       override;
-    function GetValue : LongInt;
+    function GetValue : ogLongInt;
       {-return serial number (0 for error)}
 
   published
@@ -437,7 +442,7 @@ type
       override;
     procedure Decrease;
       {-reduce number of uses and generate code}
-    function GetValue : LongInt;
+    function GetValue : ogLongInt;
       {-return number of uses remaining}
 
   published
@@ -520,9 +525,9 @@ begin
 end;
 
 {!!.02} {revised}
-function TOgCodeBase.DoOnGetModifier : LongInt;
+function TOgCodeBase.DoOnGetModifier : ogLongInt;
 var
-  L : LongInt;
+  L : ogLongInt;
 begin
   Result := 0;
   if FStoreModifier then
@@ -557,7 +562,7 @@ end;
 
 function TOgCodeBase.GetModifier : string;
 var
-  Work : LongInt;
+  Work : ogLongInt;
 begin
   Result := '$' + BufferToHex(FModifier, SizeOf(FModifier));
   if not HexToBuffer(Result, Work, SizeOf(Work)) then
@@ -608,7 +613,7 @@ function TOgDateCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   Code     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
 begin
   Result := ogValidCode;
 
@@ -631,7 +636,7 @@ function TOgDateCode.GetValue : TDateTime;
 var
   Code     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   Code := DoOnGetCode;
@@ -647,7 +652,7 @@ function TOgDaysCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   Code     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
 begin
   Result := ogValidCode;
 
@@ -681,7 +686,7 @@ var
   Code     : TCode;
   Work     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   Code := DoOnGetCode;
@@ -705,11 +710,11 @@ begin
     raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnChangeCode]{$ELSE}SCNoOnChangeCode{$ENDIF}, [Self.ClassName]);
 end;
 
-function TOgDaysCode.GetValue : LongInt;
+function TOgDaysCode.GetValue : ogLongInt;
 var
   Code     : TCode;
   Key      : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   Code := DoOnGetCode;
@@ -837,17 +842,17 @@ begin
 {$ENDIF}                                                             {!!.10}
 end;
 
-procedure TOgMakeKeys.ApplyModifierToKey(Modifier : LongInt; var Key; KeySize : Cardinal);
+procedure TOgMakeKeys.ApplyModifierToKey(Modifier : ogLongInt; var Key; KeySize : Cardinal);
 begin
   ApplyModifierToKeyPrim(Modifier, Key, KeySize);
 end;
 
-function TOgMakeKeys.GenerateDateModifier(D : TDateTime) : LongInt;
+function TOgMakeKeys.GenerateDateModifier(D : TDateTime) : ogLongInt;
 begin
   Result := GenerateDateModifierPrim(D);
 end;
 
-function TOgMakeKeys.GenerateMachineModifier : LongInt;
+function TOgMakeKeys.GenerateMachineModifier : ogLongInt;
 begin
   Result := GenerateMachineModifierPrim;
 end;
@@ -862,12 +867,12 @@ begin
   GenerateRandomKeyPrim(Key, KeySize);
 end;
 
-function TOgMakeKeys.GenerateUniqueModifier : LongInt;
+function TOgMakeKeys.GenerateUniqueModifier : ogLongInt;
 begin
   Result := GenerateUniqueModifierPrim;
 end;
 
-function TOgMakeKeys.GenerateStringModifier(const S : AnsiString) : LongInt;
+function TOgMakeKeys.GenerateStringModifier(const S : AnsiString) : ogLongInt;
 begin
   Result := GenerateStringModifierPrim(S);
 end;
@@ -897,7 +902,7 @@ function TOgRegistrationCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
   {RegStr   : string;}                                                 {!!.02}
 begin
   Result := ogValidCode;
@@ -940,7 +945,7 @@ function TOgSerialNumberCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   Result := ogValidCode;
 
@@ -958,11 +963,11 @@ begin
     DoOnChecked(Result);
 end;
 
-function TOgSerialNumberCode.GetValue : LongInt;
+function TOgSerialNumberCode.GetValue : ogLongInt;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   ACode := DoOnGetCode;
@@ -978,7 +983,7 @@ function TOgSpecialCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   Result := ogValidCode;
 
@@ -996,11 +1001,11 @@ begin
     DoOnChecked(Result);
 end;
 
-function TOgSpecialCode.GetValue : LongInt;
+function TOgSpecialCode.GetValue : ogLongInt;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   ACode := DoOnGetCode;
@@ -1016,7 +1021,7 @@ function TOgUsageCode.CheckCode(Report : Boolean) : TCodeStatus;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   Result := ogValidCode;
 
@@ -1050,7 +1055,7 @@ var
   ACode     : TCode;
   Work     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   ACode := DoOnGetCode;
@@ -1072,11 +1077,11 @@ begin
     raise EOnGuardException.CreateFmt({$IFNDEF NoOgSrMgr}StrRes[SCNoOnChangeCode]{$ELSE}SCNoOnChangeCode{$ENDIF}, [Self.ClassName]);
 end;
 
-function TOgUsageCode.GetValue : LongInt;
+function TOgUsageCode.GetValue : ogLongInt;
 var
   ACode     : TCode;
   Key      : TKey;
-  AModifier : LongInt;
+  AModifier : ogLongInt;
 begin
   DoOnGetKey(Key);
   ACode := DoOnGetCode;

@@ -38,7 +38,8 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, ComCtrls, {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF Win64} Windows, ComCtrls, {$ENDIF}
+  {$IFDEF UseOgVCL}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Mask,
   ExtCtrls, Tabnotbk, StdCtrls, Buttons, Messages,
   {$ENDIF}
@@ -59,7 +60,7 @@ uses
 
 type
   TModifierFrm = class(TForm)
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
     {$ENDIF}
@@ -73,7 +74,7 @@ type
     DateModifierCb: TCheckBox;
     NoModifierCb: TCheckBox;
     ModifierEd: TEdit;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     ModDateEd: TEdit;
     {$ENDIF}
     {$IFDEF UseOgFMX}
@@ -81,14 +82,14 @@ type
     {$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure ModifierClick(Sender: TObject);
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     procedure ModifierEdKeyPress(Sender: TObject; var Key: Char);
     procedure DateEdKeyPress(Sender: TObject; var Key: Char);
     {$ENDIF}
     procedure InfoChanged(Sender: TObject);
   private
   public
-    Modifier : LongInt;
+    Modifier : ogLongInt;
   end;
 
 
@@ -107,13 +108,13 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
 
 procedure TModifierFrm.FormCreate(Sender: TObject);
 begin
   NoModifierCb.Checked := True;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF UseOgVCL}
   ModDateEd.Text := OgFormatDate(Date);                              {!!.09}
   {$ENDIF}
   {$IFDEF UseOgFMX}
@@ -126,7 +127,7 @@ procedure TModifierFrm.ModifierClick(Sender: TObject);
 const
   Busy : Boolean = False;
 var
-  L : LongInt;
+  L : ogLongInt;
   D : TDateTime;
 begin
   if Busy then
@@ -158,7 +159,7 @@ begin
 
     {set status of date field}
     ModDateEd.Enabled := DateModifierCb.Checked;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     if ModDateEd.Enabled then
       ModDateEd.Color := clWindow
     else
@@ -167,7 +168,7 @@ begin
 
     if DateModifierCb.Checked then begin
       try
-        {$IFDEF MSWINDOWS}
+        {$IFDEF UseOgVCL}
         D := StrToDate(ModDateEd.Text);
         {$ENDIF}
         {$IFDEF UseOgFMX}
@@ -204,24 +205,32 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF UseOgVCL}
 procedure TModifierFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/'];
 begin
+  {$IFDEF DELPHI12UP}
+  if (not (CharInSet(Key, CIntChars))) and (not (Key < #32)) then begin
+  {$ELSE}
   if (not (Key in CIntChars)) and (not (Key < #32)) then begin
+  {$ENDIF}
     MessageBeep(0);
     Key := #0;
   end;
 end;
 {$ENDIF}
 
-{$IFDEF MSWINDOWS}
+{$IFDEF UseOgVCL}
 procedure TModifierFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
+  {$IFDEF DELPHI12UP}
+  if (not (CharInSet(Key, CHexChars))) and (not (Key < #32)) then begin
+  {$ELSE}
   if (not (Key in CHexChars)) and (not (Key < #32)) then begin
+  {$ENDIF}
     MessageBeep(0);
     Key := #0;
   end;

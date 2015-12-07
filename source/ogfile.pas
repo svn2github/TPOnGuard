@@ -25,6 +25,10 @@
  *                       conversion to CLX                         {AH.01}
  *                       December 30, 2003                         {AH.01}
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                   OGFILE.PAS 1.15                     *}
@@ -42,6 +46,7 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
   {$IFDEF KYLIX} Libc, {$ENDIF}                                    {AH.01}
   {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF}{$ENDIF}			       {BB.01}
   {$IFDEF UsingCLX} Types, {$ENDIF}                                {AH.01}
@@ -105,7 +110,7 @@ end;
 {$IFDEF Win16}
 function GetFileSize(Handle : THandle) : Cardinal;
 var
-  Save : LongInt;
+  Save : ogLongInt;
 begin
   Save := FileSeek(Handle, 0, 0);     {save current file position}
   Result := FileSeek(Handle, 0, 2);   {get file size}
@@ -176,7 +181,7 @@ end;
 {$IFDEF KYLIX}
 function GetFileSize(Handle : THandle) : Cardinal;
 var
-  Save : LongInt;
+  Save : ogLongInt;
 begin
   Save := FileSeek(Handle, 0, 0);     {save current file position}
   Result := FileSeek(Handle, 0, 2);   {get file size}
@@ -256,7 +261,7 @@ end;
 
 function GetFileSize(Handle : THandle) : Cardinal;
 var
-  Save : LongInt;
+  Save : ogLongInt;
 begin
   Save := FileSeek(Handle, 0, 0);     {save current file position}
   Result := FileSeek(Handle, 0, 2);   {get file size}

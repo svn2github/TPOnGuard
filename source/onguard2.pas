@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                  ONGUARD2.PAS 1.15                    *}
@@ -32,6 +36,9 @@
 
 {$IFDEF DELPHI}
 {$IFDEF Win32}
+  {$J+} {Assignable Typed Constants}                                   {!!.11}
+{$ENDIF}
+{$IFDEF Win64}
   {$J+} {Assignable Typed Constants}                                   {!!.11}
 {$ENDIF}
 {$ENDIF}
@@ -46,8 +53,12 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, ComCtrls, {$ENDIF}
+  {$IFDEF Win64} Windows, ComCtrls, {$ENDIF}                       {AH.02}
   {$IFDEF MSWINDOWS}
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Mask,
+  SysUtils, Classes,
+  {$ENDIF}
+  {$IFDEF UseOgVCL}
+  Graphics, Controls, Forms, Dialogs, Mask,
   ExtCtrls, Tabnotbk, StdCtrls, Buttons, Messages,
   {$ENDIF}
   {$IFDEF UseOgFMX}
@@ -58,7 +69,8 @@ uses
   {$ENDIF}
 
   ogconst,
-  ognetwrk,
+  //ognetwrk,      {removed 2015-Dec-06, use ognetwrkutil instead}
+  ognetwrkutil,
   ogutil,
   onguard,
   onguard3;
@@ -207,7 +219,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
 
 
@@ -254,9 +266,9 @@ procedure TCodeGenerateFrm.ModifierClick(Sender: TObject);
 const
   Busy : Boolean = False;
 var
-  L : LongInt;
+  L : ogLongInt;
   D : TDateTime;
-  S : string;                                                        {!!.11}
+  S : AnsiString;                                                        {!!.11}
   i : Integer;                                                       {!!.12}
 begin
   if Busy then
@@ -301,7 +313,7 @@ begin
     {$ENDIF}
                                                                      {!!.11}
     if StringModifierCb.{$IFDEF UseOgFMX}IsChecked{$ELSE}Checked{$ENDIF} then begin                           {!!.11}
-      S := ModStringEd.Text;                                         {!!.11}
+      S := AnsiString(ModStringEd.Text);                                         {!!.11}
       {strip accented characters from the string}                    {!!.12}
       for i := Length(S) downto 1 do                                 {!!.12}
         if Ord(S[i]) > 127 then                                      {!!.12}
@@ -359,7 +371,7 @@ end;
 procedure TCodeGenerateFrm.RegRandomBtnClick(Sender: TObject);
 var
   I     : Integer;
-  L     : LongInt;
+  L     : ogLongInt;
   Bytes : array[0..3] of Byte absolute L;
 begin
   Randomize;
@@ -370,14 +382,14 @@ end;
 
 procedure TCodeGenerateFrm.GenerateBtnClick(Sender: TObject);
 var
-  I        : LongInt;
+  I        : ogLongInt;
   Work     : TCode;
   K        : TKey;
-  Modifier : LongInt;
+  Modifier : ogLongInt;
   D1, D2   : TDateTime;
 begin
   Modifier := 0;
-  if ((ModifierEd.Text = '') or HexToBuffer(ModifierEd.Text, Modifier, SizeOf(LongInt))) then begin
+  if ((ModifierEd.Text = '') or HexToBuffer(ModifierEd.Text, Modifier, SizeOf(ogLongInt))) then begin
     K := FKey;
     ApplyModifierToKeyPrim(Modifier, K, SizeOf(K));
 
@@ -392,7 +404,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidStartDate]{$ELSE}SCInvalidStartDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 StartDateEd.SetFocus;
                 {$ENDIF}
                 {$IFDEF UseOgFMX}
@@ -412,7 +424,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidStartDate]{$ELSE}SCInvalidStartDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 EndDateEd.SetFocus;
                 {$ENDIF}
                 {$IFDEF UseOgFMX}
@@ -446,7 +458,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 DaysExpiresEd.SetFocus;
                 {$ENDIF}
                 Exit;
@@ -465,14 +477,14 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 RegExpiresEd.SetFocus;
                 {$ENDIF}
                 Exit;
               end else
                 raise;
             end;
-            InitRegCode(K, RegStrEd.Text, D1, FCode);
+            InitRegCode(K, AnsiString(RegStrEd.Text), D1, FCode);
           end;
       3 : begin
             try
@@ -484,7 +496,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 SerialExpiresEd.SetFocus;
                 {$ENDIF}
                 Exit;
@@ -503,7 +515,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 UsageExpiresEd.SetFocus;
                 {$ENDIF}
                 Exit;
@@ -533,7 +545,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage({$IFNDEF NoOgSrMgr}StrRes[SCInvalidExDate]{$ELSE}SCInvalidExDate{$ENDIF});
-                {$IFDEF MSWINDOWS}
+                {$IFDEF UseOgVCL}
                 SpecialExpiresEd.SetFocus;
                 {$ENDIF}
                 Exit;
@@ -552,7 +564,7 @@ end;
 procedure TCodeGenerateFrm.SerRandomBtnClick(Sender: TObject);
 var
   I     : Integer;
-  L     : LongInt;
+  L     : ogLongInt;
   Bytes : array[0..3] of Byte absolute L;
 begin
   Randomize;
@@ -590,7 +602,11 @@ end;
 {$IFNDEF UseOgFMX}
 procedure TCodeGenerateFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (not (Key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', {$IFDEF DELPHI15UP}FormatSettings.DateSeparator{$ELSE}DateSeparator{$ENDIF}])) and (not (Key < #32)) then begin
+  {$IFDEF DELPHI12UP}
+  if (not (CharInSet(Key, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', {$IFDEF DELPHI15UP}FormatSettings.DateSeparator{$ELSE}DateSeparator{$ENDIF}]))) and (not (Key < #32)) then begin
+  {$ELSE}
+  if (not (Key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateSeparator])) and (not (Key < #32)) then begin
+  {$ENDIF}
     MessageBeep(0);
     Key := #0;
   end;
@@ -602,7 +618,11 @@ procedure TCodeGenerateFrm.NumberEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
+  {$IFDEF DELPHI12UP}
+  if (not (CharInSet(Key, CIntChars))) and (not (Key < #32)) then begin
+  {$ELSE}
   if (not (Key in CIntChars)) and (not (Key < #32)) then begin
+  {$ENDIF}
     MessageBeep(0);
     Key := #0;
   end;
@@ -613,7 +633,11 @@ procedure TCodeGenerateFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
+  {$IFDEF DELPHI12UP}
+  if (not (CharInSet(Key, CHexChars))) and (not (Key < #32)) then begin
+  {$ELSE}
   if (not (Key in CHexChars)) and (not (Key < #32)) then begin
+  {$ENDIF}
     {$IFDEF MSWINDOWS}MessageBeep(0);{$ENDIF}
     Key := #0;
   end;
@@ -656,7 +680,7 @@ begin
     F.SetKey(FKey);
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     F.ShowHint := ShowHint;
     {$ENDIF}
     if F.ShowModal = mrOK then begin

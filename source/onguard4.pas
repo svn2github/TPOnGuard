@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                  ONGUARD4.PAS 1.15                    *}
@@ -38,7 +42,8 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
+  {$IFDEF UseOgVCL}
   StdCtrls, Buttons, ExtCtrls, Controls, Classes, Forms,
   {$ENDIF}
   {$IFDEF UseOgFMX}
@@ -91,7 +96,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
 
 procedure TEditProductFrm.FormCreate(Sender: TObject);
@@ -120,7 +125,7 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     F.ShowHint := GetShowHints;
     {$ENDIF}
     if F.ShowModal = mrOK then begin
@@ -142,14 +147,14 @@ end;
 function TEditProductFrm.GetShowHints : Boolean;
 begin
   Result := False;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF UseOgVCL}
   Result := ShowHint;
   {$ENDIF}
 end;
 
 procedure TEditProductFrm.SetShowHints(Value : Boolean);
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF UseOgVCL}
   ShowHint := Value;
   {$ENDIF}
 end;

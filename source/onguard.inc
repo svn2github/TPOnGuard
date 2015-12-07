@@ -55,6 +55,8 @@
 { DELPHI19        Delphi XE5
 { DELPHI20        Delphi XE6
 { DELPHI21        Delphi XE7
+{ DELPHI22        Delphi XE8
+{ DELPHI23        Delphi 10 Seattle
 { KYLIX1          Kylix 1.0
 { KYLIX2          Kylix 2.0
 { KYLIX3          Kylix 3.0
@@ -86,6 +88,8 @@
 { DELPHI19UP      Delphi XE5 and above
 { DELPHI20UP      Delphi XE6 and above
 { DELPHI21UP      Delphi XE7 and above
+{ DELPHI22UP      Delphi XE8 and above
+{ DELPHI23UP      Delphi 10 Seattle and above
 { KYLIX1UP        Kylix 1.0 and above (any Kylix)
 { KYLIX2UP        Kylix 2.0 and above (any Kylix)
 { KYLIX3UP        Kylix 3.0 and above (any Kylix)
@@ -147,6 +151,7 @@
 { NoMakeKeysSupport     prevent the TOgMakeKeys Form being compiled into the exe.
 { NoMakeCodesSupport    prevent the TOgMakeCodes Form being compiled into the exe.
 { UseOgFMX              use Firemonkey
+{ UseOgVCL              use VCL
 {
 {
 { OgPUREPASCAL_ROLX     RolX function
@@ -625,6 +630,77 @@
   {$WARN UNIT_DEPRECATED OFF}
 {$ENDIF}
 
+{$IFDEF VER290} // Rad Studio XE 8
+  {$DEFINE DELPHI}
+  {$DEFINE DELPHI22}
+  {$DEFINE DELPHI1UP}
+  {$DEFINE DELPHI2UP}
+  {$DEFINE DELPHI3UP}
+  {$DEFINE DELPHI4UP}
+  {$DEFINE DELPHI5UP}
+  {$DEFINE DELPHI6UP}
+  {$DEFINE DELPHI7UP}
+  {$DEFINE DELPHI8UP}
+  {$DEFINE DELPHI9UP}
+  {$DEFINE DELPHI10UP}
+  {$DEFINE DELPHI11UP}
+  {$DEFINE DELPHI12UP}
+  {$DEFINE DELPHI14UP}
+  {$DEFINE DELPHI15UP}
+  {$DEFINE DELPHI16UP}
+  {$DEFINE DELPHI17UP}
+  {$DEFINE DELPHI18UP}
+  {$DEFINE DELPHI19UP}
+  {$DEFINE DELPHI20UP}
+  {$DEFINE DELPHI21UP}
+  {$DEFINE DELPHI22UP}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST_LOSS OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$WARN UNIT_DEPRECATED OFF}
+{$ENDIF}
+
+{$IFDEF VER300} // Rad Studio 10 Seattle
+  {$DEFINE DELPHI}
+  {$DEFINE DELPHI23}
+  {$DEFINE DELPHI1UP}
+  {$DEFINE DELPHI2UP}
+  {$DEFINE DELPHI3UP}
+  {$DEFINE DELPHI4UP}
+  {$DEFINE DELPHI5UP}
+  {$DEFINE DELPHI6UP}
+  {$DEFINE DELPHI7UP}
+  {$DEFINE DELPHI8UP}
+  {$DEFINE DELPHI9UP}
+  {$DEFINE DELPHI10UP}
+  {$DEFINE DELPHI11UP}
+  {$DEFINE DELPHI12UP}
+  {$DEFINE DELPHI14UP}
+  {$DEFINE DELPHI15UP}
+  {$DEFINE DELPHI16UP}
+  {$DEFINE DELPHI17UP}
+  {$DEFINE DELPHI18UP}
+  {$DEFINE DELPHI19UP}
+  {$DEFINE DELPHI20UP}
+  {$DEFINE DELPHI21UP}
+  {$DEFINE DELPHI22UP}
+  {$DEFINE DELPHI23UP}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST_LOSS OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$WARN UNIT_DEPRECATED OFF}
+{$ENDIF}
+
 {General define indicating use under FPC / Lazarus}
 {$IFDEF FPC}
   {$MODE OBJFPC}{$H+}
@@ -633,6 +709,7 @@
   {$UNDEF BCB}
   {$UNDEF CBUILDER}
   {$UNDEF UseOgFMX}
+  {$UNDEF UseOgVCL}
   {$B-} {Complete Boolean Evaluation}
   {$I+} {Input/Output-Checking}
   {$P+} {Open Parameters}
@@ -653,6 +730,7 @@
 
   {$DEFINE UsingCLX}
   {$UNDEF UseOgFMX}
+  {$UNDEF UseOgVCL}
 {$ENDIF}
 
 
@@ -679,6 +757,8 @@
   {$W-} {Windows Stack Frame}                 //to be removed
   {$X+} {Extended Syntax}                     //to be removed
 
+  {$IFNDEF UseOgFMX}{$DEFINE UseOgVCL}{$ENDIF}
+
   {$IFDEF Win16}
     {$F-} {Force Far Calls}
     {$K-} {Smart Callbacks}
@@ -699,6 +779,13 @@
   {$IFNDEF Win32}
     {$DEFINE OgPUREPASCAL_Min}
     {$DEFINE OgPUREPASCAL_Max}
+  {$ENDIF}
+
+  {$IFDEF Win64}
+    {$DEFINE OgPUREPASCAL_Min}
+    {$DEFINE OgPUREPASCAL_Max}
+    {$DEFINE OgPUREPASCAL_ROLX}
+    {$DEFINE OgPUREPASCAL_XorMem}
   {$ENDIF}
 
   {$IFDEF MACOS}
@@ -725,6 +812,16 @@
   {$DEFINE OgPUREPASCAL_Min}
   {$DEFINE OgPUREPASCAL_Max}
   {$DEFINE OgPUREPASCAL_XorMem}
+{$ENDIF}
+
+{$IFDEF UseOgFMX}
+  {$UNDEF UseOgVCL}
+  {$UNDEF UsingCLX}
+{$ENDIF}
+
+{$IFDEF UseOgVCL}
+  {$UNDEF UseOgFMX}
+  {$UNDEF UsingCLX}
 {$ENDIF}
 
 {====General defines=================================================}

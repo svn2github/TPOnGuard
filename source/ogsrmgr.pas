@@ -124,7 +124,7 @@ type
 {$IFDEF Win32}
   TInt32 = Integer;
 {$ELSE}
-  TInt32 = LongInt;
+  TInt32 = ogLongInt;
 {$ENDIF}
 
   PIndexRec = ^TIndexRec;
@@ -138,7 +138,7 @@ type
   PResourceRec = ^TResourceRec;
   TResourceRec = record
     id : array[0..3] of AnsiChar;
-    count : LongInt;
+    count : ogLongInt;
     index : TIndexArray;
   end;
 

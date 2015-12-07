@@ -27,6 +27,10 @@
  * Boguslaw Brandys      conversion to FPC
  *                       June 14, 2006
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
@@ -45,10 +49,11 @@ interface
 uses
   {$IFDEF Win16} WinTypes, WinProcs, OLE2, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF Win64} Windows, {$ENDIF}                                    {AH.02}
   {$IFDEF KYLIX} Libc, {$ENDIF}
   {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF} LCLProc, {$ENDIF}
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLEAPP} QForms, QDialogs, {$ENDIF} {$ENDIF}
-  {$IFDEF DELPHI} Forms, {$ENDIF}
+  {$IFDEF UseOgVCL} Forms, {$ENDIF}
   SysUtils,
   ogutil;
 
@@ -80,6 +85,7 @@ begin
   Result := True; // true so unsupported platforms should still work
   {$IFDEF Win16} Result := HPrevInst = 0; {$ENDIF}
   {$IFDEF Win32} Result := FirstInstance; {$ENDIF}
+  {$IFDEF Win64} Result := FirstInstance; {$ENDIF}
   {$IFDEF LINUX} Result := FirstInstance; {$ENDIF}
 end;
 
@@ -170,7 +176,7 @@ begin
       Application.BringToFront;
   end else begin
     Wnd := 0;
-    EnumWindows(@EnumWndFunc, LongInt(@Wnd));
+    EnumWindows(@EnumWndFunc, ogLongInt(@Wnd));
     if Wnd <> 0 then begin
       if IsIconic(Wnd) then
         ShowWindow(Wnd, SW_RESTORE)
@@ -191,15 +197,59 @@ begin
 end;
 {$ENDIF}
 
-
-
 {$IFDEF Win64}
 procedure ActivateFirstInstance;
+var
+  ClassBuf,
+  WindowBuf : array [0..255] of Char;
+  Wnd,
+  TopWnd    : hWnd;
+  ThreadID  : DWord;                                                 {!!.07}
 begin
- //[to do] Find and Activate the first instance of the application
-
- //look at the owner of the socket
- //look at the running processes
+{$IFDEF FPC}try{$ENDIF}
+  if IsFirstInstance then begin
+    {$IFNDEF FPC}
+    if IsIconic(Application.Handle) then
+      Application.Restore
+	{$ELSE}
+    if IsIconic(HWND(Application.MainForm.Handle)) then
+      ShowWindow(HWND(Application.MainForm.Handle), SW_RESTORE)
+	{$ENDIF}
+    else
+      Application.BringToFront;
+  end else begin
+    {$IFNDEF FPC}
+    GetClassName(Application.Handle, ClassBuf, Length(ClassBuf));
+    GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
+	{$ELSE}
+    GetClassName(HWND(Application.MainForm.Handle), ClassBuf, SizeOf(ClassBuf));
+    GetWindowText(HWND(Application.MainForm.Handle), WindowBuf, SizeOf(WindowBuf));
+	{$ENDIF}
+    Wnd := FindWindow(ClassBuf, WindowBuf);
+    if (Wnd <> 0) then begin
+      GetWindowThreadProcessId(Wnd, @ThreadID);
+      if (ThreadID = GetCurrentProcessId) then begin
+        Wnd := FindWindowEx(0, Wnd, ClassBuf, WindowBuf);
+        if (Wnd <> 0) then
+          if IsIconic(Wnd) then
+            ShowWindow(Wnd, SW_RESTORE)
+          else begin
+            SetForegroundWindow(Wnd);                                {!!.09}
+            TopWnd := GetLastActivePopup(Wnd);
+            if (TopWnd <> 0) and (TopWnd <> Wnd) and
+                IsWindowVisible(TopWnd) and IsWindowEnabled(TopWnd) then
+              BringWindowToTop(TopWnd)
+            else
+              BringWindowToTop(Wnd);
+          end;
+      end;
+    end;
+  end;
+{$IFDEF FPC}
+except on E:Exception do
+ DebugLn('ActivateFirstInstance exception : ' + E.Message + '.Move IsFirstInstance after CreateForm for MainForm');
+end;
+{$ENDIF}
 end;
 {$ENDIF}
 
@@ -244,8 +294,6 @@ end;
 {$ENDIF}
 
 
-
-
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
 function GetMutexName : string;
@@ -256,12 +304,12 @@ begin
   GetWindowText(Application.Handle, WindowBuf, Length(WindowBuf));
   Result := 'PREVINST:' + WindowBuf;
 {$ELSE}
-try
-  {GetWindowText(HWND(Application.MainForm.Handle), WindowBuf, SizeOf(WindowBuf));}
-  Result := 'PREVINST:' + ExtractFileName(ParamStr(0)) + MAGIC;
-except on E:Exception do
- DebugLn('GetMutexName exception : '  + E.Message);
-end;
+  try
+    {GetWindowText(HWND(Application.MainForm.Handle), WindowBuf, SizeOf(WindowBuf));}
+    Result := 'PREVINST:' + ExtractFileName(ParamStr(0)) + MAGIC;
+  except on E:Exception do
+    DebugLn('GetMutexName exception : '  + E.Message);
+  end;
 {$ENDIF}
 end;
 

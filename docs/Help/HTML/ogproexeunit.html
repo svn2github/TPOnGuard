@@ -8,7 +8,7 @@
    <meta name="keywords" content="" />
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta http-equiv="content-language" content="en-us" />
-   <meta name="description" content="Enter topic text here. &nbsp; Types &nbsp; PSignatureRec = ^TSignatureRec; &nbsp; TSignatureRec = packed record &nbsp; &nbsp; Sig1 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}" />
+   <meta name="description" content="Enter topic text here. &nbsp; Types &nbsp; TCheckedExeEvent = procedure(Sender : TObject; Status : TExeStatus) of object; &nbsp;Classes TOgProtectExe" />
    <meta http-equiv="Content-Style-Type" content="text/css" />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link id="tabscheme" type="text/css" href="hm_topic.css" rel="stylesheet" />   
@@ -43,10 +43,10 @@ var hmHeaderTopic = true;
 // General topic variables
 var tVars = {
    hmHelpPage: "index.html",
-   nextP: "onguard1unit.html",
+   nextP: "ogproexeunit_2.html",
    prevP: "ogfileunit.html",
    currP: "ogproexeunit.html",
-   descr: "Enter topic text here. &nbsp; Types &nbsp; PSignatureRec = ^TSignatureRec; &nbsp; TSignatureRec = packed record &nbsp; &nbsp; Sig1 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}",
+   descr: "Enter topic text here. &nbsp; Types &nbsp; TCheckedExeEvent = procedure(Sender : TObject; Status : TExeStatus) of object; &nbsp;Classes TOgProtectExe",
    keys: "",
    defP: "onguard_contents.html",
    mailUrl: "",
@@ -152,40 +152,12 @@ var sortVars = {
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <h2 class="p_Heading2"><span class="f_Heading2">Types</span></h2>
-<p> &nbsp;PSignatureRec = ^TSignatureRec;</p>
-<p> &nbsp;TSignatureRec = packed record</p>
-<p> &nbsp; &nbsp;Sig1 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Sig2 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Sig3 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Offset : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Size &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;CRC &nbsp; &nbsp;: DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Sig4 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Sig5 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp; &nbsp;Sig6 &nbsp; : DWord; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.07}</p>
-<p> &nbsp;end;</p>
-<p>&nbsp;</p>
-<p> &nbsp;TExeStatus = (</p>
-<p> &nbsp; &nbsp;exeSuccess, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {no error}</p>
-<p> &nbsp; &nbsp;exeSizeError, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {the file size has changed}</p>
-<p> &nbsp; &nbsp;exeIntegrityError, &nbsp; &nbsp; &nbsp;{CRC does not match}</p>
-<p> &nbsp; &nbsp;exeNotStamped, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{the exe has not been stamped}</p>
-<p> &nbsp; &nbsp;exeAccessDenied &nbsp; &nbsp; &nbsp; &nbsp; {share violation} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!!.05}</p>
-<p> &nbsp;);</p>
-<p>&nbsp;</p>
 <p> &nbsp;TCheckedExeEvent = procedure(Sender : TObject; Status : TExeStatus) of object;</p>
 <p>&nbsp;</p>
 <h2 class="p_Heading2"><span class="f_Heading2">Classes</span></h2>
 <p><a href="togprotectexe_component.html" class="topiclink">TOgProtectExe</a></p>
 <p>&nbsp;</p>
-<h2 class="p_Heading2"><span class="f_Heading2">Routines</span></h2>
-<p>IsExeTampered</p>
-<p>ProtectExe</p>
-<p>UnprotectExe</p>
-<p>UpdateChecksum</p>
-<p>FileCRC32</p>
-<p>UpdateCRC32</p>
-<p>&nbsp;</p>
+<h2 class="p_Heading2"><span class="f_Heading2">&nbsp;</span></h2>
 <p>&nbsp;</p>
 
 <!--ZOOMSTOP-->

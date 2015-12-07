@@ -27,27 +27,28 @@ package G115_R210;
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
-{$ASSERTIONS OFF}
+{$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS OFF}
+{$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION ON}
+{$OPTIMIZATION OFF}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO OFF}
-{$SAFEDIVIDE ON}
-{$STACKFRAMES OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST ON}
+{$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
+{$DEFINE UseOgVCL}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - VCL210'}
 {$RUNONLY}
@@ -58,7 +59,7 @@ requires
   vclx;
 
 contains
-  ognetwrk in '..\source\ognetwrk.pas',
+  ognetwrkutil in '..\source\ognetwrkutil.pas',
   ogutil in '..\source\ogutil.pas',
   ogconst in '..\source\ogconst.pas',
   onguard in '..\source\onguard.pas',
@@ -69,6 +70,8 @@ contains
   ogfirst in '..\source\ogfirst.pas',
   ogsrmgr in '..\source\ogsrmgr.pas',
   ogfile in '..\source\ogfile.pas',
-  ogjcl in '..\source\ogjcl.pas';
+  ogjcl in '..\source\ogjcl.pas',
+  ogproexeutil in '..\source\ogproexeutil.pas',
+  ogstamp in '..\source\ogstamp.pas';
 
 end.

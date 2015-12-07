@@ -8,7 +8,7 @@
    <meta name="keywords" content="" />
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta http-equiv="content-language" content="en-us" />
-   <meta name="description" content="Enter topic text here. &nbsp; {$IFDEF Win16} &nbsp; DWord &nbsp; &nbsp; &nbsp;= LongInt; &nbsp; PDWord &nbsp; &nbsp; = ^DWord; &nbsp; TGUID &nbsp; &nbsp; &nbsp;= GUID; &nbsp; {Delphi 1.0 defines it as GUID - Delphi 2.0 defines it as TGUID}" />
+   <meta name="description" content="Enter topic text here. &nbsp; &nbsp;{$IFDEF DELPHI22UP} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02} &nbsp; ogLongInt = FixedInt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02} &nbsp; {$" />
    <meta http-equiv="Content-Style-Type" content="text/css" />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link id="tabscheme" type="text/css" href="hm_topic.css" rel="stylesheet" />   
@@ -46,7 +46,7 @@ var tVars = {
    nextP: "onguard_files.html",
    prevP: "api_reference.html",
    currP: "onguard_types.html",
-   descr: "Enter topic text here. &nbsp; {$IFDEF Win16} &nbsp; DWord &nbsp; &nbsp; &nbsp;= LongInt; &nbsp; PDWord &nbsp; &nbsp; = ^DWord; &nbsp; TGUID &nbsp; &nbsp; &nbsp;= GUID; &nbsp; {Delphi 1.0 defines it as GUID - Delphi 2.0 defines it as TGUID}",
+   descr: "Enter topic text here. &nbsp; &nbsp;{$IFDEF DELPHI22UP} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02} &nbsp; ogLongInt = FixedInt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02} &nbsp; {$",
    keys: "",
    defP: "onguard_contents.html",
    mailUrl: "",
@@ -150,12 +150,24 @@ var sortVars = {
 <!--ZOOMRESTART-->
 <p>Enter topic text here.</p>
 <p>&nbsp;</p>
-<p> {$IFDEF Win16}</p>
+<p> &nbsp;{$IFDEF DELPHI22UP} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02}</p>
+<p> &nbsp;ogLongInt = FixedInt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02}</p>
+<p> &nbsp;{$ELSE} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {AH.02}</p>
+<p> &nbsp;ogLongInt = LongInt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{AH.02}</p>
+<p> &nbsp;{$ENDIF} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{AH.02}</p>
+<p> &nbsp;PogLongInt = ^ogLongInt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{AH.02}</p>
+<p>&nbsp;</p>
+<p> &nbsp;{$IFDEF Win16}</p>
 <p> &nbsp;DWord &nbsp; &nbsp; &nbsp;= LongInt;</p>
 <p> &nbsp;PDWord &nbsp; &nbsp; = ^DWord;</p>
 <p> &nbsp;TGUID &nbsp; &nbsp; &nbsp;= GUID; &nbsp; {Delphi 1.0 defines it as GUID - Delphi 2.0 defines it as TGUID}</p>
 <p> &nbsp;AnsiChar &nbsp; = Char;</p>
 <p> &nbsp;PAnsiChar &nbsp;= PChar;</p>
+<p> &nbsp;{$ENDIF}</p>
+<p>&nbsp;</p>
+<p> &nbsp;{$IFDEF MACOS}</p>
+<p> &nbsp;DWord &nbsp; &nbsp; &nbsp;= Cardinal;</p>
+<p> &nbsp;PDWord &nbsp; &nbsp; = ^DWord;</p>
 <p> &nbsp;{$ENDIF}</p>
 <p>&nbsp;</p>
 <p> &nbsp;{$IFNDEF FPC}</p>
@@ -166,6 +178,8 @@ var sortVars = {
 <p> &nbsp;{$ENDIF}</p>
 <p> &nbsp;PLongIntArray = ^TLongIntArray;</p>
 <p> &nbsp;TLongIntArray = array [0..MaxStructSize div SizeOf(LongInt) - 1] of LongInt;</p>
+<p> &nbsp;PogLongIntArray = ^TogLongIntArray; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{AH.02}</p>
+<p> &nbsp;TogLongIntArray = array [0..MaxStructSize div SizeOf(ogLongInt) - 1] of ogLongInt; &nbsp; {AH.02}</p>
 <p>&nbsp;</p>
 <p>  <a href="tlongintrec.html" class="topiclink">TLongIntRec</a></p>
 <p>  <a href="pcode.html" class="topiclink">PCode</a></p>

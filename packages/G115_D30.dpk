@@ -56,11 +56,12 @@ requires
   G115_R30;
 
 contains
-  OnGuard5,
-  OnGuard6,
-  OnGuard7,
-  OgReg,
-  OgAbout0,
-  OgProExe;
+  OnGuard5 in '..\source\OnGuard5.pas',
+  OnGuard6 in '..\source\OnGuard6.pas',
+  OnGuard7 in '..\source\OnGuard7.pas',
+  OgReg in '..\source\ogreg.pas',
+  OgAbout0 in '..\source\OgAbout0.pas',
+  OgProExe in '..\source\ogproexe.pas',
+  ognetwrk in '..\source\ognetwrk.pas';
 
 end.

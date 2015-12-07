@@ -44,7 +44,13 @@ unit ogstamp;
 
 interface
 
-{$IFNDEF OgProExeUsed}
+uses
+  {$IFDEF Win16} WinTypes, WinProcs; {$ENDIF}
+  {$IFDEF Win32} Windows; {$ENDIF}
+  {$IFDEF Win64} Windows; {$ENDIF}                                 {AH.02}
+  {$IFDEF LINUX} Libc; {$ENDIF}                                    {AH.01}
+  {$IFDEF UsingCLX} Types; {$ENDIF}                                {AH.01}
+
 type
   {exe signature record}
   PSignatureRec = ^TSignatureRec;
@@ -66,9 +72,6 @@ const
     Sig1:$407E7E21;  Sig2:$33435243;  Sig3:$7E7E4032;
     Offset:1;  Size:2;  CRC:3;
     Sig4:$407E7E21;  Sig5:$33435243;  Sig6:$7E7E4032);
-
-{$DEFINE OgProExeStampUsed}
-{$ENDIF}
 
 implementation
 

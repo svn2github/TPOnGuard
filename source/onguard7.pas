@@ -36,7 +36,7 @@ unit onguard7;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
+  {$IFDEF UseOgVCL}
   Dialogs, Forms,
   {$ENDIF}
   {$IFDEF UseOgFMX}

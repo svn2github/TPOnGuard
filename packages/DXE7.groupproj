@@ -1,6 +1,6 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{A2C747CA-950F-4C8D-B56E-453BE1A76E34}</ProjectGuid>
+        <ProjectGuid>{855267E8-5E53-4AC4-8920-61B15B10A097}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="G115_R210.dproj">
@@ -9,12 +9,12 @@
         <Projects Include="G115_D210.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\tests\G115_R210Tests.dproj">
+        <Projects Include="..\Tests\G115_R210Tests.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
-        <Borland.Personality>Default.Personality.15</Borland.Personality>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
         <Borland.ProjectType/>
         <BorlandProject>
             <Default.Personality/>
@@ -39,13 +39,13 @@
         <MSBuild Projects="G115_D210.dproj" Targets="Make"/>
     </Target>
     <Target Name="G115_R210Tests">
-        <MSBuild Projects="..\tests\G115_R210Tests.dproj"/>
+        <MSBuild Projects="..\Tests\G115_R210Tests.dproj"/>
     </Target>
     <Target Name="G115_R210Tests:Clean">
-        <MSBuild Projects="..\tests\G115_R210Tests.dproj" Targets="Clean"/>
+        <MSBuild Projects="..\Tests\G115_R210Tests.dproj" Targets="Clean"/>
     </Target>
     <Target Name="G115_R210Tests:Make">
-        <MSBuild Projects="..\tests\G115_R210Tests.dproj" Targets="Make"/>
+        <MSBuild Projects="..\Tests\G115_R210Tests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="G115_R210;G115_D210;G115_R210Tests"/>

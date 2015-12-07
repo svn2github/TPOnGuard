@@ -57,7 +57,7 @@ var tVars = {
    sharesubject: "OnGuard Help - TEsMachineInfoSet",
    simplesubject: "Documentation%20Feedback",
    mailid: "TEsMachineInfoSet",
-   mailpath: "Files &gt; OgReg /",
+   mailpath: "Files &gt; OgStamp /",
    mailbody: "Dear Support Staff,",
    fbtype: false,
    header: true,
@@ -150,11 +150,11 @@ var sortVars = {
 <!--ZOOMRESTART-->
 <p>Used to determine what factors are gathered to generate a machine identifier.</p>
 <p>&nbsp;</p>
-<p>TEsMachineInfoSet = set of (midUser, midSystem, midNetwork, midDrives, midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC, midDomain); &nbsp;  </p>
+<p>TEsMachineInfoSet = set of (midUser, midSystem, midNetwork, midDrives, midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC); &nbsp;  </p>
 <p>&nbsp;</p>
 <p>Defined in ogutil unit.</p>
 <p>Added in version 1.05.</p>
-<p>Added in version 1.15: midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC, midDomain</p>
+<p>Added in version 1.15: midCPUID, midCPUIDJCL, midBIOS, midWinProd, midCryptoID, midNetMAC</p>
 <p>&nbsp;</p>
 <p>Used by <a href="createmachineid.html" class="topiclink">CreateMachineID</a> function.</p>
 <p>&nbsp;</p>
@@ -168,7 +168,6 @@ var sortVars = {
 <p>The midWinProd factor is intended for fetching Microsoft Windows product identifiers.</p>
 <p>The midCryptoID factor is intended for fetching machine specific cryptography identifiers.</p>
 <p>The midNetMAC factor is intended for fetching the MAC addresses of known network adapters.</p>
-<p>The midDomain factor is intended for fetching the machine's domain membership.</p>
 <p>&nbsp;</p>
 
 <!--ZOOMSTOP-->

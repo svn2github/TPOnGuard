@@ -21,6 +21,10 @@
  *
  * Contributor(s):
  *
+ * Andrew Haines         andrew@haines.name                        {AH.02}
+ *                       64 bit support added                      {AH.02}
+ *                       December 6, 2015                          {AH.02}
+ *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
 {*                  ONGUARD3.PAS 1.15                    *}
@@ -39,9 +43,12 @@ uses
 
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
+  {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
   {$IFDEF MSWINDOWS}
-  SysUtils, Messages, Classes, Graphics, Controls, Clipbrd, IniFiles,
-  StdCtrls, Buttons, Forms, Dialogs,
+  SysUtils, Messages, Classes,
+  {$ENDIF}
+  {$IFDEF UseOgVCL}
+  Graphics, Controls, Clipbrd, IniFiles, StdCtrls, Buttons, Forms, Dialogs,
   {$ENDIF}
   {$IFDEF UseOgFMX}
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.IniFiles,
@@ -121,7 +128,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
+{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
 
 {!! This function is required to get round a bug in Delphi 4}        {!!.07}
@@ -204,7 +211,7 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     F.ShowHint := ShowHint;
     {$ENDIF}
     if F.ShowModal = mrOK then begin
@@ -233,7 +240,7 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF UseOgVCL}
     F.ShowHint := ShowHint;
     {$ENDIF}
     IniFile := TIniFile.Create(KeyFileName);

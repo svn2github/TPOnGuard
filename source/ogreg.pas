@@ -34,6 +34,7 @@ unit ogreg;
 
 {$IFDEF Win16} {$R ogreg.r16} {$ENDIF}
 {$IFDEF Win32} {$R ogreg.r32} {$ENDIF}
+{$IFDEF Win64} {$R ogreg.r32} {$ENDIF}
 {$IFDEF KYLIX} {$R ogreg.r32} {$ENDIF}
 
 interface

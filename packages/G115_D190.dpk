@@ -25,26 +25,27 @@
 package G115_D190;
 
 {$R *.res}
+{$R *.otares}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
-{$ASSERTIONS OFF}
+{$ASSERTIONS ON}
 {$BOOLEVAL OFF}
-{$DEBUGINFO OFF}
+{$DEBUGINFO ON}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS OFF}
+{$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION ON}
+{$OPTIMIZATION OFF}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO OFF}
-{$SAFEDIVIDE ON}
-{$STACKFRAMES OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST ON}
+{$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
@@ -63,8 +64,9 @@ contains
   OnGuard5 in '..\source\OnGuard5.pas',
   OnGuard6 in '..\source\OnGuard6.pas',
   OnGuard7 in '..\source\OnGuard7.pas',
-  OgReg in '..\source\OgReg.pas',
+  OgReg in '..\source\ogreg.pas',
   OgAbout0 in '..\source\OgAbout0.pas',
-  OgProExe in '..\source\OgProExe.pas';
+  OgProExe in '..\source\ogproexe.pas',
+  ognetwrk in '..\source\ognetwrk.pas';
 
 end.
