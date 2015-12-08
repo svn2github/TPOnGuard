@@ -51,7 +51,6 @@ package G115_R230;
 {$DEFINE UseOgVCL}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - VCL230'}
-{$LIBSUFFIX '_d10seattle'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 

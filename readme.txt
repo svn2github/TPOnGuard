@@ -154,6 +154,15 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     IsFileTampered function does not use the file's stamp.
 
 
+4.3.5 Release 1.15 r21
+
+    Enhancements
+    -------------------------------------------------------------
+    added ComponentPlatformsAttribute to define Win32 and Win64 availability for XE2 and up.
+    fixed IsExeTampered function
+    fixed IsFileTampered function
+    removed LibSuffix from Delphi 10 Seattle packages
+
 
 
 

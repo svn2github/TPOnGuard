@@ -80,6 +80,7 @@ type
     procedure(Sender : TObject; Status : TExeStatus)
     of object;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgProtectExe = class(TComponent)
   protected {private}
     {property variables}

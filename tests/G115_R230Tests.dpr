@@ -17,7 +17,7 @@ program G115_R230Tests;
 uses
   DUnitTestRunner,
   onguard in '..\source\onguard.pas',
-  Testogutil230 in 'Testogutil230.pas';
+  Testogutil in 'Testogutil.pas';
 
 {$R *.RES}
 

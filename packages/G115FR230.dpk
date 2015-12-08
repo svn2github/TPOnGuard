@@ -27,7 +27,6 @@ package G115FR230;
 {$DEFINE UseOgFMX}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - FMX230'}
-{$LIBSUFFIX '_d10seattle'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 

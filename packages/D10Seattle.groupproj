@@ -9,10 +9,10 @@
         <Projects Include="G115_D230.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="G115FR230.dproj">
+        <Projects Include="..\Tests\G115_R230Tests.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\Tests\G115_R230Tests.dproj">
+        <Projects Include="G115FR230.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -41,15 +41,6 @@
     <Target Name="G115_D230:Make">
         <MSBuild Projects="G115_D230.dproj" Targets="Make"/>
     </Target>
-    <Target Name="G115FR230">
-        <MSBuild Projects="G115FR230.dproj"/>
-    </Target>
-    <Target Name="G115FR230:Clean">
-        <MSBuild Projects="G115FR230.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="G115FR230:Make">
-        <MSBuild Projects="G115FR230.dproj" Targets="Make"/>
-    </Target>
     <Target Name="G115_R230Tests">
         <MSBuild Projects="..\Tests\G115_R230Tests.dproj"/>
     </Target>
@@ -59,14 +50,23 @@
     <Target Name="G115_R230Tests:Make">
         <MSBuild Projects="..\Tests\G115_R230Tests.dproj" Targets="Make"/>
     </Target>
+    <Target Name="G115FR230">
+        <MSBuild Projects="G115FR230.dproj"/>
+    </Target>
+    <Target Name="G115FR230:Clean">
+        <MSBuild Projects="G115FR230.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115FR230:Make">
+        <MSBuild Projects="G115FR230.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="G115_R230;G115_D230;G115FR230;G115_R230Tests"/>
+        <CallTarget Targets="G115_R230;G115_D230;G115_R230Tests;G115FR230"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="G115_R230:Clean;G115_D230:Clean;G115FR230:Clean;G115_R230Tests:Clean"/>
+        <CallTarget Targets="G115_R230:Clean;G115_D230:Clean;G115_R230Tests:Clean;G115FR230:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="G115_R230:Make;G115_D230:Make;G115FR230:Make;G115_R230Tests:Make"/>
+        <CallTarget Targets="G115_R230:Make;G115_D230:Make;G115_R230Tests:Make;G115FR230:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

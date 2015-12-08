@@ -67,6 +67,7 @@ type
     procedure(Sender : TObject; var Value : string)                    {!!.02}
     of object;                                                         {!!.02}
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgNetCode = class(TOgCodeBase)
   protected {private}
     {property variables}

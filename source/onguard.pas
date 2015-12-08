@@ -88,6 +88,7 @@ type
     of object;
 
   {base regisration code component}
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgCodeBase = class(TComponent)
   protected {private}
     {property variables}
@@ -182,6 +183,7 @@ type
       write FOnGetModifier;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgMakeCodes = class(TComponent)
   protected {private}
     {property variables}
@@ -233,6 +235,7 @@ type
   end;
 
 type
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgMakeKeys = class(TComponent)
   protected {private}
     {property variables}
@@ -290,6 +293,7 @@ type
       default False;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgDateCode = class(TOgCodeBase)
   public
     function CheckCode(Report : Boolean) : TCodeStatus;
@@ -306,6 +310,7 @@ type
       default DefStoreCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgDaysCode = class(TOgCodeBase)
   protected {private}
     {property variables}
@@ -344,6 +349,7 @@ type
       write FOnChangeCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgRegistrationCode = class(TOgCodeBase)
   protected {private}
     {property variables}
@@ -388,6 +394,7 @@ type
       write FOnGetRegString;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgSerialNumberCode = class(TOgCodeBase)
   public
     function CheckCode(Report : Boolean) : TCodeStatus;
@@ -405,6 +412,7 @@ type
 
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgSpecialCode = class(TOgCodeBase)
     function CheckCode(Report : Boolean) : TCodeStatus;
       override;
@@ -420,6 +428,7 @@ type
       default DefStoreCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64)]{$ENDIF}
   TOgUsageCode = class(TOgCodeBase)
   protected {private}
     {property variables}

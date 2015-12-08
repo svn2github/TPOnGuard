@@ -111,7 +111,6 @@
         <VerInfo_Build>1</VerInfo_Build>
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
         <BT_BuildType>Debug</BT_BuildType>
-        <DllSuffix>_d10seattle</DllSuffix>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_iOSDevice32)'!=''">
@@ -120,20 +119,17 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_BundleId>$(MSBuildProjectName)</VerInfo_BundleId>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
-        <DllSuffix>_d10seattle</DllSuffix>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
         <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_iOSDevice64)'!=''">
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
-        <DllSuffix>_d10seattle</DllSuffix>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_iOSSimulator)'!=''">
         <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDevelopmentRegion=en;CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;CFBundleResourceSpecification=ResourceRules.plist;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;FMLocalNotificationPermission=false;UIBackgroundModes=</VerInfo_Keys>
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DllSuffix>_d10seattle</DllSuffix>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
@@ -141,7 +137,6 @@
         <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user</VerInfo_Keys>
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
         <Debugger_Launcher>/usr/X11/bin/xterm -e &quot;%debuggee%&quot;</Debugger_Launcher>
-        <DllSuffix>_d10seattle</DllSuffix>
         <BT_BuildType>Debug</BT_BuildType>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
@@ -150,7 +145,6 @@
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <DllSuffix>_d10seattle</DllSuffix>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -158,7 +152,6 @@
         <DCC_Define>UseOgFMX;$(DCC_Define)</DCC_Define>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
-        <DllSuffix>_d10seattle</DllSuffix>
         <DCC_DcuOutput>..\bin\d10seattle\$(Platform)\$(Config)\</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">

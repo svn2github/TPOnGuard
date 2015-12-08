@@ -145,6 +145,11 @@ const
 {$IFDEF Win64}
 function IsExeTampered(CheckSize : Boolean) : TExeStatus;
   {-return one of the possible TExeResult states}
+var
+  Fh      : THandle;
+  FileMap : THandle;
+  Memory  : PByteArray;
+  CRC     : DWord;                                                   {!!.07}
 begin
   Result := exeIntegrityError;
 
@@ -155,13 +160,43 @@ begin
     Exit;
   end;
 
-  Result := IsFileTampered(ParamStr(0), CheckSize);
+  Fh := CreateFile(PChar(ParamStr(0)), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE,
+    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if (Fh <> INVALID_HANDLE_VALUE) then begin                         {!!.07}
+    if CheckSize and (StoredSignature.Size <> Windows.GetFileSize(Fh, nil)) then
+      Result := exeSizeError
+    else begin
+      FileMap := CreateFileMapping(Fh, nil, PAGE_READONLY, 0, 0, nil);
+      if (FileMap <> 0) then begin
+        Memory := MapViewOfFile(FileMap, FILE_MAP_READ, 0, 0, 0);
+        if (Memory <> nil) then begin
+          CRC := $FFF00FFF;  {special CRC init}
+          UpdateCRC32(CRC, Memory^, StoredSignature.Offset);
+          UpdateCRC32(CRC, Memory^[StoredSignature.Offset + SizeOf(TSignatureRec)],
+           StoredSignature.Size - (StoredSignature.Offset + SizeOf(TSignatureRec)));
+          if (StoredSignature.CRC = not CRC) then
+            Result := exeSuccess;
+          UnmapViewOfFile(Memory);
+        end;
+        CloseHandle(FileMap);
+      end;
+    end;
+    CloseHandle(Fh);
+  end else begin                                                       {!!.05}
+    if GetLastError = ERROR_ACCESS_DENIED then                         {!!.05}
+      Result := exeAccessDenied;                                       {!!.05}
+  end;
 end;
 {$ENDIF}
 
 {$IFDEF Win32}
 function IsExeTampered(CheckSize : Boolean) : TExeStatus;
   {-return one of the possible TExeResult states}
+var
+  Fh      : THandle;
+  FileMap : THandle;
+  Memory  : PByteArray;
+  CRC     : DWord;                                                   {!!.07}
 begin
   Result := exeIntegrityError;
 
@@ -172,7 +207,32 @@ begin
     Exit;
   end;
 
-  Result := IsFileTampered(ParamStr(0), CheckSize);
+  Fh := CreateFile(PChar(ParamStr(0)), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE,
+    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if (Fh <> INVALID_HANDLE_VALUE) then begin                         {!!.07}
+    if CheckSize and (StoredSignature.Size <> Windows.GetFileSize(Fh, nil)) then
+      Result := exeSizeError
+    else begin
+      FileMap := CreateFileMapping(Fh, nil, PAGE_READONLY, 0, 0, nil);
+      if (FileMap <> 0) then begin
+        Memory := MapViewOfFile(FileMap, FILE_MAP_READ, 0, 0, 0);
+        if (Memory <> nil) then begin
+          CRC := $FFF00FFF;  {special CRC init}
+          UpdateCRC32(CRC, Memory^, StoredSignature.Offset);
+          UpdateCRC32(CRC, Memory^[StoredSignature.Offset + SizeOf(TSignatureRec)],
+           StoredSignature.Size - (StoredSignature.Offset + SizeOf(TSignatureRec)));
+          if (StoredSignature.CRC = not CRC) then
+            Result := exeSuccess;
+          UnmapViewOfFile(Memory);
+        end;
+        CloseHandle(FileMap);
+      end;
+    end;
+    CloseHandle(Fh);
+  end else begin                                                       {!!.05}
+    if GetLastError = ERROR_ACCESS_DENIED then                         {!!.05}
+      Result := exeAccessDenied;                                       {!!.05}
+  end;
 end;
 {$ENDIF}
 
@@ -262,7 +322,7 @@ var
   Fh      : THandle;
   FileMap : THandle;
   Memory  : PByteArray;
-  I, Size : LongInt;
+  I, Size : DWord;
   Sig     : PSignatureRec;
 begin
   Result := False;
@@ -334,7 +394,7 @@ var
   Fh      : THandle;
   FileMap : THandle;
   Memory  : PByteArray;
-  I, Size : LongInt;
+  I, Size : DWord;
   Sig     : PSignatureRec;
 begin
   Result := False;
@@ -707,44 +767,75 @@ var
   Fh      : THandle;
   FileMap : THandle;
   Memory  : PByteArray;
-  CRC     : DWord;                                                   {!!.07}
+  CRC     : DWord;
+  I, Size : DWord;         //OgLongInt
+  Sig     : PSignatureRec;
 begin
   Result := exeIntegrityError;
 
-  {check if exe has been stamped}
-  if (StoredSignature.Offset = 1) and (StoredSignature.Size = 2) and
-     (StoredSignature.CRC = 3) then begin
-    Result := exeNotStamped;
-    Exit;
-  end;
+  Fh := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if (Fh <> INVALID_HANDLE_VALUE) then
+  begin
+    Size := Windows.GetFileSize(Fh, nil);
 
-  Fh := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE,
-    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  if (Fh <> INVALID_HANDLE_VALUE) then begin                         {!!.07}
-    if CheckSize and (StoredSignature.Size <> Windows.GetFileSize(Fh, nil)) then
-      Result := exeSizeError
-    else begin
-      FileMap := CreateFileMapping(Fh, nil, PAGE_READONLY, 0, 0, nil);
-      if (FileMap <> 0) then begin
-        Memory := MapViewOfFile(FileMap, FILE_MAP_READ, 0, 0, 0);
-        if (Memory <> nil) then begin
-          CRC := $FFF00FFF;  {special CRC init}
-          UpdateCRC32(CRC, Memory^, StoredSignature.Offset);
-          UpdateCRC32(CRC, Memory^[StoredSignature.Offset + SizeOf(TSignatureRec)],
-           StoredSignature.Size - (StoredSignature.Offset + SizeOf(TSignatureRec)));
-          if (StoredSignature.CRC = not CRC) then
-            Result := exeSuccess;
-          UnmapViewOfFile(Memory);
+    FileMap := CreateFileMapping(Fh, nil, PAGE_READWRITE, 0, 0, nil);
+    if (FileMap <> 0) then begin
+      Memory := MapViewOfFile(FileMap, FILE_MAP_WRITE, 0, 0, 0);
+      if (Memory <> nil) then begin
+        for I := 0 to (Size - SizeOf(TSignatureRec)) - 1 do
+        begin
+		      {$IFNDEF FPC}
+          if (PSignatureRec(@Memory[I])^.Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I])^.Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I])^.Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I])^.Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I])^.Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I])^.Sig6 = $7E7E4032) then
+          begin
+		      {$ELSE}
+          if (PSignatureRec(@Memory[I]).Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I]).Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig6 = $7E7E4032) then
+          begin
+		      {$ENDIF}
+            {found it}
+            Sig := @Memory^[I];
+
+            {check if exe has been stamped}
+            if (Sig.Offset = 1) and (Sig.Size = 2) and (Sig.CRC = 3) then
+            begin
+              Result := exeNotStamped;
+              Break;
+            end;
+
+            if CheckSize and (Sig.Size <> Size) then
+            begin
+              Result := exeSizeError;
+              Break;
+            end;
+
+            {compute crc ignoring the signature record}
+            UpdateCRC32(CRC, Memory^, Sig.Offset);
+            UpdateCRC32(CRC, Memory^[Sig.Offset + SizeOf(TSignatureRec)], Sig.Size - (Sig.Offset + SizeOf(TSignatureRec)));
+            if Sig.CRC = not CRC then Result := exeSuccess;
+            Break;
+          end;
         end;
-        CloseHandle(FileMap);
+        UnmapViewOfFile(Memory);
       end;
+      CloseHandle(FileMap);
     end;
     CloseHandle(Fh);
-  end else begin                                                       {!!.05}
-    if GetLastError = ERROR_ACCESS_DENIED then                         {!!.05}
-      Result := exeAccessDenied;                                       {!!.05}
+  end
+  else
+  begin
+    if GetLastError = ERROR_ACCESS_DENIED then
+      Result := exeAccessDenied;
   end;
- end;                                                        {!!.05}
+end;
 {$ENDIF}
 
 {$IFDEF Win32}
@@ -754,44 +845,75 @@ var
   Fh      : THandle;
   FileMap : THandle;
   Memory  : PByteArray;
-  CRC     : DWord;                                                   {!!.07}
+  CRC     : DWord;
+  I, Size : DWord;         //OgLongInt
+  Sig     : PSignatureRec;
 begin
   Result := exeIntegrityError;
 
-  {check if exe has been stamped}
-  if (StoredSignature.Offset = 1) and (StoredSignature.Size = 2) and
-     (StoredSignature.CRC = 3) then begin
-    Result := exeNotStamped;
-    Exit;
-  end;
+  Fh := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if (Fh <> INVALID_HANDLE_VALUE) then
+  begin
+    Size := Windows.GetFileSize(Fh, nil);
 
-  Fh := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE,
-    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  if (Fh <> INVALID_HANDLE_VALUE) then begin                         {!!.07}
-    if CheckSize and (StoredSignature.Size <> Windows.GetFileSize(Fh, nil)) then
-      Result := exeSizeError
-    else begin
-      FileMap := CreateFileMapping(Fh, nil, PAGE_READONLY, 0, 0, nil);
-      if (FileMap <> 0) then begin
-        Memory := MapViewOfFile(FileMap, FILE_MAP_READ, 0, 0, 0);
-        if (Memory <> nil) then begin
-          CRC := $FFF00FFF;  {special CRC init}
-          UpdateCRC32(CRC, Memory^, StoredSignature.Offset);
-          UpdateCRC32(CRC, Memory^[StoredSignature.Offset + SizeOf(TSignatureRec)],
-           StoredSignature.Size - (StoredSignature.Offset + SizeOf(TSignatureRec)));
-          if (StoredSignature.CRC = not CRC) then
-            Result := exeSuccess;
-          UnmapViewOfFile(Memory);
+    FileMap := CreateFileMapping(Fh, nil, PAGE_READWRITE, 0, 0, nil);
+    if (FileMap <> 0) then begin
+      Memory := MapViewOfFile(FileMap, FILE_MAP_WRITE, 0, 0, 0);
+      if (Memory <> nil) then begin
+        for I := 0 to (Size - SizeOf(TSignatureRec)) - 1 do
+        begin
+		      {$IFNDEF FPC}
+          if (PSignatureRec(@Memory[I])^.Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I])^.Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I])^.Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I])^.Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I])^.Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I])^.Sig6 = $7E7E4032) then
+          begin
+		      {$ELSE}
+          if (PSignatureRec(@Memory[I]).Sig1 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig2 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig3 = $7E7E4032) and
+             (PSignatureRec(@Memory[I]).Sig4 = $407E7E21) and
+             (PSignatureRec(@Memory[I]).Sig5 = $33435243) and
+             (PSignatureRec(@Memory[I]).Sig6 = $7E7E4032) then
+          begin
+		      {$ENDIF}
+            {found it}
+            Sig := @Memory^[I];
+
+            {check if exe has been stamped}
+            if (Sig.Offset = 1) and (Sig.Size = 2) and (Sig.CRC = 3) then
+            begin
+              Result := exeNotStamped;
+              Break;
+            end;
+
+            if CheckSize and (Sig.Size <> Size) then
+            begin
+              Result := exeSizeError;
+              Break;
+            end;
+
+            {compute crc ignoring the signature record}
+            UpdateCRC32(CRC, Memory^, Sig.Offset);
+            UpdateCRC32(CRC, Memory^[Sig.Offset + SizeOf(TSignatureRec)], Sig.Size - (Sig.Offset + SizeOf(TSignatureRec)));
+            if Sig.CRC = not CRC then Result := exeSuccess;
+            Break;
+          end;
         end;
-        CloseHandle(FileMap);
+        UnmapViewOfFile(Memory);
       end;
+      CloseHandle(FileMap);
     end;
     CloseHandle(Fh);
-  end else begin                                                       {!!.05}
-    if GetLastError = ERROR_ACCESS_DENIED then                         {!!.05}
-      Result := exeAccessDenied;                                       {!!.05}
+  end
+  else
+  begin
+    if GetLastError = ERROR_ACCESS_DENIED then
+      Result := exeAccessDenied;
   end;
-end;                                                                 {!!.05}
+end;
 {$ENDIF}
 
 {checksum/CRC routines}
