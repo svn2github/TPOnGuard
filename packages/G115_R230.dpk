@@ -72,6 +72,8 @@ contains
   ogjcl in '..\source\ogjcl.pas',
   ognetwrkutil in '..\source\ognetwrkutil.pas',
   ogstamp in '..\source\ogstamp.pas',
-  ogproexeutil in '..\source\ogproexeutil.pas';
+  ogproexeutil in '..\source\ogproexeutil.pas',
+  ognetwrk in '..\source\ognetwrk.pas',
+  ogproexe in '..\source\ogproexe.pas';
 
 end.

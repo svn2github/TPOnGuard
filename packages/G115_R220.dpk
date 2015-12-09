@@ -59,7 +59,6 @@ requires
   vclx;
 
 contains
-  ognetwrkutil in '..\source\ognetwrkutil.pas',
   ogutil in '..\source\ogutil.pas',
   ogconst in '..\source\ogconst.pas',
   onguard in '..\source\onguard.pas',
@@ -71,7 +70,10 @@ contains
   ogsrmgr in '..\source\ogsrmgr.pas',
   ogfile in '..\source\ogfile.pas',
   ogjcl in '..\source\ogjcl.pas',
+  ognetwrkutil in '..\source\ognetwrkutil.pas',
+  ogstamp in '..\source\ogstamp.pas',
   ogproexeutil in '..\source\ogproexeutil.pas',
-  ogstamp in '..\source\ogstamp.pas';
+  ognetwrk in '..\source\ognetwrk.pas',
+  ogproexe in '..\source\ogproexe.pas';
 
 end.

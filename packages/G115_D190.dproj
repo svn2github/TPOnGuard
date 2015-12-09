@@ -75,8 +75,6 @@
         <DCCReference Include="..\source\OnGuard7.pas"/>
         <DCCReference Include="..\source\ogreg.pas"/>
         <DCCReference Include="..\source\OgAbout0.pas"/>
-        <DCCReference Include="..\source\ogproexe.pas"/>
-        <DCCReference Include="..\source\ognetwrk.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

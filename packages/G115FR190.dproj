@@ -155,7 +155,9 @@
         <DCCReference Include="..\source\ogfile.pas"/>
         <DCCReference Include="..\source\ogfirst.pas"/>
         <DCCReference Include="..\source\ogjcl.pas"/>
+        <DCCReference Include="..\source\ognetwrk.pas"/>
         <DCCReference Include="..\source\ognetwrkutil.pas"/>
+        <DCCReference Include="..\source\ogproexe.pas"/>
         <DCCReference Include="..\source\ogproexeutil.pas"/>
         <DCCReference Include="..\source\ogstamp.pas"/>
         <DCCReference Include="..\source\ogutil.pas"/>

@@ -65,8 +65,6 @@ contains
   onguard6 in '..\source\onguard6.pas',
   OnGuard7 in '..\source\OnGuard7.pas',
   OgReg in '..\source\OgReg.pas',
-  ogabout0 in '..\source\ogabout0.pas',
-  ogproexe in '..\source\ogproexe.pas',
-  ognetwrk in '..\source\ognetwrk.pas';
+  ogabout0 in '..\source\ogabout0.pas';
 
 end.

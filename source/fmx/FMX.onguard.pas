@@ -455,7 +455,7 @@ implementation
 
 {$IF not defined(NoMakeCodesSupport) or  not defined(NoMakeKeysSupport)}
 uses
-  {$IFNDEF NoMakeCodesSupport}onguard2{$IFNDEF NoMakeKeysSupport},onguard3{$ENDIF}{$ENDIF}
+  {$IFNDEF NoMakeCodesSupport}FMX.onguard2{$IFNDEF NoMakeKeysSupport},FMX.onguard3{$ENDIF}{$ENDIF}
   ;
 {$ENDIF}
 
