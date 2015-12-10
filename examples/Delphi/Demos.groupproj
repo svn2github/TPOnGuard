@@ -1,0 +1,336 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{31739018-EFA1-40A5-87A1-F09DC9B1024B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="CODEGEN.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXDMOD.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXDTP21.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXDTREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXDYREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXDYS30.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXINST.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ExMachID.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXNET.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXPROT.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ExReg.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXRGREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXRGSTR.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="exselapi.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="exselect.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="exslcode.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXSNREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ExSpName.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXSPREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXSRNM1.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXUSG1.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXUSG2.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EXUSREG.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="FIXNAF.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="NAFMGR.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="STAMPEXE.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="CODEGEN">
+        <MSBuild Projects="CODEGEN.dproj"/>
+    </Target>
+    <Target Name="CODEGEN:Clean">
+        <MSBuild Projects="CODEGEN.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CODEGEN:Make">
+        <MSBuild Projects="CODEGEN.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXDMOD">
+        <MSBuild Projects="EXDMOD.dproj"/>
+    </Target>
+    <Target Name="EXDMOD:Clean">
+        <MSBuild Projects="EXDMOD.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXDMOD:Make">
+        <MSBuild Projects="EXDMOD.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXDTP21">
+        <MSBuild Projects="EXDTP21.dproj"/>
+    </Target>
+    <Target Name="EXDTP21:Clean">
+        <MSBuild Projects="EXDTP21.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXDTP21:Make">
+        <MSBuild Projects="EXDTP21.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXDTREG">
+        <MSBuild Projects="EXDTREG.dproj"/>
+    </Target>
+    <Target Name="EXDTREG:Clean">
+        <MSBuild Projects="EXDTREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXDTREG:Make">
+        <MSBuild Projects="EXDTREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXDYREG">
+        <MSBuild Projects="EXDYREG.dproj"/>
+    </Target>
+    <Target Name="EXDYREG:Clean">
+        <MSBuild Projects="EXDYREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXDYREG:Make">
+        <MSBuild Projects="EXDYREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXDYS30">
+        <MSBuild Projects="EXDYS30.dproj"/>
+    </Target>
+    <Target Name="EXDYS30:Clean">
+        <MSBuild Projects="EXDYS30.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXDYS30:Make">
+        <MSBuild Projects="EXDYS30.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXINST">
+        <MSBuild Projects="EXINST.dproj"/>
+    </Target>
+    <Target Name="EXINST:Clean">
+        <MSBuild Projects="EXINST.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXINST:Make">
+        <MSBuild Projects="EXINST.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ExMachID">
+        <MSBuild Projects="ExMachID.dproj"/>
+    </Target>
+    <Target Name="ExMachID:Clean">
+        <MSBuild Projects="ExMachID.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExMachID:Make">
+        <MSBuild Projects="ExMachID.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXNET">
+        <MSBuild Projects="EXNET.dproj"/>
+    </Target>
+    <Target Name="EXNET:Clean">
+        <MSBuild Projects="EXNET.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXNET:Make">
+        <MSBuild Projects="EXNET.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXPROT">
+        <MSBuild Projects="EXPROT.dproj"/>
+    </Target>
+    <Target Name="EXPROT:Clean">
+        <MSBuild Projects="EXPROT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXPROT:Make">
+        <MSBuild Projects="EXPROT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ExReg">
+        <MSBuild Projects="ExReg.dproj"/>
+    </Target>
+    <Target Name="ExReg:Clean">
+        <MSBuild Projects="ExReg.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExReg:Make">
+        <MSBuild Projects="ExReg.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXRGREG">
+        <MSBuild Projects="EXRGREG.dproj"/>
+    </Target>
+    <Target Name="EXRGREG:Clean">
+        <MSBuild Projects="EXRGREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXRGREG:Make">
+        <MSBuild Projects="EXRGREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXRGSTR">
+        <MSBuild Projects="EXRGSTR.dproj"/>
+    </Target>
+    <Target Name="EXRGSTR:Clean">
+        <MSBuild Projects="EXRGSTR.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXRGSTR:Make">
+        <MSBuild Projects="EXRGSTR.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="exselapi">
+        <MSBuild Projects="exselapi.dproj"/>
+    </Target>
+    <Target Name="exselapi:Clean">
+        <MSBuild Projects="exselapi.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="exselapi:Make">
+        <MSBuild Projects="exselapi.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="exselect">
+        <MSBuild Projects="exselect.dproj"/>
+    </Target>
+    <Target Name="exselect:Clean">
+        <MSBuild Projects="exselect.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="exselect:Make">
+        <MSBuild Projects="exselect.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="exslcode">
+        <MSBuild Projects="exslcode.dproj"/>
+    </Target>
+    <Target Name="exslcode:Clean">
+        <MSBuild Projects="exslcode.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="exslcode:Make">
+        <MSBuild Projects="exslcode.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXSNREG">
+        <MSBuild Projects="EXSNREG.dproj"/>
+    </Target>
+    <Target Name="EXSNREG:Clean">
+        <MSBuild Projects="EXSNREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXSNREG:Make">
+        <MSBuild Projects="EXSNREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ExSpName">
+        <MSBuild Projects="ExSpName.dproj"/>
+    </Target>
+    <Target Name="ExSpName:Clean">
+        <MSBuild Projects="ExSpName.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExSpName:Make">
+        <MSBuild Projects="ExSpName.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXSPREG">
+        <MSBuild Projects="EXSPREG.dproj"/>
+    </Target>
+    <Target Name="EXSPREG:Clean">
+        <MSBuild Projects="EXSPREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXSPREG:Make">
+        <MSBuild Projects="EXSPREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXSRNM1">
+        <MSBuild Projects="EXSRNM1.dproj"/>
+    </Target>
+    <Target Name="EXSRNM1:Clean">
+        <MSBuild Projects="EXSRNM1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXSRNM1:Make">
+        <MSBuild Projects="EXSRNM1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXUSG1">
+        <MSBuild Projects="EXUSG1.dproj"/>
+    </Target>
+    <Target Name="EXUSG1:Clean">
+        <MSBuild Projects="EXUSG1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXUSG1:Make">
+        <MSBuild Projects="EXUSG1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXUSG2">
+        <MSBuild Projects="EXUSG2.dproj"/>
+    </Target>
+    <Target Name="EXUSG2:Clean">
+        <MSBuild Projects="EXUSG2.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXUSG2:Make">
+        <MSBuild Projects="EXUSG2.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EXUSREG">
+        <MSBuild Projects="EXUSREG.dproj"/>
+    </Target>
+    <Target Name="EXUSREG:Clean">
+        <MSBuild Projects="EXUSREG.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EXUSREG:Make">
+        <MSBuild Projects="EXUSREG.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FIXNAF">
+        <MSBuild Projects="FIXNAF.dproj"/>
+    </Target>
+    <Target Name="FIXNAF:Clean">
+        <MSBuild Projects="FIXNAF.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FIXNAF:Make">
+        <MSBuild Projects="FIXNAF.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NAFMGR">
+        <MSBuild Projects="NAFMGR.dproj"/>
+    </Target>
+    <Target Name="NAFMGR:Clean">
+        <MSBuild Projects="NAFMGR.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NAFMGR:Make">
+        <MSBuild Projects="NAFMGR.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="STAMPEXE">
+        <MSBuild Projects="STAMPEXE.dproj"/>
+    </Target>
+    <Target Name="STAMPEXE:Clean">
+        <MSBuild Projects="STAMPEXE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="STAMPEXE:Make">
+        <MSBuild Projects="STAMPEXE.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="CODEGEN;EXDMOD;EXDTP21;EXDTREG;EXDYREG;EXDYS30;EXINST;ExMachID;EXNET;EXPROT;ExReg;EXRGREG;EXRGSTR;exselapi;exselect;exslcode;EXSNREG;ExSpName;EXSPREG;EXSRNM1;EXUSG1;EXUSG2;EXUSREG;FIXNAF;NAFMGR;STAMPEXE"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="CODEGEN:Clean;EXDMOD:Clean;EXDTP21:Clean;EXDTREG:Clean;EXDYREG:Clean;EXDYS30:Clean;EXINST:Clean;ExMachID:Clean;EXNET:Clean;EXPROT:Clean;ExReg:Clean;EXRGREG:Clean;EXRGSTR:Clean;exselapi:Clean;exselect:Clean;exslcode:Clean;EXSNREG:Clean;ExSpName:Clean;EXSPREG:Clean;EXSRNM1:Clean;EXUSG1:Clean;EXUSG2:Clean;EXUSREG:Clean;FIXNAF:Clean;NAFMGR:Clean;STAMPEXE:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="CODEGEN:Make;EXDMOD:Make;EXDTP21:Make;EXDTREG:Make;EXDYREG:Make;EXDYS30:Make;EXINST:Make;ExMachID:Make;EXNET:Make;EXPROT:Make;ExReg:Make;EXRGREG:Make;EXRGSTR:Make;exselapi:Make;exselect:Make;exslcode:Make;EXSNREG:Make;ExSpName:Make;EXSPREG:Make;EXSRNM1:Make;EXUSG1:Make;EXUSG2:Make;EXUSREG:Make;FIXNAF:Make;NAFMGR:Make;STAMPEXE:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

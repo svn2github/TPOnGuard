@@ -57,15 +57,17 @@ interface
 
 {$IFDEF MSWINDOWS}
 
-uses Windows;
+uses Windows {$IFDEF DELPHI23UP}, ImageHlp{$ENDIF};
 
+{$IFNDEF DELPHI23UP}
 // Imagehlp.dll
 const
   CERT_SECTION_TYPE_ANY = $FF;      // Any Certificate type
 
-function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: WORD; out CertificateCount: DWORD; Indicies: PDWORD; IndexCount: Integer): BOOL; stdcall; external 'Imagehlp.dll';
+function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: WORD; CertificateCount: PDWORD; Indicies: PDWORD; IndexCount: Integer): BOOL; stdcall; external 'Imagehlp.dll';
 function ImageGetCertificateHeader(FileHandle: THandle; CertificateIndex: Integer; var CertificateHeader: TWinCertificate): BOOL; stdcall; external 'Imagehlp.dll';
 function ImageGetCertificateData(FileHandle: THandle; CertificateIndex: Integer; Certificate: PWinCertificate; var RequiredLength: DWORD): BOOL; stdcall; external 'Imagehlp.dll';
+{$ENDIF}
 
 // Crypt32.dll
 const
@@ -225,7 +227,7 @@ begin
   if hExe = INVALID_HANDLE_VALUE then Exit;
   try
     // There should only be one certificate associated with the exe
-    if (not ImageEnumerateCertificates(hExe, CERT_SECTION_TYPE_ANY, CertCount, nil, 0)) or (CertCount <> 1) then Exit;
+    if (not ImageEnumerateCertificates(hExe, CERT_SECTION_TYPE_ANY, @CertCount, nil, 0)) or (CertCount <> 1) then Exit;
     // Read the certificate header so we can get the size needed for the full cert
     GetMem(Cert, SizeOf(TWinCertificate) + 3); // ImageGetCertificateHeader writes an DWORD at bCertificate for some reason
     try

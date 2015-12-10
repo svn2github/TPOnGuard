@@ -9,21 +9,21 @@ package G115Common_R230;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DEFINE DEBUG}
+{$DEFINE RELEASE}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - Common 230'}
 {$RUNONLY}
@@ -39,6 +39,7 @@ contains
   ogstamp in '..\source\ogstamp.pas',
   ogutil in '..\source\ogutil.pas',
   ognetwrkutil in '..\source\ognetwrkutil.pas',
-  ogproexeutil in '..\source\ogproexeutil.pas';
+  ogproexeutil in '..\source\ogproexeutil.pas',
+  ogcodesign in '..\source\ogcodesign.pas';
 
 end.

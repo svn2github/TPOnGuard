@@ -4,7 +4,7 @@ interface
 
 uses
   IniFiles, SysUtils, Dialogs, StdCtrls, Controls, Classes, Forms,
-  OnGuard,OgNetWrk, OgUtil, Buttons;
+  OnGuard, OgNetWrkUtil, OgNetWrk, OgUtil, Buttons;
 
 type
   TNafFrm = class(TForm)

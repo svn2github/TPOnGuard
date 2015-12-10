@@ -3,9 +3,9 @@ unit Stampex1;
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, {$ELSE} Windows, {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons,
+  Forms, Dialogs, StdCtrls, Buttons, OgProExeUtil,
   OgProExe;
 
 type

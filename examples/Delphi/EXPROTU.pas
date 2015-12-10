@@ -3,9 +3,9 @@ unit ExProtU;
 interface
 
 uses
-  {$IFDEF Win32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  {$IFDEF Win16} WinTypes, WinProcs, {$ELSE} Windows, {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, OnGuard, OgUtil, OgProExe;
+  StdCtrls, Buttons, OnGuard, OgUtil, OgProExeUtil, OgProExe;
 
 type
   TForm1 = class(TForm)

@@ -20,6 +20,7 @@ unit Exselec1;
 interface
 
 uses
+  {$IFDEF Win16} WinTypes, WinProcs, {$ELSE} Windows, {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, OnGuard, OgUtil, TabNotBk, Menus;
 

@@ -189,4 +189,18 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added G115Common_R230.bpl
     source/fmx folder contains FMX specific files
 
+4.3.10 Release 1.15 r24
+
+    Enhancements
+    -------------------------------------------------------------
+    clean up extraneous FMX files in source folder
+
+4.3.11 Release 1.15 r25
+
+    Enhancements
+    -------------------------------------------------------------
+    clean up VCL examples:
+    create a project group "Demos"
+    set demo projects for 32 bit and 64 bit Windows platform targets
+    set demo project output and search paths
 

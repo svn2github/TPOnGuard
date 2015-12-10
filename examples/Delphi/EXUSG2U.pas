@@ -12,7 +12,8 @@ unit Exusg2u;
 interface
 
 uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  {$IFDEF Win16} WinTypes, WinProcs, {$ELSE} Windows, {$ENDIF}
+  SysUtils, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, Buttons, OnGuard,
 
   OgUtil,

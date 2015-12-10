@@ -17,6 +17,7 @@ unit Exslcod1;
 interface
 
 uses
+  {$IFDEF Win16} WinTypes, WinProcs, {$ELSE} Windows, {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   OnGuard, OgUtil, StdCtrls, Mask;
 
