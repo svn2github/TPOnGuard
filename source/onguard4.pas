@@ -43,15 +43,7 @@ uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
   {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
-  {$IFDEF UseOgVCL}
   StdCtrls, Buttons, ExtCtrls, Controls, Classes, Forms,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
-  System.SysUtils, System.Types, System.UITypes, System.Classes,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Objects, FMX.ExtCtrls,
-  FMX.Layouts, FMX.Edit, FMX.Platform,
-  Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  {$ENDIF}
   ogutil,
   onguard,
   onguard1;
@@ -96,8 +88,7 @@ type
 
 implementation
 
-{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
-{$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
+{$R *.dfm}
 
 procedure TEditProductFrm.FormCreate(Sender: TObject);
 begin
@@ -125,9 +116,7 @@ begin
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
-    {$IFDEF UseOgVCL}
     F.ShowHint := GetShowHints;
-    {$ENDIF}
     if F.ShowModal = mrOK then begin
       F.GetKey(FKey);
       FKeyType := F.KeyType;
@@ -147,16 +136,12 @@ end;
 function TEditProductFrm.GetShowHints : Boolean;
 begin
   Result := False;
-  {$IFDEF UseOgVCL}
   Result := ShowHint;
-  {$ENDIF}
 end;
 
 procedure TEditProductFrm.SetShowHints(Value : Boolean);
 begin
-  {$IFDEF UseOgVCL}
   ShowHint := Value;
-  {$ENDIF}
 end;
 
 procedure TEditProductFrm.GetKey(var Value : TKey);

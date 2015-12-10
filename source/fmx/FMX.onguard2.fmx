@@ -1,4 +1,4 @@
-object CodeGenerateFrm: TCodeGenerateFrm
+object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
   Left = 247
   Top = 137
   BorderIcons = [biSystemMenu, biMinimize]
@@ -119,7 +119,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
     object UniqueModifierCb: TCheckBox
       Position.X = 304.000000000000000000
       Position.Y = 16.000000000000000000
-      Size.Width = 105.000000000000000000
+      Size.Width = 137.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
@@ -129,7 +129,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
     object MachineModifierCb: TCheckBox
       Position.X = 152.000000000000000000
       Position.Y = 16.000000000000000000
-      Size.Width = 105.000000000000000000
+      Size.Width = 137.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
@@ -182,7 +182,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
     object StringModifierCb: TCheckBox
       Position.X = 16.000000000000000000
       Position.Y = 72.000000000000000000
-      Size.Width = 97.000000000000000000
+      Size.Width = 105.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 6
@@ -192,7 +192,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
     object ModStringEd: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]
       TabOrder = 7
-      Position.X = 111.000000000000000000
+      Position.X = 127.000000000000000000
       Position.Y = 69.000000000000000000
       Enabled = False
       Size.Width = 312.000000000000000000
@@ -205,7 +205,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
       TabOrder = 11
       Cursor = crIBeam
       Date = 41737.000000000000000000
-      Position.X = 112.000000000000000000
+      Position.X = 128.000000000000000000
       Position.Y = 46.000000000000000000
       Size.Width = 100.000000000000000000
       Size.Height = 22.000000000000000000
@@ -218,14 +218,14 @@ object CodeGenerateFrm: TCodeGenerateFrm
     Size.Width = 449.000000000000000000
     Size.Height = 129.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 4
     TabPosition = Top
     object TabItem1: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 45.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -279,7 +279,7 @@ object CodeGenerateFrm: TCodeGenerateFrm
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 45.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False

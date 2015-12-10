@@ -28,7 +28,7 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ../onguard.inc}
+{$I ..\onguard.inc}
 
 unit FMX.onguard1;
   {-Key generation dialog}
@@ -40,10 +40,10 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects, FMX.ExtCtrls,
   FMX.Memo, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
   FMX.ListBox, FMX.Layouts,
-  ogutil, FMX.onguard;
+  ogutil, FMX.onguard, FMX.ScrollBox, FMX.Controls.Presentation;
 
 type
-  TKeyGenerateFrm = class(TForm)
+  TFMXKeyGenerateFrm = class(TForm)
     Panel1: TPanel;
     Label2: TLabel;
     CopyBlockSb: TSpeedButton;
@@ -89,7 +89,7 @@ implementation
 
 {$R *.fmx}
 
-procedure TKeyGenerateFrm.FormCreate(Sender: TObject);
+procedure TFMXKeyGenerateFrm.FormCreate(Sender: TObject);
 begin
   KeyTypeCb.ItemIndex := Ord(FKeyType);
 
@@ -105,7 +105,7 @@ begin
     (KeyStringMe.Lines.Count > 0);
 end;
 
-procedure TKeyGenerateFrm.KeyStringMeChange(Sender: TObject);
+procedure TFMXKeyGenerateFrm.KeyStringMeChange(Sender: TObject);
 begin
   BlockKeyEd.Text := '';
   ByteKeyEd.Text := '';
@@ -115,7 +115,7 @@ begin
     (KeyStringMe.Lines.Count > 0);
 end;
 
-procedure TKeyGenerateFrm.KeyTypeCbChange(Sender: TObject);
+procedure TFMXKeyGenerateFrm.KeyTypeCbChange(Sender: TObject);
 begin
   BlockKeyEd.Text := '';
   ByteKeyEd.Text := '';
@@ -135,12 +135,12 @@ begin
     FKeyType := TKeyType(KeyTypeCb.ItemIndex);
 end;
 
-procedure TKeyGenerateFrm.BlockKeyEdChange(Sender: TObject);
+procedure TFMXKeyGenerateFrm.BlockKeyEdChange(Sender: TObject);
 begin
   CopyBlockSb.Enabled := (BlockKeyEd.Text <> '');
 end;
 
-procedure TKeyGenerateFrm.CopyBlockSbClick(Sender: TObject);
+procedure TFMXKeyGenerateFrm.CopyBlockSbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -156,12 +156,12 @@ begin
   end;
 end;
 
-procedure TKeyGenerateFrm.ByteKeyEdChange(Sender: TObject);
+procedure TFMXKeyGenerateFrm.ByteKeyEdChange(Sender: TObject);
 begin
   CopyByteKeySb.Enabled := (ByteKeyEd.Text <> '');
 end;
 
-procedure TKeyGenerateFrm.CopyByteKeySbClick(Sender: TObject);
+procedure TFMXKeyGenerateFrm.CopyByteKeySbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -177,7 +177,7 @@ begin
   end;
 end;
 
-procedure TKeyGenerateFrm.GenerateBtnClick(Sender: TObject);
+procedure TFMXKeyGenerateFrm.GenerateBtnClick(Sender: TObject);
 begin
   case KeyTypeCb.ItemIndex of
     0:
@@ -197,20 +197,20 @@ begin
       end;
     1:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiUpperCase(KeyStringMe.Text));
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(AnsiUpperCase(KeyStringMe.Text)));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;
     2:
       begin
-        GenerateTMDKeyPrim(FKey, SizeOf(FKey), KeyStringMe.Text);
+        GenerateTMDKeyPrim(FKey, SizeOf(FKey), AnsiString(KeyStringMe.Text));
         BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
         ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
       end;
   end;
 end;
 
-procedure TKeyGenerateFrm.SetKeyType(Value : TKeyType);
+procedure TFMXKeyGenerateFrm.SetKeyType(Value : TKeyType);
 begin
   if Value <> FKeyType then begin
     FKeyType := Value;
@@ -218,18 +218,18 @@ begin
   end;
 end;
 
-procedure TKeyGenerateFrm.GetKey(var Value : TKey);
+procedure TFMXKeyGenerateFrm.GetKey(var Value : TKey);
 begin
   Value := FKey;
 end;
 
-procedure TKeyGenerateFrm.SetKey(Value : TKey);
+procedure TFMXKeyGenerateFrm.SetKey(Value : TKey);
 begin
   FKey := Value;
 end;
 
 
-procedure TKeyGenerateFrm.FormShow(Sender: TObject);
+procedure TFMXKeyGenerateFrm.FormShow(Sender: TObject);
 begin
   KeyTypeCbChange(Sender);
 end;

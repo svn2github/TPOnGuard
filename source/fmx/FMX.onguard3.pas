@@ -28,7 +28,7 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
 unit FMX.onguard3;
   {-Key selection and maintenance}
@@ -45,10 +45,10 @@ uses
   ogutil,
   FMX.onguard,
   FMX.onguard1,
-  FMX.onguard4;
+  FMX.onguard4, FMX.Controls.Presentation;
 
 type
-  TKeyMaintFrm = class(TForm)
+  TFMXKeyMaintFrm = class(TForm)
     ProductsGb: TGroupBox;
     ProductsLb: TListBox;
     AddBtn: TButton;
@@ -109,7 +109,7 @@ implementation
 {$R *.fmx}
 
 {!! This function is required to get round a bug in Delphi 4}        {!!.07}
-function TKeyMaintFrm.GetListBoxItemIndex : integer;                 {!!.07}
+function TFMXKeyMaintFrm.GetListBoxItemIndex : integer;                 {!!.07}
 begin                                                                {!!.07}
   if (ProductsLB.Items.Count = 0) then                               {!!.07}
     Result := -1                                                     {!!.07}
@@ -120,12 +120,12 @@ begin                                                                {!!.07}
     Result := ProductsLB.ItemIndex;                                  {!!.07}
 end;                                                                 {!!.07}
 
-procedure TKeyMaintFrm.FormCreate(Sender: TObject);
+procedure TFMXKeyMaintFrm.FormCreate(Sender: TObject);
 begin
   InfoChanged(Sender);
 end;
 
-procedure TKeyMaintFrm.InfoChanged(Sender: TObject);
+procedure TFMXKeyMaintFrm.InfoChanged(Sender: TObject);
 var
   I       : Integer;
   IniFile : TIniFile;
@@ -179,12 +179,12 @@ begin
   OKBtn.Enabled := HexToBuffer(BlockKeyEd.Text, FKey, SizeOf(FKey));
 end;
 
-procedure TKeyMaintFrm.AddBtnClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.AddBtnClick(Sender: TObject);
 var
-  F       : TEditProductFrm;
+  F       : TFMXEditProductFrm;
   IniFile : TIniFile;
 begin
-  F := TEditProductFrm.Create(Self);
+  F := TFMXEditProductFrm.Create(Self);
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
@@ -208,12 +208,12 @@ begin
   InfoChanged(Self);
 end;
 
-procedure TKeyMaintFrm.EditBtnClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.EditBtnClick(Sender: TObject);
 var
-  F       : TEditProductFrm;
+  F       : TFMXEditProductFrm;
   IniFile : TIniFile;
 begin
-  F := TEditProductFrm.Create(Self);
+  F := TFMXEditProductFrm.Create(Self);
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
@@ -236,7 +236,7 @@ begin
   InfoChanged(Self);
 end;
 
-procedure TKeyMaintFrm.DeleteBtnClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.DeleteBtnClick(Sender: TObject);
 var
   IniFile : TIniFile;
   I       : Integer;
@@ -245,7 +245,7 @@ begin
   if (I > -1) then                                                   {!!.07}
     if MessageDlg(SCDeleteQuery,
                   TMsgDlgType.mtConfirmation,
-                  mbYesNo}, 0) = mrYes then begin
+                  mbYesNo, 0) = mrYes then begin
       {$IFDEF MSWINDOWS}
       IniFile := TIniFile.Create(KeyFileName);
       try
@@ -261,7 +261,7 @@ begin
     end;
 end;
 
-procedure TKeyMaintFrm.KeyCopySbClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.KeyCopySbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -273,7 +273,7 @@ begin
   BlockKeyEd.SelLength := 0;
 end;
 
-procedure TKeyMaintFrm.CopyByteKeySbClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.CopyByteKeySbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -285,7 +285,7 @@ begin
   BytesKeyEd.SelLength := 0;
 end;
 
-procedure TKeyMaintFrm.OpenFileSbClick(Sender: TObject);begin
+procedure TFMXKeyMaintFrm.OpenFileSbClick(Sender: TObject);begin
   OpenDialog1.FileName := FileNameEd.Text;
   if OpenDialog1.Execute then begin
     FileNameEd.Text := OpenDialog1.FileName;
@@ -293,30 +293,30 @@ procedure TKeyMaintFrm.OpenFileSbClick(Sender: TObject);begin
   end;
 end;
 
-function TKeyMaintFrm.GetKeyFileName : string;
+function TFMXKeyMaintFrm.GetKeyFileName : string;
 begin
   Result := FileNameEd.Text;
 end;
 
-procedure TKeyMaintFrm.SetKeyFileName(Value : string);
+procedure TFMXKeyMaintFrm.SetKeyFileName(Value : string);
 begin
   FileNameEd.Text := Value;
   InfoChanged(Self);
 end;
 
-procedure TKeyMaintFrm.OpenBtnClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.OpenBtnClick(Sender: TObject);
 begin
   OpenDialog1.FileName := FileNameEd.Text;
   FileNameEd.Text := OpenDialog1.FileName;
   InfoChanged(Sender);
 end;
 
-procedure TKeyMaintFrm.ProductsLbDblClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.ProductsLbDblClick(Sender: TObject);
 begin
   ModalResult := mrOK;
 end;
 
-procedure TKeyMaintFrm.KeyPasteSbClick(Sender: TObject);
+procedure TFMXKeyMaintFrm.KeyPasteSbClick(Sender: TObject);
 begin
   BlockKeyEd.PasteFromClipboard;
   HexToBuffer(BlockKeyEd.Text, FKey, SizeOf(FKey));
@@ -324,7 +324,7 @@ begin
   BytesKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
 end;
 
-procedure TKeyMaintFrm.SpeedButton1Click(Sender: TObject);
+procedure TFMXKeyMaintFrm.SpeedButton1Click(Sender: TObject);
 begin
   BytesKeyEd.PasteFromClipboard;
   HexToBuffer(BytesKeyEd.Text, FKey, SizeOf(FKey));
@@ -332,12 +332,12 @@ begin
   BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
 end;
 
-procedure TKeyMaintFrm.GetKey(var Value : TKey);                     {!!.08}
+procedure TFMXKeyMaintFrm.GetKey(var Value : TKey);                     {!!.08}
 begin
   Value := FKey;
 end;
 
-procedure TKeyMaintFrm.SetKey(Value : TKey);                         {!!.08}
+procedure TFMXKeyMaintFrm.SetKey(Value : TKey);                         {!!.08}
 begin
   FKey := Value;
 end;

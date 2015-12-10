@@ -36,18 +36,9 @@ unit onguard1;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, SysUtils, Classes,
-  {$ENDIF}
-  {$IFDEF UseOgVCL}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
+  SysUtils, Classes,
   Controls, Forms, Dialogs, Graphics, Buttons, ExtCtrls, StdCtrls,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects, FMX.ExtCtrls,
-  FMX.Memo, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  FMX.ListBox,
-  {$ENDIF}
   ogutil, onguard;
 
 type
@@ -63,8 +54,8 @@ type
     GenerateBtn: TButton;
     KeyTypeCb: TComboBox;
     ByteKeyEd: TEdit;
-    CancelBtn: {$IFDEF UseOgVCL}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
-    OKBtn: {$IFDEF UseOgVCL}TBitBtn{$ENDIF}{$IFDEF UseOgFMX}TButton{$ENDIF};
+    CancelBtn: TBitBtn;
+    OKBtn: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure KeyStringMeChange(Sender: TObject);
     procedure KeyTypeCbChange(Sender: TObject);
@@ -82,7 +73,7 @@ type
     procedure SetKeyType(Value : TKeyType);
 
   public
-    { Public declarations }                                          
+    { Public declarations }
     procedure SetKey(Value : TKey);                                  {!!.08}
     procedure GetKey(var Value : TKey);                              {!!.08}
 
@@ -95,8 +86,7 @@ type
 
 implementation
 
-{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
-{$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
+{$R *.DFM}
 
 procedure TKeyGenerateFrm.FormCreate(Sender: TObject);
 begin
@@ -104,12 +94,10 @@ begin
 
   {set state of memo and generate button}
   KeyStringMe.Enabled := (KeyTypeCb.ItemIndex <> 0);
-  {$IFNDEF UseOgFMX}
   case KeyStringMe.Enabled of
     True  : KeyStringMe.Color := clWindow;
     False : KeyStringMe.Color := clBtnFace;
   end;
-  {$ENDIF}
   GenerateBtn.Enabled := (KeyTypeCb.ItemIndex = 0) or
     (KeyStringMe.Lines.Count > 0);
 end;
@@ -131,12 +119,10 @@ begin
 
   {set state of memo and generate button}
   KeyStringMe.Enabled := (KeyTypeCb.ItemIndex <> 0);
-  {$IFNDEF UseOgFMX}
   case KeyStringMe.Enabled of
     True  : KeyStringMe.Color := clWindow;
     False : KeyStringMe.Color := clBtnFace;
   end;
-  {$ENDIF}
   GenerateBtn.Enabled := (KeyTypeCb.ItemIndex = 0) or
     (KeyStringMe.Lines.Count > 0);
 
@@ -191,17 +177,13 @@ begin
   case KeyTypeCb.ItemIndex of
     0:
       begin
-        {$IFDEF UseOgVCL}
         Screen.Cursor := crHourGlass;
-        {$ENDIF}
         try
           GenerateRandomKeyPrim(FKey, SizeOf(FKey));
           BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
           ByteKeyEd.Text := BufferToHexBytes(FKey, SizeOf(FKey));
         finally
-          {$IFDEF UseOgVCL}
           Screen.Cursor := crDefault;
-          {$ENDIF}
         end;
       end;
     1:

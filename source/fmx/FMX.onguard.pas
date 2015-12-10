@@ -34,12 +34,6 @@
 
 {$I ../onguard.inc}
 
-{$IFDEF FPC}
-{$I-} { I/O checks disabled}
-{$Q-} {Integer overflow check disabled.
-Warning : at least one function (MixBlock) causes overflow}
-{$ENDIF}
-
 unit FMX.onguard;
   {-code and key classes and routines}
 
@@ -78,6 +72,7 @@ type
     of object;
 
   {base regisration code component}
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXCodeBase = class(TComponent)
   protected {private}
     {property variables}
@@ -172,6 +167,7 @@ type
       write FOnGetModifier;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXMakeCodes = class(TComponent)
   protected {private}
     {property variables}
@@ -223,6 +219,7 @@ type
   end;
 
 type
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXMakeKeys = class(TComponent)
   protected {private}
     {property variables}
@@ -280,6 +277,7 @@ type
       default False;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXDateCode = class(TOgFMXCodeBase)
   public
     function CheckCode(Report : Boolean) : TCodeStatus;
@@ -296,6 +294,7 @@ type
       default DefStoreCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXDaysCode = class(TOgFMXCodeBase)
   protected {private}
     {property variables}
@@ -334,6 +333,7 @@ type
       write FOnChangeCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXRegistrationCode = class(TOgFMXCodeBase)
   protected {private}
     {property variables}
@@ -378,6 +378,7 @@ type
       write FOnGetRegString;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXSerialNumberCode = class(TOgFMXCodeBase)
   public
     function CheckCode(Report : Boolean) : TCodeStatus;
@@ -395,6 +396,7 @@ type
 
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXSpecialCode = class(TOgFMXCodeBase)
     function CheckCode(Report : Boolean) : TCodeStatus;
       override;
@@ -410,6 +412,7 @@ type
       default DefStoreCode;
   end;
 
+{$IFDEF DELPHI16UP}[ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidiOSDevice32 or pidiOSDevice64 or pidAndroid or pidLinux32)]{$ENDIF}
   TOgFMXUsageCode = class(TOgFMXCodeBase)
   protected {private}
     {property variables}
@@ -726,11 +729,11 @@ end;
 function TOgFMXMakeCodes.Execute : Boolean;
 {$IFNDEF NoMakeCodesSupport}                                         {!!.10}
 var
-  F : TCodeGenerateFrm;
+  F : TFMXCodeGenerateFrm;
 {$ENDIF}                                                             {!!.10}
 begin
 {$IFNDEF NoMakeCodesSupport}                                         {!!.10}
-  F := TCodeGenerateFrm.Create(Owner);
+  F := TFMXCodeGenerateFrm.Create(Owner);
   try
     F.CodeType := FCodeType;
     F.SetKey(FKey);                                                  {!!.08}
@@ -796,11 +799,11 @@ end;
 function TOgFMXMakeKeys.Execute : Boolean;
 {$IFNDEF NoMakeCodesSupport}                                         {!!.10}
 var
-  F : TKeyMaintFrm;
+  F : TFMXKeyMaintFrm;
 {$ENDIF}                                                             {!!.10}
 begin
 {$IFNDEF NoMakeCodesSupport}                                         {!!.10}
-  F := TKeyMaintFrm.Create(Owner);
+  F := TFMXKeyMaintFrm.Create(Owner);
   try
     F.SetKey(FKey);                                                  {!!.08}
     F.KeyType := FKeyType;

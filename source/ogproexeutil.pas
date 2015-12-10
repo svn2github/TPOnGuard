@@ -59,6 +59,13 @@ unit ogproexeutil;
 
 interface
 
+{$IFDEF KYLIX}{$MESSAGE WARN 'Kylix not supported.'}{$ENDIF}
+{$IFDEF LINUX}{$MESSAGE WARN 'Linux not supported.'}{$ENDIF}
+{$IFDEF FREESBD}{$MESSAGE WARN 'FreeBSD not supported.'}{$ENDIF}
+{$IFDEF ANDROID}{$MESSAGE WARN 'Android not supported.'}{$ENDIF}
+{$IFDEF IOS}{$MESSAGE WARN 'IOS not supported.'}{$ENDIF}
+{$IFDEF MACOS}{$MESSAGE WARN 'Mac OSX not supported.'}{$ENDIF}
+
 uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}

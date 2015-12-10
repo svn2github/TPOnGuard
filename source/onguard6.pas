@@ -39,16 +39,9 @@ uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, ComCtrls, {$ENDIF}
   {$IFDEF Win64} Windows, ComCtrls, {$ENDIF}
-  {$IFDEF UseOgVCL}
+  {$IFDEF MSWINDOWS} Messages, {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Mask,
-  ExtCtrls, Tabnotbk, StdCtrls, Buttons, Messages,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
-  System.SysUtils, System.Types, System.UITypes, System.Classes,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.ExtCtrls,
-  FMX.Layouts, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  FMX.DateTimeCtrls,
-  {$ENDIF}
+  ExtCtrls, Tabnotbk, StdCtrls, Buttons,
   OgConst, OgUtil, OnGuard,
 {$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
@@ -60,32 +53,19 @@ uses
 
 type
   TModifierFrm = class(TForm)
-    {$IFDEF UseOgVCL}
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
-    {$ENDIF}
-    {$IFDEF UseOgFMX}
-    OKBtn: TButton;
-    CancelBtn: TButton;
-    {$ENDIF}
     GroupBox1: TGroupBox;
     UniqueModifierCb: TCheckBox;
     MachineModifierCb: TCheckBox;
     DateModifierCb: TCheckBox;
     NoModifierCb: TCheckBox;
     ModifierEd: TEdit;
-    {$IFDEF UseOgVCL}
     ModDateEd: TEdit;
-    {$ENDIF}
-    {$IFDEF UseOgFMX}
-    ModDateCalendarEdit: TCalendarEdit;
-    {$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure ModifierClick(Sender: TObject);
-    {$IFDEF UseOgVCL}
     procedure ModifierEdKeyPress(Sender: TObject; var Key: Char);
     procedure DateEdKeyPress(Sender: TObject; var Key: Char);
-    {$ENDIF}
     procedure InfoChanged(Sender: TObject);
   private
   public
@@ -108,18 +88,12 @@ type
 
 implementation
 
-{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
-{$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
+{$R *.dfm}
 
 procedure TModifierFrm.FormCreate(Sender: TObject);
 begin
   NoModifierCb.Checked := True;
-  {$IFDEF UseOgVCL}
   ModDateEd.Text := OgFormatDate(Date);                              {!!.09}
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
-  ModDateCalendarEdit.Date := Date();
-  {$ENDIF}
   InfoChanged(nil);
 end;
 
@@ -159,21 +133,14 @@ begin
 
     {set status of date field}
     ModDateEd.Enabled := DateModifierCb.Checked;
-    {$IFDEF UseOgVCL}
     if ModDateEd.Enabled then
       ModDateEd.Color := clWindow
     else
       ModDateEd.Color := clBtnFace;
-    {$ENDIF}
 
     if DateModifierCb.Checked then begin
       try
-        {$IFDEF UseOgVCL}
         D := StrToDate(ModDateEd.Text);
-        {$ENDIF}
-        {$IFDEF UseOgFMX}
-        D := ModDateCalendarEdit.Date;
-        {$ENDIF}
       except
         {ignore errors and don't generate modifier}
         D := 0;
@@ -205,7 +172,6 @@ begin
   end;
 end;
 
-{$IFDEF UseOgVCL}
 procedure TModifierFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
 const
   CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/'];
@@ -219,9 +185,7 @@ begin
     Key := #0;
   end;
 end;
-{$ENDIF}
 
-{$IFDEF UseOgVCL}
 procedure TModifierFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -235,7 +199,6 @@ begin
     Key := #0;
   end;
 end;
-{$ENDIF}
 
 procedure TModifierFrm.InfoChanged(Sender: TObject);
 begin

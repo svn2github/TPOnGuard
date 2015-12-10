@@ -28,7 +28,7 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I ../onguard.inc}
+{$I ..\onguard.inc}
 
 {$IFDEF DELPHI}
 {$IFDEF Win32}
@@ -46,13 +46,13 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects,
   FMX.ExtCtrls, FMX.TabControl, FMX.Layouts, FMX.Edit, FMX.Platform,
   Fmx.StdCtrls, FMX.Header, FMX.Graphics, FMX.DateTimeCtrls,
-
+  FMX.NumberBox, FMX.EditBox, FMX.SpinBox, FMX.ComboEdit,
+  FMX.CalendarEdit, FMX.Controls.Presentation,
   ogconst,
   ognetwrkutil,
   ogutil,
   FMX.onguard,
-  FMX.onguard3, FMX.NumberBox, FMX.EditBox, FMX.SpinBox, FMX.ComboEdit,
-  FMX.CalendarEdit, FMX.Controls.Presentation;
+  FMX.onguard3;
 
 {$IFNDEF UseOgFMX}
 const
@@ -61,7 +61,7 @@ const
 {$ENDIF}
 
 type
-  TCodeGenerateFrm = class(TForm)
+  TFMXCodeGenerateFrm = class(TForm)
     GroupBox1: TGroupBox;
     GenerateGb: TGroupBox;
     RegCodeCopySb: TSpeedButton;
@@ -129,12 +129,6 @@ type
     procedure ModifierEdKeyPress(Sender: TObject; var Key: Char);
     procedure RegStrCopySbClick(Sender: TObject);
     procedure RegCodeCopySbClick(Sender: TObject);
-    {$IFNDEF UseOgFMX}
-    procedure DateEdKeyPress(Sender: TObject; var Key: Char);
-    procedure NumberEdKeyPress(Sender: TObject; var Key: Char);
-    procedure TabbedNotebook1Change(Sender: TObject; NewTab: Integer;
-      var AllowChange: Boolean);
-    {$ENDIF}
     procedure GenerateKeySbClick(Sender: TObject);
     procedure InfoChanged(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -181,7 +175,7 @@ implementation
 {$R *.fmx}
 
 
-procedure TCodeGenerateFrm.FormCreate(Sender: TObject);
+procedure TFMXCodeGenerateFrm.FormCreate(Sender: TObject);
 var
   D : TDateTime;
 begin
@@ -206,13 +200,13 @@ begin
   InfoChanged(Self);
 end;
 
-procedure TCodeGenerateFrm.ModifierClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.ModifierClick(Sender: TObject);
 const
   Busy : Boolean = False;
 var
   L : LongInt;
   D : TDateTime;
-  S : string;                                                        {!!.11}
+  S : AnsiString;                                                        {!!.11}
   i : Integer;                                                       {!!.12}
 begin
   if Busy then
@@ -257,7 +251,7 @@ begin
     {$ENDIF}
                                                                      {!!.11}
     if StringModifierCb.IsChecked then begin                           {!!.11}
-      S := ModStringEd.Text;                                         {!!.11}
+      S := AnsiString(ModStringEd.Text);                                         {!!.11}
       {strip accented characters from the string}                    {!!.12}
       for i := Length(S) downto 1 do                                 {!!.12}
         if Ord(S[i]) > 127 then                                      {!!.12}
@@ -308,7 +302,7 @@ begin
   end;
 end;
 
-procedure TCodeGenerateFrm.RegRandomBtnClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.RegRandomBtnClick(Sender: TObject);
 var
   I     : Integer;
   L     : LongInt;
@@ -320,7 +314,7 @@ begin
   RegStrEd.Text := IntToHex(L, 8);
 end;
 
-procedure TCodeGenerateFrm.GenerateBtnClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.GenerateBtnClick(Sender: TObject);
 var
   I        : LongInt;
   Work     : TCode;
@@ -371,9 +365,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage(SCInvalidExDate);
-                {$IFDEF MSWINDOWS}
-                //DaysExpiresEd.SetFocus;
-                {$ENDIF}
+                DaysExpiresCalendarEdit.SetFocus;
                 Exit;
               end else
                 raise;
@@ -386,14 +378,12 @@ begin
             except
               on EConvertError do begin
                 ShowMessage(SCInvalidExDate);
-                {$IFDEF MSWINDOWS}
-                //RegExpiresEd.SetFocus;
-                {$ENDIF}
+                RegExpiresCalendarEdit.SetFocus;
                 Exit;
               end else
                 raise;
             end;
-            InitRegCode(K, RegStrEd.Text, D1, FCode);
+            InitRegCode(K, AnsiString(RegStrEd.Text), D1, FCode);
           end;
       3 : begin
             try
@@ -401,9 +391,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage(SCInvalidExDate);
-                {$IFDEF MSWINDOWS}
-                //SerialExpiresEd.SetFocus;
-                {$ENDIF}
+                SerialExpiresCalendarEdit.SetFocus;
                 Exit;
               end else
                 raise;
@@ -416,9 +404,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage(SCInvalidExDate);
-                {$IFDEF MSWINDOWS}
-                //UsageExpiresEd.SetFocus;
-                {$ENDIF}
+                UsageExpiresCalendarEdit.SetFocus;
                 Exit;
               end else
                 raise;
@@ -435,9 +421,7 @@ begin
             except
               on EConvertError do begin
                 ShowMessage(SCInvalidExDate);
-                {$IFDEF MSWINDOWS}
-                //SpecialExpiresEd.SetFocus;
-                {$ENDIF}
+                SpecialExpiresCalendarEdit.SetFocus;
                 Exit;
               end else
                 raise;
@@ -451,7 +435,7 @@ begin
     MessageDlg(SCInvalidKeyOrModifier, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
 end;
 
-procedure TCodeGenerateFrm.SerRandomBtnClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.SerRandomBtnClick(Sender: TObject);
 var
   I     : Integer;
   L     : LongInt;
@@ -463,12 +447,12 @@ begin
   SerialNumberNumberBox.Value := Abs(L);
 end;
 
-procedure TCodeGenerateFrm.ParametersChanged(Sender: TObject);
+procedure TFMXCodeGenerateFrm.ParametersChanged(Sender: TObject);
 begin
   RegCodeEd.Text := '';
 end;
 
-procedure TCodeGenerateFrm.RegStrCopySbClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.RegStrCopySbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -484,40 +468,17 @@ begin
   end;
 end;
 
-{!!.04}
-{$IFNDEF UseOgFMX}
-procedure TCodeGenerateFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
-begin
-  if (not (Key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', {$IFDEF DELPHI15UP}FormatSettings.DateSeparator{$ELSE}DateSeparator{$ENDIF}])) and (not (Key < #32)) then begin
-    MessageBeep(0);
-    Key := #0;
-  end;
-end;
-{$ENDIF}
-
-{$IFNDEF UseOgFMX}
-procedure TCodeGenerateFrm.NumberEdKeyPress(Sender: TObject; var Key: Char);
-const
-  CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-begin
-  if (not (Key in CIntChars)) and (not (Key < #32)) then begin
-    MessageBeep(0);
-    Key := #0;
-  end;
-end;
-{$ENDIF}
-
-procedure TCodeGenerateFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
+procedure TFMXCodeGenerateFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
 const
   CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
-  if (not (Key in CHexChars)) and (not (Key < #32)) then begin
-    {$IFDEF MSWINDOWS}MessageBeep(0);{$ENDIF}
+  if (not (CharInSet(Key, CHexChars))) and (not (Key < #32)) then begin
+    Beep;
     Key := #0;
   end;
 end;
 
-procedure TCodeGenerateFrm.RegCodeCopySbClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.RegCodeCopySbClick(Sender: TObject);
 var
   OldSelStart: Integer;
 begin
@@ -533,23 +494,11 @@ begin
   end;
 end;
 
-{$IFNDEF UseOgFMX}
-procedure TCodeGenerateFrm.TabbedNotebook1Change(Sender: TObject; NewTab: Integer;
-  var AllowChange: Boolean);
-begin
-  AllowChange := True;
-
-  RegCodeEd.Text := '';
-  NoModifierCb.Checked := True;
-  ModifierEd.Text := '';
-end;
-{$ENDIF}
-
-procedure TCodeGenerateFrm.GenerateKeySbClick(Sender: TObject);
+procedure TFMXCodeGenerateFrm.GenerateKeySbClick(Sender: TObject);
 var
-  F    : TKeyMaintFrm;
+  F    : TFMXKeyMaintFrm;
 begin
-  F := TKeyMaintFrm.Create(Self);
+  F := TFMXKeyMaintFrm.Create(Self);
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
@@ -571,7 +520,7 @@ begin
   end;
 end;
 
-procedure TCodeGenerateFrm.SetCodeType(Value : TCodeType);
+procedure TFMXCodeGenerateFrm.SetCodeType(Value : TCodeType);
 begin
   if Value <> TCodeType(CodesTC.TabIndex) then begin
     FCodeType := Value;
@@ -579,7 +528,7 @@ begin
   end;
 end;
 
-procedure TCodeGenerateFrm.SetKey(Value : TKey);
+procedure TFMXCodeGenerateFrm.SetKey(Value : TKey);
 begin
   FKey := Value;
   BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));
@@ -587,7 +536,7 @@ begin
     BlockKeyEd.Text := '';
 end;
 
-procedure TCodeGenerateFrm.InfoChanged(Sender: TObject);
+procedure TFMXCodeGenerateFrm.InfoChanged(Sender: TObject);
 begin
   GenerateBtn.Enabled := HexToBuffer(BlockKeyEd.Text, FKey, SizeOf(FKey));
   OKBtn.Enabled := Length(RegCodeEd.Text) > 0;
@@ -596,11 +545,11 @@ end;
 {$IFNDEF UseOgFMX}
 procedure TCodeGenerateFrm.OGMCheck(var Msg : TMessage);
 var
-  F    : TKeyMaintFrm;
+  F    : TFMXKeyMaintFrm;
 begin
   if not HexToBuffer(BlockKeyEd.Text, FKey, SizeOf(FKey)) then begin
     {get a key}
-    F := TKeyMaintFrm.Create(Self);
+    F := TFMXKeyMaintFrm.Create(Self);
     try
       F.SetKey(FKey);
       F.KeyType := ktRandom;
@@ -627,14 +576,14 @@ begin
 end;
 {$ENDIF}
 
-procedure TCodeGenerateFrm.FormShow(Sender: TObject);
+procedure TFMXCodeGenerateFrm.FormShow(Sender: TObject);
 begin
   {$IFNDEF UseOgFMX}
   PostMessage(Handle, OGM_CHECK, 0, 0);
   {$ENDIF}
 end;
 
-procedure TCodeGenerateFrm.GetKey(var Value : TKey);
+procedure TFMXCodeGenerateFrm.GetKey(var Value : TKey);
 begin
   Value := FKey;
 end;

@@ -1,0 +1,46 @@
+package G115FD230;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$DEFINE UseOgFMX}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'TurboPower OnGuard 1.15 Designtime package - FMX230'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  fmx,
+  designide,
+  G115FR230;
+
+contains
+  FMX.ogreg in '..\source\fmx\FMX.ogreg.pas',
+  FMX.ogabout0 in '..\source\fmx\FMX.ogabout0.pas' {OgFMXAboutForm},
+  FMX.onguard5 in '..\source\fmx\FMX.onguard5.pas',
+  FMX.onguard6 in '..\source\fmx\FMX.onguard6.pas' {FMXModifierFrm},
+  FMX.onguard7 in '..\source\fmx\FMX.onguard7.pas';
+
+end.

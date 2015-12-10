@@ -9,21 +9,21 @@ package G115FR230;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DEFINE DEBUG}
+{$DEFINE RELEASE}
 {$DEFINE UseOgFMX}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - FMX230'}
@@ -31,23 +31,18 @@ package G115FR230;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  fmx,
+  G115Common_R230;
 
 contains
-  ogconst in '..\source\ogconst.pas',
-  ogfile in '..\source\ogfile.pas',
-  ogfirst in '..\source\ogfirst.pas',
-  ogjcl in '..\source\ogjcl.pas',
-  ognetwrkutil in '..\source\ognetwrkutil.pas',
-  ogproexeutil in '..\source\ogproexeutil.pas',
-  ognetwrk in '..\source\ognetwrk.pas',
-  ogproexe in '..\source\ogproexe.pas',
-  ogstamp in '..\source\ogstamp.pas',
-  ogutil in '..\source\ogutil.pas',
-  FMX.onguard1 in '..\source\fmx\FMX.onguard1.pas',
-  FMX.onguard2 in '..\source\fmx\FMX.onguard2.pas',
-  FMX.onguard3 in '..\source\fmx\FMX.onguard3.pas',
-  FMX.onguard4 in '..\source\fmx\FMX.onguard4.pas',
-  FMX.onguard in '..\source\fmx\FMX.onguard.pas';
+  FMX.onguard1 in '..\source\fmx\FMX.onguard1.pas' {FMXKeyGenerateFrm},
+  FMX.onguard2 in '..\source\fmx\FMX.onguard2.pas' {FMXCodeGenerateFrm},
+  FMX.onguard3 in '..\source\fmx\FMX.onguard3.pas' {FMXKeyMaintFrm},
+  FMX.onguard4 in '..\source\fmx\FMX.onguard4.pas' {FMXEditProductFrm},
+  FMX.onguard in '..\source\fmx\FMX.onguard.pas',
+  FMX.ognetwrk in '..\source\fmx\FMX.ognetwrk.pas',
+  FMX.ogproexe in '..\source\fmx\FMX.ogproexe.pas',
+  FMX.ogfirst in '..\source\fmx\FMX.ogfirst.pas';
 
 end.

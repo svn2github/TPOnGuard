@@ -479,13 +479,6 @@ uses
   {$IFNDEF NoMakeKeysSupport} , {$IFDEF UsingCLX} qonguard3 {$ELSE} onguard3  {$ENDIF}{$ENDIF}
   ;
 {$IFEND}
-{$IFDEF UseOgFMX}
-{$IF not defined(NoMakeCodesSupport) or  not defined(NoMakeKeysSupport)}
-uses
-  {$IFNDEF NoMakeCodesSupport}onguard2{$IFNDEF NoMakeKeysSupport},onguard3{$ENDIF}{$ENDIF}
-  ;
-{$ENDIF}
-{$ENDIF}
 
 
 {*** TogCodeBase ***}

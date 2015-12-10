@@ -42,15 +42,9 @@ uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
   {$IFDEF Win64} Windows, {$ENDIF}                                   {AH.02}
-  {$IFDEF UseOgVCL}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  {$IFDEF MSWINDOWS} Messages, {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ShellAPI,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
-  System.SysUtils, System.Types, System.UITypes, System.Classes,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Objects,
-  FMX.ExtCtrls, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  {$ENDIF}
   OgUtil,
 {$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
@@ -70,7 +64,6 @@ type
     NewsLbl: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    {$IFNDEF UseOgFMX}
     procedure WebLblMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure NewsLblMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -81,7 +74,6 @@ type
       Y: Integer);
     procedure WebLblClick(Sender: TObject);
     procedure NewsLblClick(Sender: TObject);
-    {$ENDIF}
   private
     { Private declarations }
   public
@@ -98,9 +90,7 @@ type
 
 implementation
 
-{$IFDEF UseOgVCL}{$R *.DFM}{$ENDIF}
-{$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
-
+{$R *.dfm}
 
 {*** TOgVersionProperty ***}
 
@@ -132,14 +122,9 @@ procedure TOgAboutForm.FormCreate(Sender: TObject);
 begin
   Top := (Screen.Height - Height) div 3;
   Left := (Screen.Width - Width) div 2;
-  {$IFNDEF UseOgFMX}
   lblVersion.Caption := 'Version ' + OgVersionStr;
-  {$ELSE}
-  lblVersion.Text := 'Version ' + OgVersionStr;
-  {$ENDIF}
 end;
 
-{$IFNDEF UseOgFMX}
 procedure TOgAboutForm.WebLblMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 begin
@@ -180,6 +165,5 @@ begin
     ShowMessage('Unable to start news reader');
   NewsLbl.Font.Color := clNavy;
 end;
-{$ENDIF}
 
 end.

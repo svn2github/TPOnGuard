@@ -32,7 +32,7 @@
 
 unit FMX.ogreg;
 
-{$IFDEF Win32} {$R ogreg.r32} {$ENDIF}
+{$IFDEF MSWINDOWS} {$R ..\ogreg.r32} {$ENDIF}
 
 interface
 
@@ -41,21 +41,21 @@ procedure Register;
 implementation
 
 uses
-  Classes, {Forms,} ogabout0,
-  ogconst, ogfile, ognetwrk, ogproexe, ogfirst,
-  onguard,
-  onguard2,
-  onguard3,
-  onguard5,
-  onguard6,
-  onguard7,
-  ogutil,                                                            {!!.12}
-{$IFDEF DELPHI6UP}                                                      {!!.13}
+  Classes,
+  FMX.Types, FMX.Forms, FMX.Controls,
+  ogutil, ogconst, ogfile,
+  FMX.ogfirst,
+  FMX.ogabout0,
+  FMX.ognetwrk,
+  FMX.ogproexe,
+  FMX.onguard,
+  FMX.onguard2,
+  FMX.onguard3,
+  FMX.onguard5,
+  FMX.onguard6,
+  FMX.onguard7,
   DesignIntf,
   DesignEditors;
-{$ELSE}
-  dsgnintf;
-{$ENDIF}
 
 type
   {component editor for TogCodeBase components}
@@ -75,7 +75,7 @@ type
 procedure TOgFMXCodeGenEditor.ExecuteVerb(Index : Integer);
 begin
   if Index = 0 then begin
-    with TCodeGenerateFrm.Create(Application) do
+    with TFMXCodeGenerateFrm.Create(Application) do
       try
         ShowHint := True;
         KeyFileName := OgKeyFile;
@@ -98,7 +98,7 @@ begin
         Free;
       end;
   end else if Index = 1 then begin
-    with TKeyMaintFrm.Create(Application) do
+    with TFMXKeyMaintFrm.Create(Application) do
       try
         ShowHint := True;
         KeyFileName := 'ONGUARD.INI';
@@ -129,28 +129,45 @@ end;
 {component registration}
 procedure Register;
 begin
+  GroupDescendentsWith(TOgFMXCodeBase, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXMakeKeys, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXMakeCodes, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXDateCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXDaysCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXNetCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXRegistrationCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXSerialNumberCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXSpecialCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXUsageCode, FMX.Controls.TControl);
+  GroupDescendentsWith(TOgFMXProtectExe, FMX.Controls.TControl);
+
+  RegisterFMXClasses([TOgFMXCodeBase, TOgFMXMakeKeys, TOgFMXMakeCodes,
+                      TOgFMXDateCode, TOgFMXDaysCode, TOgFMXNetCode,
+                      TOgFMXRegistrationCode, TOgFMXSerialNumberCode,
+                      TOgFMXSpecialCode, TOgFMXUsageCode, TOgFMXProtectExe]);
+
   RegisterComponentEditor(TOgFMXCodeBase, TOgFMXCodeGenEditor);
 
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXMakeKeys, 'KeyFileName', TOgFileNameProperty);
+    TypeInfo(string), TOgFMXMakeKeys, 'KeyFileName', TOgFMXFileNameProperty);
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXMakeCodes, 'KeyFileName', TOgFileNameProperty);
+    TypeInfo(string), TOgFMXMakeCodes, 'KeyFileName', TOgFMXFileNameProperty);
 {  RegisterPropertyEditor( }                                          {!!.09}
 {    TypeInfo(string), TOgCodeBase, 'Expires', TOgExpiresProperty);}  {!!.09}
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXCodeBase, 'Code', TOgCodeProperty);
+    TypeInfo(string), TOgFMXCodeBase, 'Code', TOgFMXCodeProperty);
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXCodeBase, 'Modifier', TOgModifierProperty);
+    TypeInfo(string), TOgFMXCodeBase, 'Modifier', TOgFMXModifierProperty);
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXCodeBase, 'About', TOgAboutProperty);       {!!.08}
+    TypeInfo(string), TOgFMXCodeBase, 'About', TOgFMXAboutProperty);       {!!.08}
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXProtectExe, 'About', TOgAboutProperty);     {!!.08}
+    TypeInfo(string), TOgFMXProtectExe, 'About', TOgFMXAboutProperty);     {!!.08}
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXMakeCodes, 'About', TOgAboutProperty);      {!!.08}
+    TypeInfo(string), TOgFMXMakeCodes, 'About', TOgFMXAboutProperty);      {!!.08}
   RegisterPropertyEditor(
-    TypeInfo(string), TOgFMXMakeKeys, 'About', TOgAboutProperty);       {!!.08}
+    TypeInfo(string), TOgFMXMakeKeys, 'About', TOgFMXAboutProperty);       {!!.08}
 
-  RegisterComponents('OnGuard FMX', [
+  RegisterComponents('OnGuard FMX (sf.net)', [
     TOgFMXMakeKeys,
     TOgFMXMakeCodes,
     TOgFMXDateCode,
@@ -161,6 +178,7 @@ begin
     TOgFMXSpecialCode,
     TOgFMXUsageCode,
     TOgFMXProtectExe]);
+
 end;
 
 end.

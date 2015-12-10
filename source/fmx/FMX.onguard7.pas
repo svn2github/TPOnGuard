@@ -28,26 +28,27 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
-unit onguard7;
+unit FMX.onguard7;
   {-File name property editor}
 
 interface
 
+//** Converted with Mida BASIC 281     http://www.midaconverter.com
+
+
+
 uses
-  Dialogs, Forms,
-{$IFDEF DELPHI6UP}                                                      {!!.13}
+  System.UITypes, FMX.Types,
+  FMX.Forms,
+  FMX.Dialogs,
   DesignIntf,
   DesignEditors;
-{$ELSE}
-  dsgnintf;
-{$ENDIF}
-
 
 type
   {property editor for ranges}
-  TOgFileNameProperty = class(TStringProperty)
+  TOgFMXFileNameProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes;
       override;
@@ -61,19 +62,19 @@ type
 implementation
 
 
-{*** TOgFileNameProperty ***}
+{*** TOgFMXFileNameProperty ***}
 
-function TOgFileNameProperty.GetAttributes: TPropertyAttributes;
+function TOgFMXFileNameProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
 
-function TOgFileNameProperty.GetValue : string;
+function TOgFMXFileNameProperty.GetValue : string;
 begin
   Result := inherited GetValue;
 end;
 
-procedure TOgFileNameProperty.Edit;
+procedure TOgFMXFileNameProperty.Edit;
 var
   D : TOpenDialog;
 begin
@@ -82,7 +83,7 @@ begin
     D.DefaultExt := '*.ini';
     D.Filter := 'Ini Files (*.ini)|*.ini|Text Files (*.txt)|*.txt|All Files (*.*)|*.*';
     D.FilterIndex := 0;
-    D.Options := [ofHideReadOnly];
+    D.Options := [TOpenOption.ofHideReadOnly, TOpenOption.ofEnableSizing];
     D.Title := 'Select File Name';
     D.FileName := Value;
     if D.Execute then

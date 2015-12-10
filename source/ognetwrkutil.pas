@@ -58,8 +58,7 @@ uses
   {$IFDEF MACOS}Posix.Unistd, {$ENDIF}
   Classes, SysUtils,
   ogconst,
-  ogutil,
-  onguard;
+  ogutil;
 
 type
   TNetAccess = packed record

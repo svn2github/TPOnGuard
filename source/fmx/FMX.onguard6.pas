@@ -28,63 +28,37 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
-unit onguard6;
+unit FMX.onguard6;
   {-Code generation dialog}
 
 interface
 
 uses
-  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
-  {$IFDEF Win32} Windows, ComCtrls, {$ENDIF}
-  {$IFDEF MSWINDOWS}
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Mask,
-  ExtCtrls, Tabnotbk, StdCtrls, Buttons, Messages,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.ExtCtrls,
   FMX.Layouts, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  FMX.DateTimeCtrls,
-  {$ENDIF}
-  OgConst, OgUtil, OnGuard,
-{$IFDEF DELPHI6UP}                                                      {!!.13}
+  FMX.DateTimeCtrls, FMX.ComboEdit, FMX.CalendarEdit, FMX.Controls.Presentation,
+  OgConst, OgUtil, FMX.OnGuard,
   DesignIntf,
   DesignEditors;
-{$ELSE}
-  dsgnintf;
-{$ENDIF}
 
 
 type
-  TModifierFrm = class(TForm)
-    {$IFDEF MSWINDOWS}
-    OKBtn: TBitBtn;
-    CancelBtn: TBitBtn;
-    {$ENDIF}
-    {$IFDEF UseOgFMX}
+  TFMXModifierFrm = class(TForm)
     OKBtn: TButton;
     CancelBtn: TButton;
-    {$ENDIF}
     GroupBox1: TGroupBox;
     UniqueModifierCb: TCheckBox;
     MachineModifierCb: TCheckBox;
     DateModifierCb: TCheckBox;
     NoModifierCb: TCheckBox;
     ModifierEd: TEdit;
-    {$IFDEF MSWINDOWS}
-    ModDateEd: TEdit;
-    {$ENDIF}
-    {$IFDEF UseOgFMX}
     ModDateCalendarEdit: TCalendarEdit;
-    {$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure ModifierClick(Sender: TObject);
-    {$IFDEF MSWINDOWS}
-    procedure ModifierEdKeyPress(Sender: TObject; var Key: Char);
-    procedure DateEdKeyPress(Sender: TObject; var Key: Char);
-    {$ENDIF}
     procedure InfoChanged(Sender: TObject);
   private
   public
@@ -94,7 +68,7 @@ type
 
 type
   {property editor for ranges}
-  TOgModifierProperty = class(TStringProperty)
+  TOgFMXModifierProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes;
       override;
@@ -107,22 +81,16 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}
-{$IFDEF UseOgFMX}{$R *.FMX}{$ENDIF}
+{$R *.fmx}
 
-procedure TModifierFrm.FormCreate(Sender: TObject);
+procedure TFMXModifierFrm.FormCreate(Sender: TObject);
 begin
-  NoModifierCb.Checked := True;
-  {$IFDEF MSWINDOWS}
-  ModDateEd.Text := OgFormatDate(Date);                              {!!.09}
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
+  NoModifierCb.IsChecked := True;
   ModDateCalendarEdit.Date := Date();
-  {$ENDIF}
   InfoChanged(nil);
 end;
 
-procedure TModifierFrm.ModifierClick(Sender: TObject);
+procedure TFMXModifierFrm.ModifierClick(Sender: TObject);
 const
   Busy : Boolean = False;
 var
@@ -137,19 +105,19 @@ begin
   try
     L := 0;
 
-    if (Sender = NoModifierCb) and NoModifierCb.Checked then begin
-      UniqueModifierCb.Checked := False;
-      MachineModifierCb.Checked := False;
-      DateModifierCb.Checked := False;
+    if (Sender = NoModifierCb) and NoModifierCb.IsChecked then begin
+      UniqueModifierCb.IsChecked := False;
+      MachineModifierCb.IsChecked := False;
+      DateModifierCb.IsChecked := False;
     end else
-      NoModifierCb.Checked := False;
+      NoModifierCb.IsChecked := False;
 
-    if not UniqueModifierCb.Checked and
-       not MachineModifierCb.Checked and
-       not DateModifierCb.Checked then
-      NoModifierCb.Checked := True;
+    if not UniqueModifierCb.IsChecked and
+       not MachineModifierCb.IsChecked and
+       not DateModifierCb.IsChecked then
+      NoModifierCb.IsChecked := True;
 
-    if MachineModifierCb.Checked then begin
+    if MachineModifierCb.IsChecked then begin
       if L = 0 then
         L := GenerateMachineModifierPrim
       else
@@ -157,22 +125,11 @@ begin
     end;
 
     {set status of date field}
-    ModDateEd.Enabled := DateModifierCb.Checked;
-    {$IFDEF MSWINDOWS}
-    if ModDateEd.Enabled then
-      ModDateEd.Color := clWindow
-    else
-      ModDateEd.Color := clBtnFace;
-    {$ENDIF}
+    ModDateCalendarEdit.Enabled := DateModifierCb.IsChecked;
 
-    if DateModifierCb.Checked then begin
+    if DateModifierCb.IsChecked then begin
       try
-        {$IFDEF MSWINDOWS}
-        D := StrToDate(ModDateEd.Text);
-        {$ENDIF}
-        {$IFDEF UseOgFMX}
         D := ModDateCalendarEdit.Date;
-        {$ENDIF}
       except
         {ignore errors and don't generate modifier}
         D := 0;
@@ -186,7 +143,7 @@ begin
       end;
     end;
 
-    if UniqueModifierCb.Checked then begin
+    if UniqueModifierCb.IsChecked then begin
       if L = 0 then
         L := GenerateUniqueModifierPrim
       else
@@ -204,51 +161,27 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
-procedure TModifierFrm.DateEdKeyPress(Sender: TObject; var Key: Char);
-const
-  CIntChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/'];
-begin
-  if (not (Key in CIntChars)) and (not (Key < #32)) then begin
-    MessageBeep(0);
-    Key := #0;
-  end;
-end;
-{$ENDIF}
-
-{$IFDEF MSWINDOWS}
-procedure TModifierFrm.ModifierEdKeyPress(Sender: TObject; var Key: Char);
-const
-  CHexChars = ['$', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-begin
-  if (not (Key in CHexChars)) and (not (Key < #32)) then begin
-    MessageBeep(0);
-    Key := #0;
-  end;
-end;
-{$ENDIF}
-
-procedure TModifierFrm.InfoChanged(Sender: TObject);
+procedure TFMXModifierFrm.InfoChanged(Sender: TObject);
 begin
   OKBtn.Enabled := (Length(ModifierEd.Text) > 0) and
     HexToBuffer(ModifierEd.Text, Modifier, SizeOf(Modifier));
 end;
 
-{*** TOgModifierProperty ***}
+{*** TOgFMXModifierProperty ***}
 
-function TOgModifierProperty.GetAttributes: TPropertyAttributes;
+function TOgFMXModifierProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
 
-function TOgModifierProperty.GetValue : string;
+function TOgFMXModifierProperty.GetValue : string;
 begin
   Result := inherited GetValue;
 end;
 
-procedure TOgModifierProperty.Edit;
+procedure TOgFMXModifierProperty.Edit;
 begin
-  with TModifierFrm.Create(Application) do
+  with TFMXModifierFrm.Create(Application) do
     try
       if ShowModal = mrOK then
         Value := BufferToHex(Modifier, SizeOf(Modifier));

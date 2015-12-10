@@ -28,35 +28,24 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
-unit ogabout0;
+unit FMX.ogabout0;
 
 interface
 
 uses
-  {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
-  {$IFDEF Win32} Windows, {$ENDIF}
-  {$IFDEF MSWINDOWS}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ShellAPI,
-  {$ENDIF}
-  {$IFDEF UseOgFMX}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
   System.SysUtils, System.Types, System.UITypes, System.Classes,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Objects,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Objects, FMX.Controls.Presentation,
   FMX.ExtCtrls, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  {$ENDIF}
   OgUtil,
-{$IFDEF DELPHI6UP}                                                      {!!.13}
   DesignIntf,
   DesignEditors;
-{$ELSE}
-  dsgnintf;
-{$ENDIF}
 
 
 type
-  TOgAboutForm = class(TForm)
+  TOgFMXAboutForm = class(TForm)
     Panel1: TPanel;
     Image1: TImage;
     lblVersion: TLabel;
@@ -83,7 +72,7 @@ type
     { Public declarations }
   end;
 
-  TOgAboutProperty = class(TStringProperty)                          {!!.08}
+  TOgFMXAboutProperty = class(TStringProperty)                          {!!.08}
   public
     function GetAttributes: TPropertyAttributes;
       override;
@@ -93,20 +82,19 @@ type
 
 implementation
 
-{$IFNDEF UseOgFMX}{$IFDEF MSWINDOWS}{$R *.DFM}{$ENDIF}{$ENDIF}
 {$IFDEF UseOgFMX}{$R *.fmx}{$ENDIF}
 
 
 {*** TOgVersionProperty ***}
 
-function TOgAboutProperty.GetAttributes: TPropertyAttributes;        {!!.08}
+function TOgFMXAboutProperty.GetAttributes: TPropertyAttributes;        {!!.08}
 begin
   Result := [paDialog, paReadOnly];
 end;
 
-procedure TOgAboutProperty.Edit;                                     {!!.08}
+procedure TOgFMXAboutProperty.Edit;                                     {!!.08}
 begin
-  with TOgAboutForm.Create(Application) do begin
+  with TOgFMXAboutForm.Create(Application) do begin
     try
       ShowModal;
     finally
@@ -118,20 +106,16 @@ end;
 
 {*** TEsAboutForm ***}
 
-procedure TOgAboutForm.btnOKClick(Sender: TObject);
+procedure TOgFMXAboutForm.btnOKClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TOgAboutForm.FormCreate(Sender: TObject);
+procedure TOgFMXAboutForm.FormCreate(Sender: TObject);
 begin
   Top := (Screen.Height - Height) div 3;
   Left := (Screen.Width - Width) div 2;
-  {$IFNDEF UseOgFMX}
-  lblVersion.Caption := 'Version ' + OgVersionStr;
-  {$ELSE}
   lblVersion.Text := 'Version ' + OgVersionStr;
-  {$ENDIF}
 end;
 
 {$IFNDEF UseOgFMX}

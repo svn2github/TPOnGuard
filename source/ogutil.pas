@@ -71,11 +71,11 @@ const
 
 const
   {largest structure that can be created}
-  {$IFDEF Win32}
+  {$IF defined(Win32) or defined(Win64)}
   MaxStructSize = 1024 * 2000000; {2G}
   {$ELSE}
   MaxStructSize = 1024 * 64 - 1;  {64K}
-  {$ENDIF}
+  {$IFEND}
 
 type
   {$IFDEF DELPHI22UP}                                             {AH.02}

@@ -51,8 +51,7 @@ uses
   {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF}{$ENDIF}			       {BB.01}
   {$IFDEF UsingCLX} Types, {$ENDIF}                                {AH.01}
   {$IFDEF MACOS}Posix.Base, Posix.SysStat, Posix.Fcntl, Posix.Stdio, {$ENDIF}
-  SysUtils,
-  OgUtil;
+  SysUtils;
 
 
 function GetFileSize(Handle : THandle) : Cardinal;

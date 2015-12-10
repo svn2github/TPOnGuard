@@ -20,7 +20,7 @@ feature-limited, limited to a certain number of uses, or limited to a
 certain # of concurrent network users.
 
 This is a source-only release of TurboPower OnGuard. It includes
-designtime and runtime packages for Delphi 3 through 7 and C++Builder
+designtime and runtime packages for Delphi 3 and up and C++Builder
 3 through 6.
 
 ==============================================
@@ -103,26 +103,33 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added XE6 & XE7 in onguard.inc
     confirmed SourceForge bug report 12 is already in place
 
-4.3.2 Release 1.15 r17
+4.3.2 Github
+
+    Roman Kassebaum forks on GitHub.
+    Removed support for all but most current Delphi products.
+    No unit tests were kept.
+    
+
+4.3.3 Release 1.15 r17
 
     Enhancements
     -------------------------------------------------------------
     removed code folding "{$REGION}" for Delphi 3-7 support
     confirmed {$IF } ... {$IFEND} usage
 
-4.3.3 Release 1.15 r18
+4.3.4 Release 1.15 r18
 
     Enhancements
     -------------------------------------------------------------
     added ogstamp.pas
 
-4.3.4 Release 1.15 r19
+4.3.5 Release 1.15 r19
 
     Enhancements
     -------------------------------------------------------------
     added ogcodesign.pas
 
-4.3.5 Release 1.15 r20
+4.3.6 Release 1.15 r20
 
     Enhancements
     -------------------------------------------------------------
@@ -154,7 +161,7 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     IsFileTampered function does not use the file's stamp.
 
 
-4.3.5 Release 1.15 r21
+4.3.7 Release 1.15 r21
 
     Enhancements
     -------------------------------------------------------------
@@ -164,5 +171,22 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     removed LibSuffix from Delphi 10 Seattle packages
 
 
+4.3.8 Release 1.15 r22
+
+    Enhancements
+    -------------------------------------------------------------
+    fixed Delphi package files, moving ognetwrk and ogproexe back into runtime packages.
+
+
+4.3.9 Release 1.15 r23
+
+    Enhancements
+    -------------------------------------------------------------
+    Initial FMX release for Delphi 10 Seattle.
+    stole part of FMX Register procedure from Github version (turn about is fair play).
+    added G115FR230.bpl
+    added G115FD230.bpl
+    added G115Common_R230.bpl
+    source/fmx folder contains FMX specific files
 
 

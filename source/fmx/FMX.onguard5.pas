@@ -23,31 +23,28 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 {*********************************************************}
-{*                  ONGUARD7.PAS 1.15                    *}
+{*                  ONGUARD5.PAS 1.15                    *}
 {*     Copyright (c) 1996-02 TurboPower Software Co      *}
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
-unit onguard7;
-  {-File name property editor}
+unit FMX.onguard5;
 
 interface
 
 uses
-  Dialogs, Forms,
-{$IFDEF DELPHI6UP}                                                      {!!.13}
+  System.UITypes,
+  FMX.Controls, FMX.Forms,
+  FMX.onguard,
   DesignIntf,
   DesignEditors;
-{$ELSE}
-  dsgnintf;
-{$ENDIF}
 
 
 type
   {property editor for ranges}
-  TOgFileNameProperty = class(TStringProperty)
+  TOgFMXCodeProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes;
       override;
@@ -57,39 +54,41 @@ type
       override;
   end;
 
-
 implementation
 
+uses
+  ogconst,
+  ogutil,
+  FMX.onguard2;
 
-{*** TOgFileNameProperty ***}
+{*** TOgCodeProperty ***}
 
-function TOgFileNameProperty.GetAttributes: TPropertyAttributes;
+function TOgFMXCodeProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
 
-function TOgFileNameProperty.GetValue : string;
+function TOgFMXCodeProperty.GetValue : string;
 begin
   Result := inherited GetValue;
 end;
 
-procedure TOgFileNameProperty.Edit;
+procedure TOgFMXCodeProperty.Edit;
 var
-  D : TOpenDialog;
+  Work : TCode;
 begin
-  D := TOpenDialog.Create(Application);
-  try
-    D.DefaultExt := '*.ini';
-    D.Filter := 'Ini Files (*.ini)|*.ini|Text Files (*.txt)|*.txt|All Files (*.*)|*.*';
-    D.FilterIndex := 0;
-    D.Options := [ofHideReadOnly];
-    D.Title := 'Select File Name';
-    D.FileName := Value;
-    if D.Execute then
-      Value := D.FileName;
-  finally
-    D.Free;
-  end;
+  with TFMXCodeGenerateFrm.Create(Application) do
+    try
+      ShowHint := True;
+      KeyFileName := OgKeyFile;
+      if ShowModal = mrOK then begin
+        Work := Code;
+        Value := BufferToHex(Work, SizeOf(Work));
+      end;
+    finally
+      Free;
+    end;
 end;
+
 
 end.

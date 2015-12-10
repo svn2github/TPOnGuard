@@ -161,7 +161,7 @@ begin
   RegisterPropertyEditor(
     TypeInfo(string), TOgMakeKeys, 'About', TOgAboutProperty);       {!!.08}
 
-  RegisterComponents('OnGuard', [
+  RegisterComponents('OnGuard (sf.net)', [
     TOgMakeKeys,
     TOgMakeCodes,
     TOgDateCode,

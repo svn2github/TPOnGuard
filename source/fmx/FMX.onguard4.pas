@@ -28,7 +28,7 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$I onguard.inc}
+{$I ..\onguard.inc}
 
 unit FMX.onguard4;
   {-Product description dialog}
@@ -42,10 +42,10 @@ uses
   Fmx.StdCtrls, FMX.Header, FMX.Graphics,
   ogutil,
   FMX.onguard,
-  FMX.onguard1;
+  FMX.onguard1, FMX.Controls.Presentation;
 
 type
-  TEditProductFrm = class(TForm)
+  TFMXEditProductFrm = class(TForm)
     OKBtn: TButton;
     CancelBtn: TButton;
     Panel1: TPanel;
@@ -86,12 +86,12 @@ implementation
 
 {$R *.fmx}
 
-procedure TEditProductFrm.FormCreate(Sender: TObject);
+procedure TFMXEditProductFrm.FormCreate(Sender: TObject);
 begin
   InfoChanged(Sender);
 end;
 
-procedure TEditProductFrm.InfoChanged(Sender: TObject);
+procedure TFMXEditProductFrm.InfoChanged(Sender: TObject);
 var
   Work : TKey;
 begin
@@ -99,16 +99,16 @@ begin
     (HexToBuffer(KeyEd.Text, Work, SizeOf(Work)));
 end;
 
-procedure TEditProductFrm.KeyPasteSbClick(Sender: TObject);
+procedure TFMXEditProductFrm.KeyPasteSbClick(Sender: TObject);
 begin
   KeyEd.PasteFromClipboard;
 end;
 
-procedure TEditProductFrm.GenerateKeySbClick(Sender: TObject);
+procedure TFMXEditProductFrm.GenerateKeySbClick(Sender: TObject);
 var
-  F    : TKeyGenerateFrm;
+  F    : TFMXKeyGenerateFrm;
 begin
-  F := TKeyGenerateFrm.Create(Self);
+  F := TFMXKeyGenerateFrm.Create(Self);
   try
     F.SetKey(FKey);
     F.KeyType := FKeyType;
@@ -131,7 +131,7 @@ begin
   end;
 end;
 
-function TEditProductFrm.GetShowHints : Boolean;
+function TFMXEditProductFrm.GetShowHints : Boolean;
 begin
   Result := False;
   {$IFDEF MSWINDOWS}
@@ -139,19 +139,19 @@ begin
   {$ENDIF}
 end;
 
-procedure TEditProductFrm.SetShowHints(Value : Boolean);
+procedure TFMXEditProductFrm.SetShowHints(Value : Boolean);
 begin
   {$IFDEF MSWINDOWS}
   //ShowHint := Value;
   {$ENDIF}
 end;
 
-procedure TEditProductFrm.GetKey(var Value : TKey);
+procedure TFMXEditProductFrm.GetKey(var Value : TKey);
 begin
   Value := FKey;
 end;
 
-procedure TEditProductFrm.SetKey(Value : TKey);
+procedure TFMXEditProductFrm.SetKey(Value : TKey);
 begin
   FKey := Value;
 end;

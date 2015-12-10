@@ -56,11 +56,10 @@ package G115_R230;
 
 requires
   vcl,
-  vclx;
+  vclx,
+  G115Common_R230;
 
 contains
-  ogutil in '..\source\ogutil.pas',
-  ogconst in '..\source\ogconst.pas',
   onguard in '..\source\onguard.pas',
   onguard1 in '..\source\onguard1.pas',
   onguard2 in '..\source\onguard2.pas',
@@ -68,11 +67,6 @@ contains
   onguard4 in '..\source\onguard4.pas',
   ogfirst in '..\source\ogfirst.pas',
   ogsrmgr in '..\source\ogsrmgr.pas',
-  ogfile in '..\source\ogfile.pas',
-  ogjcl in '..\source\ogjcl.pas',
-  ognetwrkutil in '..\source\ognetwrkutil.pas',
-  ogstamp in '..\source\ogstamp.pas',
-  ogproexeutil in '..\source\ogproexeutil.pas',
   ognetwrk in '..\source\ognetwrk.pas',
   ogproexe in '..\source\ogproexe.pas';
 
