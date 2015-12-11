@@ -79,7 +79,7 @@ var
 begin
   with TFMXCodeGenerateFrm.Create(Application) do
     try
-      ShowHint := True;
+      //ShowHint := True;
       KeyFileName := OgKeyFile;
       if ShowModal = mrOK then begin
         Work := Code;

@@ -77,7 +77,7 @@ begin
   if Index = 0 then begin
     with TFMXCodeGenerateFrm.Create(Application) do
       try
-        ShowHint := True;
+        //ShowHint := True;
         KeyFileName := OgKeyFile;
         if Component is TOgFMXDateCode then
           CodeType := ctDate
@@ -100,7 +100,7 @@ begin
   end else if Index = 1 then begin
     with TFMXKeyMaintFrm.Create(Application) do
       try
-        ShowHint := True;
+        //ShowHint := True;
         KeyFileName := 'ONGUARD.INI';
         KeyType := ktRandom;
         ShowModal;

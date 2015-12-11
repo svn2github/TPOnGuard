@@ -503,9 +503,6 @@ begin
     F.SetKey(FKey);
     F.KeyType := FKeyType;
     F.KeyFileName := FKeyFileName;
-    {$IFDEF MSWINDOWS}
-    F.ShowHint := ShowHint;
-    {$ENDIF}
     if F.ShowModal = mrOK then begin
       F.GetKey(FKey);
       BlockKeyEd.Text := BufferToHex(FKey, SizeOf(FKey));

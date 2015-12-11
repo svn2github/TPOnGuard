@@ -3,14 +3,23 @@
         <ProjectGuid>{79A78D39-D87E-4068-83D3-F8C6A459D2BF}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="G115_R220.dproj">
+        <Projects Include="G115Common_R220.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="G115_R220.dproj">
+            <Dependencies>G115Common_R220.dproj</Dependencies>
+        </Projects>
         <Projects Include="G115_D220.dproj">
-            <Dependencies/>
+            <Dependencies>G115Common_R220.dproj;G115_R220.dproj</Dependencies>
         </Projects>
         <Projects Include="..\Tests\G115_R220Tests.dproj">
             <Dependencies/>
+        </Projects>
+        <Projects Include="G115FR220.dproj">
+            <Dependencies>G115Common_R220.dproj</Dependencies>
+        </Projects>
+        <Projects Include="G115FD220.dproj">
+            <Dependencies>G115Common_R220.dproj;G115FR220.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -20,22 +29,31 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="G115_R220">
+    <Target Name="G115Common_R220">
+        <MSBuild Projects="G115Common_R220.dproj"/>
+    </Target>
+    <Target Name="G115Common_R220:Clean">
+        <MSBuild Projects="G115Common_R220.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115Common_R220:Make">
+        <MSBuild Projects="G115Common_R220.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="G115_R220" DependsOnTargets="G115Common_R220">
         <MSBuild Projects="G115_R220.dproj"/>
     </Target>
-    <Target Name="G115_R220:Clean">
+    <Target Name="G115_R220:Clean" DependsOnTargets="G115Common_R220:Clean">
         <MSBuild Projects="G115_R220.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="G115_R220:Make">
+    <Target Name="G115_R220:Make" DependsOnTargets="G115Common_R220:Make">
         <MSBuild Projects="G115_R220.dproj" Targets="Make"/>
     </Target>
-    <Target Name="G115_D220">
+    <Target Name="G115_D220" DependsOnTargets="G115Common_R220;G115_R220">
         <MSBuild Projects="G115_D220.dproj"/>
     </Target>
-    <Target Name="G115_D220:Clean">
+    <Target Name="G115_D220:Clean" DependsOnTargets="G115Common_R220:Clean;G115_R220:Clean">
         <MSBuild Projects="G115_D220.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="G115_D220:Make">
+    <Target Name="G115_D220:Make" DependsOnTargets="G115Common_R220:Make;G115_R220:Make">
         <MSBuild Projects="G115_D220.dproj" Targets="Make"/>
     </Target>
     <Target Name="G115_R220Tests">
@@ -47,14 +65,32 @@
     <Target Name="G115_R220Tests:Make">
         <MSBuild Projects="..\Tests\G115_R220Tests.dproj" Targets="Make"/>
     </Target>
+    <Target Name="G115FR220" DependsOnTargets="G115Common_R220">
+        <MSBuild Projects="G115FR220.dproj"/>
+    </Target>
+    <Target Name="G115FR220:Clean" DependsOnTargets="G115Common_R220:Clean">
+        <MSBuild Projects="G115FR220.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115FR220:Make" DependsOnTargets="G115Common_R220:Make">
+        <MSBuild Projects="G115FR220.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="G115FD220" DependsOnTargets="G115Common_R220;G115FR220">
+        <MSBuild Projects="G115FD220.dproj"/>
+    </Target>
+    <Target Name="G115FD220:Clean" DependsOnTargets="G115Common_R220:Clean;G115FR220:Clean">
+        <MSBuild Projects="G115FD220.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="G115FD220:Make" DependsOnTargets="G115Common_R220:Make;G115FR220:Make">
+        <MSBuild Projects="G115FD220.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="G115_R220;G115_D220;G115_R220Tests"/>
+        <CallTarget Targets="G115Common_R220;G115_R220;G115_D220;G115_R220Tests;G115FR220;G115FD220"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="G115_R220:Clean;G115_D220:Clean;G115_R220Tests:Clean"/>
+        <CallTarget Targets="G115Common_R220:Clean;G115_R220:Clean;G115_D220:Clean;G115_R220Tests:Clean;G115FR220:Clean;G115FD220:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="G115_R220:Make;G115_D220:Make;G115_R220Tests:Make"/>
+        <CallTarget Targets="G115Common_R220:Make;G115_R220:Make;G115_D220:Make;G115_R220Tests:Make;G115FR220:Make;G115FD220:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
