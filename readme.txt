@@ -204,3 +204,12 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     set demo projects for 32 bit and 64 bit Windows platform targets
     set demo project output and search paths
 
+4.3.11 Release 1.15 r26
+
+    Enhancements
+    -------------------------------------------------------------
+    Initial FMX release for Delphi XE8.
+    added G115FR220.bpl
+    added G115FD220.bpl
+    added G115Common_R220.bpl
+
