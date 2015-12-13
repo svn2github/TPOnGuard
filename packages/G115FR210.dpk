@@ -1,0 +1,48 @@
+package G115FR210;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$DEFINE UseOgFMX}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'TurboPower OnGuard 1.15 Runtime package - FMX210'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  fmx,
+  G115Common_R210;
+
+contains
+  FMX.onguard1 in '..\source\fmx\FMX.onguard1.pas' {FMXKeyGenerateFrm},
+  FMX.onguard2 in '..\source\fmx\FMX.onguard2.pas' {FMXCodeGenerateFrm},
+  FMX.onguard3 in '..\source\fmx\FMX.onguard3.pas' {FMXKeyMaintFrm},
+  FMX.onguard4 in '..\source\fmx\FMX.onguard4.pas' {FMXEditProductFrm},
+  FMX.onguard in '..\source\fmx\FMX.onguard.pas',
+  FMX.ognetwrk in '..\source\fmx\FMX.ognetwrk.pas',
+  FMX.ogproexe in '..\source\fmx\FMX.ogproexe.pas',
+  FMX.ogfirst in '..\source\fmx\FMX.ogfirst.pas';
+
+end.

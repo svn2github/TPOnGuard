@@ -31,6 +31,32 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = RegCodeCopySbClick
+      object Image1: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 12632256
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00A349444154384FCD947D0E83200C47E94ED69B6DBB596FC6F60862DB08BAF8
+              CF5ED2007E3C7ED5A898592D3779F4F1162D89AAF665E47BAECFD68C24B5D650
+              30936796ED20BB221AED708388B483FBFCD5D619B3280E497C2BFBF80C05AAF1
+              590509BBFB9A81CC8B0E93F84490A522EF366EA24B49BC34B7063F2539DA0086
+              64756196FB0D60F9EDD033B1BD700311CF86D71DDA999153509ED3246790E45F
+              7E05A57C007A3A992A7339967A0000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\copy.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object GenerateBtn: TButton
       Default = True
@@ -105,6 +131,30 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = GenerateKeySbClick
+      object Image2: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 12632256
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              006249444154384FED8E410A00210C035BFFFF67D748BB441B10F6B027E71269
+              CB18BB143C92E99140ED0BFB110B92A3A8458229088B934D8917F8973C86A08F
+              057647C1C0B9C9678A245B206304B231377FDF3C04AA7EDE60A7EE7D1F02D5E0
+              F23F660FA2C4120A6BC1C0900000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\key.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object Label1: TLabel
       AutoSize = True
@@ -218,7 +268,7 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
     Size.Width = 449.000000000000000000
     Size.Height = 129.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 1
+    TabIndex = 4
     TabOrder = 4
     TabPosition = Top
     object TabItem1: TTabItem
@@ -279,7 +329,7 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 45.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -468,7 +518,7 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 53.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -516,6 +566,12 @@ object FMXCodeGenerateFrm: TFMXCodeGenerateFrm
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         OnChange = ParametersChanged
+      end
+      object UsageUnlimitedCb: TCheckBox
+        Position.X = 144.000000000000000000
+        Position.Y = 54.000000000000000000
+        TabOrder = 4
+        Text = 'Unlimited Usage'
       end
     end
     object TabItem6: TTabItem

@@ -55,6 +55,8 @@ type
     KeyEd: TEdit;
     GenerateKeySb: TSpeedButton;
     KeyPasteSb: TSpeedButton;
+    Image3: TImage;
+    Image2: TImage;
     procedure FormCreate(Sender: TObject);
     procedure InfoChanged(Sender: TObject);
     procedure KeyPasteSbClick(Sender: TObject);

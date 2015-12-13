@@ -39,8 +39,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Objects, FMX.ExtCtrls,
   FMX.Memo, FMX.Edit, FMX.Platform, Fmx.StdCtrls, FMX.Header, FMX.Graphics,
-  FMX.ListBox, FMX.Layouts,
-  ogutil, FMX.onguard, FMX.ScrollBox, FMX.Controls.Presentation;
+  FMX.ListBox, FMX.Layouts, FMX.ScrollBox, FMX.Controls.Presentation,
+  ogutil, FMX.onguard;
 
 type
   TFMXKeyGenerateFrm = class(TForm)
@@ -57,6 +57,8 @@ type
     ByteKeyEd: TEdit;
     CancelBtn: TButton;
     OKBtn: TButton;
+    Image1: TImage;
+    Image2: TImage;
     procedure FormCreate(Sender: TObject);
     procedure KeyStringMeChange(Sender: TObject);
     procedure KeyTypeCbChange(Sender: TObject);

@@ -101,7 +101,6 @@ type
     Label15: TLabel;
     Label17: TLabel;
     Label19: TLabel;
-    {$IFNDEF UseOgFMX}
     CodesNbk: TTabbedNotebook;
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
@@ -118,12 +117,12 @@ type
     UsageCountEd: TEdit;
     NetworkSlotsEd: TEdit;
     SpecialDataEd: TEdit;
-    {$ENDIF}
     RegCodeEd: TEdit;
     RegStrEd: TEdit;
     ModifierEd: TEdit;
     BlockKeyEd: TEdit;
-    ModStringEd: TEdit;                                              {!!.11}
+    ModStringEd: TEdit;
+    UsageUnlimitedCb: TCheckBox;                                              {!!.11}
 
     procedure FormCreate(Sender: TObject);
     procedure ModifierClick(Sender: TObject);
@@ -134,12 +133,10 @@ type
     procedure ModifierEdKeyPress(Sender: TObject; var Key: Char);
     procedure RegStrCopySbClick(Sender: TObject);
     procedure RegCodeCopySbClick(Sender: TObject);
-    {$IFNDEF UseOgFMX}
     procedure DateEdKeyPress(Sender: TObject; var Key: Char);
     procedure NumberEdKeyPress(Sender: TObject; var Key: Char);
     procedure TabbedNotebook1Change(Sender: TObject; NewTab: Integer;
       var AllowChange: Boolean);
-    {$ENDIF}
     procedure GenerateKeySbClick(Sender: TObject);
     procedure InfoChanged(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -151,12 +148,10 @@ type
     FKeyType     : TKeyType;
     FKeyFileName : string;
 
-    {$IFNDEF UseOgFMX}
     procedure OGMCheck(var Msg : TMessage);
       message OGM_CHECK;
     procedure OGMQuit(var Msg : TMessage);
       message OGM_QUIT;
-    {$ENDIF}
 
     procedure SetCodeType(Value : TCodeType);
 
@@ -408,6 +403,10 @@ begin
               end else
                 raise;
             end;
+            {$IFDEF OgUsageUnlimited}
+            if UsageUnlimitedCb.Checked then InitUsageCodeUnlimited(K, FCode)
+            else
+            {$ENDIF}
             InitUsageCode(K, StrToIntDef(UsageCountEd.Text, 0), D1, FCode);
           end;
       5 : begin

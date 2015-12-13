@@ -109,6 +109,42 @@ object FMXKeyMaintFrm: TFMXKeyMaintFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = OpenFileSbClick
+      object Image5: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 8421504
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              01CF49444154384FAD94BD4B426114C69F1BA19504A94852113448FE05E26019
+              8638D4102E0DB9BAD92488E0A038E5E660534B8DE1E0620D4D428143884B431F
+              1A0EDAD5C1163FFA20B3F39EAE489615D40F1EEF39E7EAE339EFFBDE2B653299
+              2EFEC88872FD96743A0DB7DBCD8A44224AB5CF8F26A9540AE57219F1789C65B7
+              DB110E8751ABD5E0F3F9F83BA3FCF90D369B0D9D4E0746A39173BD5E0F499210
+              0A8550AFD7B9C626D16814CD66930B5EAF172693896381C16050A27764594632
+              9944A1508056ABE59AE47038BA1ECF19C6C77728DDC5F1F1242A151DDF1CC46C
+              36C3E974229FCF73AE52A9B85389E26EB51AC3F4F41D85F3B4887BB406CB145F
+              9066488FA436B2D939944A25EE7A10654DCA2431F33DD6D7B7E8FA4C9A25BD92
+              C4FF006AF539F6F739FC84D2C93675224CDAA431DA91435C5D2D525CE35C2897
+              4B9316789C41BE1CE7E0E0925AE7FB4379A4296F6ED470B95C3D930D3259C3C9
+              C90E1289226D270D23A619C2C303707D3D81979755F8FDFEDE61DBC4E96904B1
+              58917FFC9341B1A8C1D3D30A1B08B893A323D071062C16712EB8FE25C2E0F656
+              83466309C16050A92A2622F07880A929110D479627D06A2D7F3010483A9DEED7
+              4FB1D56A45201050B23EFFF22AF80780378327A32C0A7B74C00000000049454E
+              44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\open.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object FileNameEd: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -148,6 +184,32 @@ object FMXKeyMaintFrm: TFMXKeyMaintFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = KeyCopySbClick
+      object Image1: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 12632256
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00A349444154384FCD947D0E83200C47E94ED69B6DBB596FC6F60862DB08BAF8
+              CF5ED2007E3C7ED5A898592D3779F4F1162D89AAF665E47BAECFD68C24B5D650
+              30936796ED20BB221AED708388B483FBFCD5D619B3280E497C2BFBF80C05AAF1
+              590509BBFB9A81CC8B0E93F84490A522EF366EA24B49BC34B7063F2539DA0086
+              64756196FB0D60F9EDD033B1BD700311CF86D71DDA999153509ED3246790E45F
+              7E05A57C007A3A992A7339967A0000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\copy.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object CopyByteKeySb: TSpeedButton
       Position.X = 398.000000000000000000
@@ -158,6 +220,32 @@ object FMXKeyMaintFrm: TFMXKeyMaintFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = CopyByteKeySbClick
+      object Image2: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 12632256
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00A349444154384FCD947D0E83200C47E94ED69B6DBB596FC6F60862DB08BAF8
+              CF5ED2007E3C7ED5A898592D3779F4F1162D89AAF665E47BAECFD68C24B5D650
+              30936796ED20BB221AED708388B483FBFCD5D619B3280E497C2BFBF80C05AAF1
+              590509BBFB9A81CC8B0E93F84490A522EF366EA24B49BC34B7063F2539DA0086
+              64756196FB0D60F9EDD033B1BD700311CF86D71DDA999153509ED3246790E45F
+              7E05A57C007A3A992A7339967A0000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\copy.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object KeyPasteSb: TSpeedButton
       Position.X = 425.000000000000000000
@@ -168,6 +256,33 @@ object FMXKeyMaintFrm: TFMXKeyMaintFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = KeyPasteSbClick
+      object Image3: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 32768
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00BA49444154384FAD948B0EC320084561D97F977DB9E3F2D8C0689BA53BC915
+              AD78A5F6C12434E8266B138998CCE3093759248DB066F6D898F29132C42EA211
+              421F06B938FB624999A311DDE0E121276DC0BA0816A6EC5793996612E0465652
+              D6264F0F3ED9773B5307A5B63349B9E10E9D2BD3AD922E751F87C50AF34BDB6F
+              0E98CEA46A8F99974A2F4DECF18412AF4609A34B93A12F4ACAC7C747C94F9554
+              75FCDB594874F3739083F5FBAFF8F4111734EF2FBF8238933B10BD013C2784FB
+              30B326310000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\paste.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object SpeedButton1: TSpeedButton
       Position.X = 425.000000000000000000
@@ -178,6 +293,33 @@ object FMXKeyMaintFrm: TFMXKeyMaintFrm
       StyleLookup = 'buttonstyle'
       TextSettings.WordWrap = True
       OnClick = SpeedButton1Click
+      object Image4: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 32768
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00BA49444154384FAD948B0EC320084561D97F977DB9E3F2D8C0689BA53BC915
+              AD78A5F6C12434E8266B138998CCE3093759248DB066F6D898F29132C42EA211
+              421F06B938FB624999A311DDE0E121276DC0BA0816A6EC5793996612E0465652
+              D6264F0F3ED9773B5307A5B63349B9E10E9D2BD3AD922E751F87C50AF34BDB6F
+              0E98CEA46A8F99974A2F4DECF18412AF4609A34B93A12F4ACAC7C747C94F9554
+              75FCDB594874F3739083F5FBAFF8F4111734EF2FBF8238933B10BD013C2784FB
+              30B326310000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\paste.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object BlockKeyEd: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]

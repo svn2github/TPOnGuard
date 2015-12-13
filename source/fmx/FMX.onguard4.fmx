@@ -70,6 +70,30 @@ object FMXEditProductFrm: TFMXEditProductFrm
       Size.PlatformDefault = False
       TextSettings.WordWrap = True
       OnClick = GenerateKeySbClick
+      object Image2: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 12632256
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              006249444154384FED8E410A00210C035BFFFF67D748BB441B10F6B027E71269
+              CB18BB143C92E99140ED0BFB110B92A3A8458229088B934D8917F8973C86A08F
+              057647C1C0B9C9678A245B206304B231377FDF3C04AA7EDE60A7EE7D1F02D5E0
+              F23F660FA2C4120A6BC1C0900000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\key.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object KeyPasteSb: TSpeedButton
       Position.X = 400.000000000000000000
@@ -79,6 +103,33 @@ object FMXEditProductFrm: TFMXEditProductFrm
       Size.PlatformDefault = False
       TextSettings.WordWrap = True
       OnClick = KeyPasteSbClick
+      object Image3: TImage
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.TransparentColor = 32768
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00BA49444154384FAD948B0EC320084561D97F977DB9E3F2D8C0689BA53BC915
+              AD78A5F6C12434E8266B138998CCE3093759248DB066F6D898F29132C42EA211
+              421F06B938FB624999A311DDE0E121276DC0BA0816A6EC5793996612E0465652
+              D6264F0F3ED9773B5307A5B63349B9E10E9D2BD3AD922E751F87C50AF34BDB6F
+              0E98CEA46A8F99974A2F4DECF18412AF4609A34B93A12F4ACAC7C747C94F9554
+              75FCDB594874F3739083F5FBAFF8F4111734EF2FBF8238933B10BD013C2784FB
+              30B326310000000049454E44AE426082}
+            FileName = 'C:\projects\components\tp\onguard\sourceforge\source\paste.bmp'
+          end>
+        Align = Contents
+        ClipParent = True
+        HitTest = False
+        Size.Width = 23.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+      end
     end
     object ProductEd: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]

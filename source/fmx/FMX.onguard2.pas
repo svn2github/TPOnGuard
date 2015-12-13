@@ -118,7 +118,10 @@ type
     NetworkSlotsNumberBox: TNumberBox;
     SpecialDataNumberBox: TNumberBox;
     SpecialExpiresCalendarEdit: TCalendarEdit;
-    ModDateCalendarEdit: TCalendarEdit;                                              {!!.11}
+    ModDateCalendarEdit: TCalendarEdit;
+    UsageUnlimitedCb: TCheckBox;
+    Image1: TImage;
+    Image2: TImage;                                              {!!.11}
 
     procedure FormCreate(Sender: TObject);
     procedure ModifierClick(Sender: TObject);
@@ -409,6 +412,10 @@ begin
               end else
                 raise;
             end;
+            {$IFDEF OgUsageUnlimited}
+            if UsageUnlimitedCb.IsChecked then InitUsageCodeUnlimited(K, FCode)
+            else
+            {$ENDIF}
             InitUsageCode(K, Trunc(UsageCountNumberBox.Value), D1, FCode);
           end;
       5 : begin

@@ -68,6 +68,11 @@ type
     CopyByteKeySb: TSpeedButton;
     KeyPasteSb: TSpeedButton;
     SpeedButton1: TSpeedButton;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
     procedure AddBtnClick(Sender: TObject);
     procedure EditBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
