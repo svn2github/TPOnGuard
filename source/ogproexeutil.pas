@@ -51,10 +51,6 @@
 {$I onguard.inc}
 
 
-{$IFDEF FPC}
-{$mode delphi}{$H+}
-{$ASMMODE INTEL}
-{$ENDIF}
 unit ogproexeutil;
 
 interface
@@ -70,7 +66,8 @@ uses
   {$IFDEF Win16} WinTypes, WinProcs, {$ENDIF}
   {$IFDEF Win32} Windows, {$ENDIF}
   {$IFDEF Win64} Windows, {$ENDIF}                                 {AH.02}
-  {$IFDEF LINUX} Libc, {$ENDIF}                                    {AH.01}
+  {$IFDEF KYLIX}{$IFDEF LINUX} Libc, {$ENDIF}{$ENDIF}                                    {AH.01}
+  {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF}{$ENDIF}
   {$IFDEF UsingCLX} Types, {$ENDIF}                                {AH.01}
   Classes, {$IFDEF MSWINDOWS}MMSystem, {$ENDIF} SysUtils,
   ogconst, ogutil, ogstamp;
@@ -322,6 +319,13 @@ begin
 end;
 {$ENDIF}
 
+{$IFNDEF MSWINDOWS}
+function IsExeTampered(CheckSize : Boolean) : TExeStatus;
+begin
+  Result := exeSuccess;
+end;
+{$ENDIF}
+
 {$IFDEF Win64}
 function ProtectExe(const FileName : string;  EraseMarker : Boolean) : Boolean;
   {-stamp exe with crc and file size. optionally erase search markers}
@@ -570,6 +574,13 @@ begin
 end;
 {$ENDIF}
 
+{$IFNDEF MSWINDOWS}
+function ProtectExe(const FileName : string;  EraseMarker : Boolean) : Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF}
+
 {$IFDEF Win64}
 function UnprotectExe(const FileName : string) : Boolean;
   {-writes uninitialized signature record. marker must not have been erased}
@@ -767,6 +778,13 @@ begin
 end;
 {$ENDIF}
 
+{$IFNDEF MSWINDOWS}
+function UnprotectExe(const FileName : string) : Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF}
+
 {$IFDEF Win64}
 function IsFileTampered(const FileName : string; CheckSize : Boolean) : TExeStatus;
   {-return one of the possible TExeResult states}
@@ -921,6 +939,14 @@ begin
       Result := exeAccessDenied;
   end;
 end;
+{$ENDIF}
+
+{$IFNDEF MSWINDOWS}
+function IsFileTampered(const FileName : string; CheckSize : Boolean) : TExeStatus;
+begin
+  Result := exeSuccess;
+end;
+
 {$ENDIF}
 
 {checksum/CRC routines}
@@ -1022,6 +1048,13 @@ begin
   finally
     StrDispose(Buf);
   end;
+end;
+{$ENDIF}
+
+{$IFNDEF MSWINDOWS}
+function FileCRC32(const FileName : string) : DWord;                     {!!.BB}
+begin
+  Result := 0;
 end;
 {$ENDIF}
 

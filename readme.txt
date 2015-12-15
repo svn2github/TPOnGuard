@@ -213,3 +213,33 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     added G115FD220.bpl
     added G115Common_R220.bpl
 
+4.3.12 Release 1.15 r27
+
+    Enhancements
+    -------------------------------------------------------------
+    missing packages for Delphi 2005, 2006, and 2007
+    missing files for XE8
+
+4.3.13 Release 1.15 r28
+
+    Enhancements
+    -------------------------------------------------------------
+    Initial FMX release for Delphi XE7.
+    added G115FR210.bpl
+    added G115FD210.bpl
+    added G115Common_R210.bpl
+
+4.3.14 Release 1.15 r29
+
+    Enhancements
+    -------------------------------------------------------------
+    removed fpGUI files
+    removed Lazarus packages from Github import
+    removed LCL files from Github import
+    fixed base files to compile with Lazarus
+    added g115commonlr140.lpk
+    added g115lr140.lpk
+    added g115ld140.lpk
+    recreated LCL files from current VCL files
+    compiles with Lazarus 1.4.0 on Ubuntu 15.10 64bit.
+

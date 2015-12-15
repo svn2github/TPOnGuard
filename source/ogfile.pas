@@ -260,7 +260,7 @@ end;
 
 function GetFileSize(Handle : THandle) : Cardinal;
 var
-  Save : ogLongInt;
+  Save : LongInt; //ogLongInt;
 begin
   Save := FileSeek(Handle, 0, 0);     {save current file position}
   Result := FileSeek(Handle, 0, 2);   {get file size}

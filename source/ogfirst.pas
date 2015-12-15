@@ -292,6 +292,15 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF LINUX}
+procedure ActivateFirstInstance;
+begin
+ //[to do] Find and Activate the first instance of the application
+
+ //look at the owner of the socket
+ //look at the running processes
+end;
+{$ENDIF}
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF Win16}
@@ -368,7 +377,7 @@ finalization
  if (server_lock > -1) then
  begin
   FileClose(server_lock);
-  unlink(PChar(server_name));
+  Fpunlink(PChar(server_name));
  end;
 {$ENDIF}
 {$ENDIF}

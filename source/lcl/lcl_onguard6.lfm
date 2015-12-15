@@ -1,0 +1,105 @@
+object ModifierFrm: TModifierFrm
+  Left = 244
+  Height = 139
+  Top = 174
+  Width = 464
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Generate Modifier'
+  ClientHeight = 139
+  ClientWidth = 464
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.4.0.4'
+  object OKBtn: TBitBtn
+    Left = 306
+    Height = 25
+    Top = 104
+    Width = 75
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object CancelBtn: TBitBtn
+    Left = 386
+    Height = 25
+    Top = 104
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object GroupBox1: TGroupBox
+    Left = 4
+    Height = 89
+    Top = 8
+    Width = 457
+    Caption = '&Modifiers'
+    ClientHeight = 73
+    ClientWidth = 453
+    TabOrder = 0
+    object UniqueModifierCb: TCheckBox
+      Left = 180
+      Height = 24
+      Top = 16
+      Width = 116
+      Caption = 'Unique modifier'
+      OnClick = ModifierClick
+      TabOrder = 3
+    end
+    object MachineModifierCb: TCheckBox
+      Left = 180
+      Height = 24
+      Top = 0
+      Width = 143
+      Caption = 'Machine modifier'
+      OnClick = ModifierClick
+      TabOrder = 1
+    end
+    object DateModifierCb: TCheckBox
+      Left = 324
+      Height = 24
+      Top = 0
+      Width = 119
+      Caption = 'Date modifier'
+      OnClick = ModifierClick
+      TabOrder = 2
+    end
+    object NoModifierCb: TCheckBox
+      Left = 12
+      Height = 24
+      Top = 0
+      Width = 107
+      Caption = 'No modifier'
+      OnClick = ModifierClick
+      TabOrder = 0
+    end
+    object ModifierEd: TEdit
+      Left = 16
+      Height = 24
+      Top = 32
+      Width = 145
+      OnChange = InfoChanged
+      OnKeyPress = ModifierEdKeyPress
+      TabOrder = 4
+    end
+    object ModDateEd: TEdit
+      Left = 344
+      Height = 24
+      Hint = 'Code is invalid after this date'
+      Top = 32
+      Width = 88
+      Color = clBtnFace
+      Enabled = False
+      MaxLength = 10
+      OnChange = ModifierClick
+      OnKeyPress = DateEdKeyPress
+      TabOrder = 5
+    end
+  end
+end

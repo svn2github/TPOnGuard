@@ -30,135 +30,136 @@
 
 
 {----------------------------------------------------------------------------}
-{ Compiler and OS version defines:
-{
-{ exact compiler versions:
-{
-{ BP7             Borland Pascal 7.0
-{ DELPHI1         Delphi 1.0 (any Delphi)
-{ DELPHI2         Delphi 2.0
-{ DELPHI3         Delphi 3.0
-{ DELPHI4         Delphi 4.0
-{ DELPHI5         Delphi 5.0
-{ DELPHI6         Delphi 6.0
-{ DELPHI7         Delphi 7.0
-{ DELPHI8         Delphi 8.0
-{ DELPHI9         Delphi 2005
-{ DELPHI10        Delphi 2006
-{ DELPHI11        Delphi 2007
-{ DELPHI12        Delphi 2009
-{ DELPHI14        Delphi 2010
-{ DELPHI15        Delphi XE
-{ DELPHI16        Delphi XE2
-{ DELPHI17        Delphi XE3
-{ DELPHI18        Delphi XE4
-{ DELPHI19        Delphi XE5
-{ DELPHI20        Delphi XE6
-{ DELPHI21        Delphi XE7
-{ DELPHI22        Delphi XE8
-{ DELPHI23        Delphi 10 Seattle
-{ KYLIX1          Kylix 1.0
-{ KYLIX2          Kylix 2.0
-{ KYLIX3          Kylix 3.0
-{ CBUILDER1       C++Builder 1.0
-{ CBUILDER3       C++Builder 3.0
-{ CBUILDER4       C++Builder 4.0
-{ CBUILDER5       C++Builder 5.0
-{
-{
-{ minimum compiler versions:
-{
-{ DELPHI1UP       Delphi 1.0 and above (any Delphi)
-{ DELPHI2UP       Delphi 2.0 and above
-{ DELPHI3UP       Delphi 3.0 and above
-{ DELPHI4UP       Delphi 4.0 and above
-{ DELPHI5UP       Delphi 5.0 and above
-{ DELPHI6UP       Delphi 6.0 and above
-{ DELPHI7UP       Delphi 7.0 and above
-{ DELPHI8UP       Delphi 8.0 and above
-{ DELPHI9UP       Delphi 2005 and above
-{ DELPHI10UP      Delphi 2006 and above
-{ DELPHI11UP      Delphi 2007 and above
-{ DELPHI12UP      Delphi 2009 and above
-{ DELPHI14UP      Delphi 2010 and above
-{ DELPHI15UP      Delphi XE and above
-{ DELPHI16UP      Delphi XE2 and above
-{ DELPHI17UP      Delphi XE3 and above
-{ DELPHI18UP      Delphi XE4 and above
-{ DELPHI19UP      Delphi XE5 and above
-{ DELPHI20UP      Delphi XE6 and above
-{ DELPHI21UP      Delphi XE7 and above
-{ DELPHI22UP      Delphi XE8 and above
-{ DELPHI23UP      Delphi 10 Seattle and above
-{ KYLIX1UP        Kylix 1.0 and above (any Kylix)
-{ KYLIX2UP        Kylix 2.0 and above (any Kylix)
-{ KYLIX3UP        Kylix 3.0 and above (any Kylix)
-{ CBUILDER1UP     C++Builder 1.0 and above or Delphi 2 and above (any C++Builder)
-{ CBUILDER3UP     C++Builder 3.0 and above or Delphi 3.0 and above
-{ CBUILDER4UP     C++Builder 4.0 and above or Delphi 4.0 and above
-{ CBUILDER5UP     C++Builder 5.0 and above or Delphi 5.0 and above
-{
-{
-{ compiler types:
-{
-{ BP              Borland Pascal (not Delphi or C++Builder)
-{ DELPHI          any Delphi version (but not C++Builder or Kylix)
-{ KYLIX           any Kylix version
-{ CBUILDER        any C++Builder (Pascal)
-{ FPC             any Free Pascal version
-{
-{
-{ target platforms compiler types:
-{
-{ DELPHI_16BIT    16bit Delphi (but not C++Builder!)
-{ DELPHI_32BIT    32bit Delphi (but not C++Builder)
-{ CBUILDER_32BIT  32bit C++Builer's Pascal (but not Delphi)
-{
-{
-{ target platforms
-{
-{ DOS             any DOS (plain and DPMI)
-{ REALMODE        16bit realmode DOS
-{ PROTECTEDMODE   16bit DPMI DOS
-{ CONSOLE         console application
-{
-{ MSWINDOWS       any Windows platform
-{ WIN16           16bit Windows
-{ WIN32           32bit Windows
-{ WIN64           64bit Windows
-{
-{ LINUX           any Linix platform
-{ LINUX32         32bit Linux
-{ FREEBSD         any FreeBSD platform
-{ ANDROID         any Android platform
-{ MACOS           any Mac OS platform
-{ IOS             any iOS platform
-{ POSIX           any POSIX compliant platform
-{
-{ processor targets
-{
-{ CPUX86          Intel x86 processor or compatible
-{ CPUX64          Intel x64 processor or compatible (not IA64)
-{ CPUARM          Arm v7 processor or compatible
-{
+{ Compiler and OS version defines:                                           }
+{                                                                            }
+{ exact compiler versions:                                                   }
+{                                                                            }
+{ BP7             Borland Pascal 7.0                                         }
+{ DELPHI1         Delphi 1.0 (any Delphi)                                    }
+{ DELPHI2         Delphi 2.0                                                 }
+{ DELPHI3         Delphi 3.0                                                 }
+{ DELPHI4         Delphi 4.0                                                 }
+{ DELPHI5         Delphi 5.0                                                 }
+{ DELPHI6         Delphi 6.0                                                 }
+{ DELPHI7         Delphi 7.0                                                 }
+{ DELPHI8         Delphi 8.0                                                 }
+{ DELPHI9         Delphi 2005                                                }
+{ DELPHI10        Delphi 2006                                                }
+{ DELPHI11        Delphi 2007                                                }
+{ DELPHI12        Delphi 2009                                                }
+{ DELPHI14        Delphi 2010                                                }
+{ DELPHI15        Delphi XE                                                  }
+{ DELPHI16        Delphi XE2                                                 }
+{ DELPHI17        Delphi XE3                                                 }
+{ DELPHI18        Delphi XE4                                                 }
+{ DELPHI19        Delphi XE5                                                 }
+{ DELPHI20        Delphi XE6                                                 }
+{ DELPHI21        Delphi XE7                                                 }
+{ DELPHI22        Delphi XE8                                                 }
+{ DELPHI23        Delphi 10 Seattle                                          }
+{ KYLIX1          Kylix 1.0                                                  }
+{ KYLIX2          Kylix 2.0                                                  }
+{ KYLIX3          Kylix 3.0                                                  }
+{ CBUILDER1       C++Builder 1.0                                             }
+{ CBUILDER3       C++Builder 3.0                                             }
+{ CBUILDER4       C++Builder 4.0                                             }
+{ CBUILDER5       C++Builder 5.0                                             }
+{                                                                            }
+{                                                                            }
+{ minimum compiler versions:                                                 }
+{                                                                            }
+{ DELPHI1UP       Delphi 1.0 and above (any Delphi)                          }
+{ DELPHI2UP       Delphi 2.0 and above                                       }
+{ DELPHI3UP       Delphi 3.0 and above                                       }
+{ DELPHI4UP       Delphi 4.0 and above                                       }
+{ DELPHI5UP       Delphi 5.0 and above                                       }
+{ DELPHI6UP       Delphi 6.0 and above                                       }
+{ DELPHI7UP       Delphi 7.0 and above                                       }
+{ DELPHI8UP       Delphi 8.0 and above                                       }
+{ DELPHI9UP       Delphi 2005 and above                                      }
+{ DELPHI10UP      Delphi 2006 and above                                      }
+{ DELPHI11UP      Delphi 2007 and above                                      }
+{ DELPHI12UP      Delphi 2009 and above                                      }
+{ DELPHI14UP      Delphi 2010 and above                                      }
+{ DELPHI15UP      Delphi XE and above                                        }
+{ DELPHI16UP      Delphi XE2 and above                                       }
+{ DELPHI17UP      Delphi XE3 and above                                       }
+{ DELPHI18UP      Delphi XE4 and above                                       }
+{ DELPHI19UP      Delphi XE5 and above                                       }
+{ DELPHI20UP      Delphi XE6 and above                                       }
+{ DELPHI21UP      Delphi XE7 and above                                       }
+{ DELPHI22UP      Delphi XE8 and above                                       }
+{ DELPHI23UP      Delphi 10 Seattle and above                                }
+{ KYLIX1UP        Kylix 1.0 and above (any Kylix)                            }
+{ KYLIX2UP        Kylix 2.0 and above (any Kylix)                            }
+{ KYLIX3UP        Kylix 3.0 and above (any Kylix)                            }
+{ CBUILDER1UP     C++Builder 1.0 and above or Delphi 2 and above (any C++Builder) }
+{ CBUILDER3UP     C++Builder 3.0 and above or Delphi 3.0 and above           }
+{ CBUILDER4UP     C++Builder 4.0 and above or Delphi 4.0 and above           }
+{ CBUILDER5UP     C++Builder 5.0 and above or Delphi 5.0 and above           }
+{                                                                            }
+{                                                                            }
+{ compiler types:                                                            }
+{                                                                            }
+{ BP              Borland Pascal (not Delphi or C++Builder)                  }
+{ DELPHI          any Delphi version (but not C++Builder or Kylix)           }
+{ KYLIX           any Kylix version                                          }
+{ CBUILDER        any C++Builder (Pascal)                                    }
+{ FPC             any Free Pascal version                                    }
+{                                                                            }
+{                                                                            }
+{ target platforms compiler types:                                           }
+{                                                                            }
+{ DELPHI_16BIT    16bit Delphi (but not C++Builder!)                         }
+{ DELPHI_32BIT    32bit Delphi (but not C++Builder)                          }
+{ CBUILDER_32BIT  32bit C++Builer's Pascal (but not Delphi)                  }
+{                                                                            }
+{                                                                            }
+{ target platforms                                                           }
+{                                                                            }
+{ DOS             any DOS (plain and DPMI)                                   }
+{ REALMODE        16bit realmode DOS                                         }
+{ PROTECTEDMODE   16bit DPMI DOS                                             }
+{ CONSOLE         console application                                        }
+{                                                                            }
+{ MSWINDOWS       any Windows platform                                       }
+{ WIN16           16bit Windows                                              }
+{ WIN32           32bit Windows                                              }
+{ WIN64           64bit Windows                                              }
+{                                                                            }
+{ LINUX           any Linix platform                                         }
+{ LINUX32         32bit Linux                                                }
+{ FREEBSD         any FreeBSD platform                                       }
+{ ANDROID         any Android platform                                       }
+{ MACOS           any Mac OS platform                                        }
+{ IOS             any iOS platform                                           }
+{ POSIX           any POSIX compliant platform                               }
+{                                                                            }
+{ processor targets                                                          }
+{                                                                            }
+{ CPUX86          Intel x86 processor or compatible                          }
+{ CPUX64          Intel x64 processor or compatible (not IA64)               }
+{ CPUARM          Arm v7 processor or compatible                             }
+{                                                                            }
 {----------------------------------------------------------------------------}
-{
-{ library specific defines
-{
-{ NoOgSrMgr             use of TurboPower String Resource Manager
-{ UseOgJCL              use of JclSysInfo routines for CPU identification
-{ NoOnGuardExceptions   disable the use of exceptions.
-{ NoMakeKeysSupport     prevent the TOgMakeKeys Form being compiled into the exe.
-{ NoMakeCodesSupport    prevent the TOgMakeCodes Form being compiled into the exe.
-{ UseOgFMX              use Firemonkey
-{ UseOgVCL              use VCL
-{
-{
-{ OgPUREPASCAL_ROLX     RolX function
-{ OgPUREPASCAL_XorMem   XorMem function
-{ OgPUREPASCAL_Min      Min function
-{ OgPUREPASCAL_Max      Max function
-{
+{                                                                            }
+{ library specific defines                                                   }
+{                                                                            }
+{ NoOgSrMgr             use of TurboPower String Resource Manager            }
+{ UseOgJCL              use of JclSysInfo routines for CPU identification    }
+{ NoOnGuardExceptions   disable the use of exceptions.                       }
+{ NoMakeKeysSupport     prevent the TOgMakeKeys Form being compiled into the exe.  }
+{ NoMakeCodesSupport    prevent the TOgMakeCodes Form being compiled into the exe. }
+{ UseOgFMX              use Firemonkey                                       }
+{ UseOgVCL              use VCL                                              }
+{ UseOgLCL              use Lazarus LCL                                      }
+{                                                                            }
+{                                                                            }
+{ OgPUREPASCAL_ROLX     RolX function                                        }
+{ OgPUREPASCAL_XorMem   XorMem function                                      }
+{ OgPUREPASCAL_Min      Min function                                         }
+{ OgPUREPASCAL_Max      Max function                                         }
+{                                                                            }
 {----------------------------------------------------------------------------}
 
 {Conditional defines that affect compilation}
@@ -716,10 +717,13 @@
   {$T-} {Typed @ Operator}
   {$DEFINE NoOgSrMgr}
   {$DEFINE OgPUREPASCAL_XorMem}
+  {$DEFINE OgPUREPASCAL_ROLX}
   {$IFNDEF Win32}
     {$DEFINE OgPUREPASCAL_Min}
     {$DEFINE OgPUREPASCAL_Max}
   {$ENDIF}
+  {$IFNDEF CONSOLE}{$DEFINE UseOgLCL}{$ENDIF}
+  {$IFNDEF MSWINDOWS}{$UNDEF UseOgJcl}{$ENDIF}
 {$ENDIF}
 
 {$IFDEF KYLIX}
@@ -734,7 +738,7 @@
 {$ENDIF}
 
 
-{$IFDEF CBuilder)
+{$IFDEF CBuilder}
   {$A+} {Word Align Data}
 {$ELSE}
   {$IFDEF DELPHI}

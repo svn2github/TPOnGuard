@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="g115ld140"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Andrew Haines"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <IncludeFiles Value="../source;../source/lcl"/>
+        <OtherUnitFiles Value="../source;../source/lcl"/>
+        <UnitOutputDirectory Value="../bin/lazarus/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="-dUseOgLCL"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="TurboPower OnGuard Designtime package - LCL210"/>
+    <License Value="Mozilla Public License 1.1"/>
+    <Version Major="1" Minor="15" Release="1"/>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="../source/lcl/lcl_onguard5.pas"/>
+        <UnitName Value="lcl_onguard5"/>
+      </Item1>
+      <Item2>
+        <Filename Value="../source/lcl/lcl_onguard7.pas"/>
+        <UnitName Value="lcl_onguard7"/>
+      </Item2>
+      <Item3>
+        <Filename Value="../source/lcl/lcl_onguard6.pas"/>
+        <UnitName Value="lcl_onguard6"/>
+      </Item3>
+      <Item4>
+        <Filename Value="../source/lcl/lcl_ogabout0.pas"/>
+        <UnitName Value="lcl_ogabout0"/>
+      </Item4>
+      <Item5>
+        <Filename Value="../source/lcl/lcl_ogreg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lcl_ogreg"/>
+      </Item5>
+    </Files>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="g115lr140"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="G115CommonLR140"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

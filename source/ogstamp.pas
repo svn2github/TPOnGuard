@@ -36,10 +36,6 @@
 {$I onguard.inc}
 
 
-{$IFDEF FPC}
-{$mode delphi}{$H+}
-{$ASMMODE INTEL}
-{$ENDIF}
 unit ogstamp;
 
 interface
@@ -48,8 +44,9 @@ uses
   {$IFDEF Win16} WinTypes, WinProcs; {$ENDIF}
   {$IFDEF Win32} Windows; {$ENDIF}
   {$IFDEF Win64} Windows; {$ENDIF}                                 {AH.02}
-  {$IFDEF LINUX} Libc; {$ENDIF}                                    {AH.01}
+  {$IFDEF KYLIX}{$IFDEF LINUX} Libc; {$ENDIF}{$ENDIF}                                    {AH.01}
   {$IFDEF UsingCLX} Types; {$ENDIF}                                {AH.01}
+  {$IFDEF FPC}{$IFDEF UNIX} BaseUnix; {$ENDIF}{$ENDIF}
 
 type
   {exe signature record}

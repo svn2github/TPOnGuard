@@ -44,7 +44,7 @@ uses
   {$IFDEF Win32} Windows, {$ENDIF}
   {$IFDEF Win64} Windows, {$ENDIF}                                        {AH.02}
   {$IFDEF KYLIX} Libc, {$ENDIF}
-  {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF}{$ENDIF}
+  {$IFDEF FPC}{$IFDEF UNIX} BaseUnix, {$ENDIF} Classes, {$ENDIF}
   {$IFDEF UsingCLX} Types, {$IFNDEF CONSOLE} QDialogs, {$ENDIF} {$ENDIF}
   {$IFDEF DELPHI16UP} System.AnsiStrings, {$ENDIF}
   {$IFDEF DELPHI12UP} Character, {$ENDIF}
@@ -1435,7 +1435,7 @@ end;
 {$IFDEF UNIX}
 {$NOTE Make sure we have some FreeBSD and MacOSX support too at some point }
 { We now assume Linux is used }
-function CreateMachineID(MachineInfo : TEsMachineInfoSet) : ogLongInt;
+function CreateMachineID(MachineInfo : TEsMachineInfoSet; Ansi: Boolean = True) : ogLongInt;
 var
   I       : ogLongInt;
   RegKey  : DWord;
