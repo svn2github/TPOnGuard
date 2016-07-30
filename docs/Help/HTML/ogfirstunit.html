@@ -134,8 +134,9 @@ var sortVars = {
 <div id="hmbox">
 <div id="hmheader">
 <div id="hmheadercontents">
-<p id="breadcrumbs" class="sync-toc">
-<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogfirstunit.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
+<p id="breadcrumbs">
+<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogfirstunit.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span><span class="sync-toc-off">Navigation:</span></b><span class="sync-toc-off">
+<a href="onguard_files.html">Files</a>:</span></p> 
 <p style="margin: 0px 0px 8px 0px;"><span style="font-size: 12pt; font-weight: bold; color: #0000ff;">OgFirst Unit</span></p>
 
 </div>
@@ -152,6 +153,61 @@ var sortVars = {
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #000000;">&nbsp;</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;"><a href="ogfirst_activatefirstinstance.html" class="topiclink">ActivateFirstInstance</a></span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;"><a href="ogfirst_isfirstinstance.html" class="topiclink">IsFirstInstance</a></span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 8px 0px;"><table style="border:solid 2px #000000; border-spacing:0px; border-collapse:collapse;">
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Platform</span></p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Comments</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>Win16</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><br />
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>Win32</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><p>Creates a mutex using &quot;PREVINST:&quot; plus the GetWindowText function.</p>
+<p>If mutex fails then assume this is not the First Instance.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>Win64</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><p>Creates a mutex using &quot;PREVINST:&quot; plus the GetWindowText function.</p>
+<p>If mutex fails then assume this is not the First Instance.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>Kylix</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><p>Creates a &quot;.lock&quot; file in &quot;/var/run/&quot; using the application's ExeName.</p>
+<p>If this lock file already exists or can not be created then assume this is not the First Instance.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>Android</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><br />
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>iOS</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><br />
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:149px; padding:0px; border:solid 1px #000000;"><p>OS X</p>
+</td>
+<td style="vertical-align:top; width:747px; padding:0px; border:solid 1px #000000;"><br />
+</td>
+</tr>
+</table>
+</div>
 
 <!--ZOOMSTOP-->
 

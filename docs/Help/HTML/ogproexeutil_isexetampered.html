@@ -8,7 +8,7 @@
    <meta name="keywords" content="" />
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta http-equiv="content-language" content="en-us" />
-   <meta name="description" content="On WIn32 and Win64 this function checks if the file has been stamped then uses the IsFileTampered function using ParamStr(0) for the file name." />
+   <meta name="description" content="The default result is exeIntegrityError. If the file has a stamp that is not yet used the result will be exeNotStamped. &nbsp;This function is only available on Windows." />
    <meta http-equiv="Content-Style-Type" content="text/css" />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link id="tabscheme" type="text/css" href="hm_topic.css" rel="stylesheet" />   
@@ -46,7 +46,7 @@ var tVars = {
    nextP: "",
    prevP: "",
    currP: "ogproexeutil_isexetampered.html",
-   descr: "On WIn32 and Win64 this function checks if the file has been stamped then uses the IsFileTampered function using ParamStr(0) for the file name.",
+   descr: "The default result is exeIntegrityError. If the file has a stamp that is not yet used the result will be exeNotStamped. &nbsp;This function is only available on Windows.",
    keys: "",
    defP: "onguard_contents.html",
    mailUrl: "",
@@ -134,8 +134,9 @@ var sortVars = {
 <div id="hmbox">
 <div id="hmheader">
 <div id="hmheadercontents">
-<p id="breadcrumbs" class="sync-toc">
-<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogproexeutil_isexetampered.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
+<p id="breadcrumbs">
+<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogproexeutil_isexetampered.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span><span class="sync-toc-off">Navigation:</span></b><span class="sync-toc-off">&nbsp;&raquo;No topics above this level&laquo;
+</span></p> 
 <h1 class="p_Heading1"><span class="f_Heading1">OgProExeUtil.IsExeTampered</span></h1>
 <h1 class="p_Heading1"><span class="f_Heading1">&nbsp;</span><br />
 <span style="font-size: 11pt; font-family: 'Courier New';">function IsExeTampered(CheckSize : Boolean) : TExeStatus;</span></h1>
@@ -150,9 +151,6 @@ var sortVars = {
 <div id="idcontent">
 <div id="unclicker"></div>
 <!--ZOOMRESTART-->
-<p>&nbsp;</p>
-<p>On WIn32 and Win64 this function checks if the file has been stamped then uses the IsFileTampered function using ParamStr(0) for the file name.</p>
-<p>&nbsp;</p>
 <p>The default result is exeIntegrityError.</p>
 <p>If the file has a stamp that is not yet used the result will be exeNotStamped.</p>
 <p>&nbsp;</p>

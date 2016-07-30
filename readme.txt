@@ -243,3 +243,15 @@ To install TurboPower OnGuard into your IDE, take the following steps:
     recreated LCL files from current VCL files
     compiles with Lazarus 1.4.0 on Ubuntu 15.10 64bit.
 
+4.3.14 Release 1.15 r30
+
+    Enhancements
+    -------------------------------------------------------------
+    Initial release for Delphi 10.1 Berlin.
+    added D101Berlin.groupproj
+    added G115Common_R240.bpl
+    added G115_R240.bpl
+    added G115_D240.bpl
+    added G115FR240.bpl
+    added G115FD240.bpl
+

@@ -137,8 +137,9 @@ function IsAppOnNetwork (const ExePath : string) : Boolean;</span></a></li>
 <div id="hmbox">
 <div id="hmheader">
 <div id="hmheadercontents">
-<p id="breadcrumbs" class="sync-toc">
-<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?isapponnetwork.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
+<p id="breadcrumbs">
+<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?isapponnetwork.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span><span class="sync-toc-off">Navigation:</span></b><span class="sync-toc-off">&nbsp;&raquo;No topics above this level&laquo;
+</span></p> 
 <p style="margin: 0px 0px 8px 0px;"><span style="font-size: 12pt; font-weight: bold; color: #0000ff;">IsAppOnNetwork</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="font-weight: bold; color: #010100;">function</span><span style="color: #010100;"> IsAppOnNetwork (</span><span style="font-weight: bold; color: #010100;">const</span><span style="color: #010100;"> ExePath : </span><span style="font-weight: bold; color: #010100;">string</span><span style="color: #010100;">) : Boolean;</span></p>
 
@@ -153,7 +154,61 @@ function IsAppOnNetwork (const ExePath : string) : Boolean;</span></a></li>
 <div id="unclicker"></div>
 <!--ZOOMRESTART-->
 <p style="margin: 8px 0px 8px 0px;"><img src="_bm1.png" width="11" height="12" alt="_bm1" style="border:none" /><span style="color: #010100;"> IsAppOnNetwork returns </span><span style="font-style: italic; color: #010100;">true</span><span style="color: #010100;"> if the drive specified in ExePath is a remote drive, otherwise </span><span style="font-style: italic; color: #010100;">false</span><span style="color: #010100;">.</span></p>
-<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">This routine is defined in the OgNetWrk unit.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">This routine is defined in the OgNetWrkUtil unit.</span></p>
+<p style="margin: 0px 0px 8px 0px;"><span style="color: #000000;">&nbsp;</span></p>
+<h2 class="p_Heading2"><span class="f_Heading2">Remarks</span></h2>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 8px 0px;"><table style="border:solid 2px #000000; border-spacing:0px; border-collapse:collapse;">
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Platform</span></p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Comments</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>Win16</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>uses GetDriveType, looks for DRIVE_REMOTE</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>Win32</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>uses GetDriveType, looks for DRIVE_REMOTE</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>Win64</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>uses GetDriveType, looks for DRIVE_REMOTE</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>Android</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>Always returns False</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>iOS</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>Always returns False</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>OS X</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>Always returns False</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:130px; padding:0px; border:solid 1px #000000;"><p>Linux</p>
+</td>
+<td style="vertical-align:top; width:518px; padding:0px; border:solid 1px #000000;"><p>Always returns False</p>
+</td>
+</tr>
+</table>
+</div>
+<p>Any POSIX or UNIX platform returns False.</p>
 
 <!--ZOOMSTOP-->
 

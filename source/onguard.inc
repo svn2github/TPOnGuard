@@ -57,6 +57,7 @@
 { DELPHI21        Delphi XE7                                                 }
 { DELPHI22        Delphi XE8                                                 }
 { DELPHI23        Delphi 10 Seattle                                          }
+{ DELPHI24        Delphi 10.1 Berlin                                         }
 { KYLIX1          Kylix 1.0                                                  }
 { KYLIX2          Kylix 2.0                                                  }
 { KYLIX3          Kylix 3.0                                                  }
@@ -90,6 +91,7 @@
 { DELPHI21UP      Delphi XE7 and above                                       }
 { DELPHI22UP      Delphi XE8 and above                                       }
 { DELPHI23UP      Delphi 10 Seattle and above                                }
+{ DELPHI24UP      Delphi 10.1 Berlin and above                               }
 { KYLIX1UP        Kylix 1.0 and above (any Kylix)                            }
 { KYLIX2UP        Kylix 2.0 and above (any Kylix)                            }
 { KYLIX3UP        Kylix 3.0 and above (any Kylix)                            }
@@ -691,6 +693,43 @@
   {$DEFINE DELPHI21UP}
   {$DEFINE DELPHI22UP}
   {$DEFINE DELPHI23UP}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST OFF}
+  {$WARN EXPLICIT_STRING_CAST_LOSS OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$WARN UNIT_DEPRECATED OFF}
+{$ENDIF}
+
+{$IFDEF VER310} // Rad Studio 10.1 Berlin
+  {$DEFINE DELPHI}
+  {$DEFINE DELPHI24}
+  {$DEFINE DELPHI1UP}
+  {$DEFINE DELPHI2UP}
+  {$DEFINE DELPHI3UP}
+  {$DEFINE DELPHI4UP}
+  {$DEFINE DELPHI5UP}
+  {$DEFINE DELPHI6UP}
+  {$DEFINE DELPHI7UP}
+  {$DEFINE DELPHI8UP}
+  {$DEFINE DELPHI9UP}
+  {$DEFINE DELPHI10UP}
+  {$DEFINE DELPHI11UP}
+  {$DEFINE DELPHI12UP}
+  {$DEFINE DELPHI14UP}
+  {$DEFINE DELPHI15UP}
+  {$DEFINE DELPHI16UP}
+  {$DEFINE DELPHI17UP}
+  {$DEFINE DELPHI18UP}
+  {$DEFINE DELPHI19UP}
+  {$DEFINE DELPHI20UP}
+  {$DEFINE DELPHI21UP}
+  {$DEFINE DELPHI22UP}
+  {$DEFINE DELPHI23UP}
+  {$DEFINE DELPHI24UP}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CAST OFF}

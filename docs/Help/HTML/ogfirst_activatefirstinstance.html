@@ -140,8 +140,9 @@ procedure OgFirst.ActivateFirstInstance(const MainWindowCaption, MainWindowClass
 <div id="hmbox">
 <div id="hmheader">
 <div id="hmheadercontents">
-<p id="breadcrumbs" class="sync-toc">
-<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogfirst_activatefirstinstance.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span></b></p> 
+<p id="breadcrumbs">
+<b><span class="sync-toc"><a rel="nofollow" class="sync-toc-link" href="index.html?ogfirst_activatefirstinstance.html" target="_top">&lt;&lt;&nbsp;Click here to display Table of Contents&nbsp;&gt;&gt;</a>&nbsp;&nbsp;</span><span class="sync-toc-off">Navigation:</span></b><span class="sync-toc-off">&nbsp;&raquo;No topics above this level&laquo;
+</span></p> 
 <p style="margin: 0px 0px 8px 0px;"><span style="font-size: 12pt; font-weight: bold; color: #0000ff;">ActivateFirstInstance</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="font-weight: bold; color: #010100;">procedure</span><span style="color: #010100;"> <a href="ogfirstunit.html" class="topiclink">OgFirst</a>.ActivateFirstInstance; &nbsp;{32-bit version}</span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="font-weight: bold; color: #010100;">procedure</span><span style="color: #010100;"> <a href="ogfirstunit.html" class="topiclink">OgFirst</a>.ActivateFirstInstance(const MainWindowCaption, MainWindowClass : string); &nbsp;{16-bit version}</span></p>
@@ -160,6 +161,59 @@ procedure OgFirst.ActivateFirstInstance(const MainWindowCaption, MainWindowClass
 <p style="margin: 0px 0px 8px 0px;"><img src="_bm1.png" width="11" height="12" alt="_bm1" style="border:none" /><span style="color: #010100;">ActivateFirstInstance locates an application’s main window and then makes it the active window. </span></p>
 <p style="margin: 0px 0px 8px 0px;"><span style="color: #010100;">ActivateFirstInstance forces the window with the specified caption and class to the top of the z-Order and gives it the focus. This method is normally called after detecting that a second instance of the application was executed and subsequently halted. Calling ActivateFirstInstance gives the appearance that running the application a second time succeeded.</span></p>
 <p><span style="color: #010100;">The 32-bit version of ActivateFirstInstance does not take any parameters and automatically locates the application’s main window. The 16-bit version of this routine requires that the class name and caption of the main form be passed as arguments.</span></p>
+<p><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table style="border:solid 2px #000000; border-spacing:0px; border-collapse:collapse;">
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Platform</span></p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p><span style="font-weight: bold;">Comments</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>Win16</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><br />
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>Win32</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>VCL only. Not supported for FMX.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>Win64</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>VCL only. Not supported for FMX.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>Linux</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>KYLIX does nothing</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>Android</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>does nothing</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>iOS</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>does nothing</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td style="vertical-align:top; width:170px; padding:0px; border:solid 1px #000000;"><p>OS X</p>
+</td>
+<td style="vertical-align:top; width:726px; padding:0px; border:solid 1px #000000;"><p>does nothing</p>
+</td>
+</tr>
+</table>
+</div>
+<p><span style="color: #000000;">&nbsp;</span></p>
 
 <!--ZOOMSTOP-->
 
